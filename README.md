@@ -1,4 +1,4 @@
-# listhen
+# 👂 listhen
 
 > Elegant http listener
 
@@ -7,12 +7,18 @@
 [![Github Actions][github-actions-src]][github-actions-href]
 [![Codecov][codecov-src]][codecov-href]
 
-✔️ Promisified interface for listening and closing server
+✔️ Promisified interface for listening and closing server\
+
 ✔️ Works with express/connect or plain http handle function
+
 ✔️ Support HTTP and HTTPS
+
 ✔️ Automatically assign a port or fallback to human friendly alternative (with [get-port-please](https://github.com/nuxt-contrib/get-port-please))
+
 ✔️ Automatically generate listening URL and show on console
+
 ✔️ Automatically open in browser (opt-in)
+
 ✔️ Automatically generate self signed certificate
 
 ## Install
