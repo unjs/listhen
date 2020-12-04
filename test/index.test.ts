@@ -24,6 +24,6 @@ describe('listhen', () => {
     listener = await listen(handle)
     expect(listener.url.startsWith('http://')).toBe(true)
     // eslint-disable-next-line no-console
-    expect(console.log).toHaveBeenCalledWith(`> server listening on ${listener.url}`)
+    expect(console.log).toHaveBeenCalledWith(`> server listening on ${listener.url}`, '(copied to clipboard)')
   })
 })
