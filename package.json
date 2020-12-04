@@ -1,0 +1,38 @@
+{
+  "name": "listhen",
+  "version": "0.0.1",
+  "description": "",
+  "repository": "nuxt-contrib/listhen",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "siroc build",
+    "lint": "eslint --ext .ts .",
+    "release": "yarn test && yarn build && standard-version && git push --follow-tags && npm publish",
+    "test": "yarn lint && jest"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "defu": "^3.2.2",
+    "get-port-please": "^2.1.0",
+    "open": "^7.3.0",
+    "selfsigned": "^1.10.8"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config-typescript": "latest",
+    "@types/cheerio": "^0.22.22",
+    "@types/flat": "latest",
+    "@types/jest": "latest",
+    "@types/node": "latest",
+    "eslint": "latest",
+    "jest": "latest",
+    "siroc": "latest",
+    "standard-version": "latest",
+    "ts-jest": "latest",
+    "typescript": "latest"
+  }
+}
