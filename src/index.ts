@@ -2,12 +2,23 @@ import './shim'
 import http from 'http'
 import https from 'https'
 import { promisify } from 'util'
+import { promises as fs } from 'fs'
 import { getPort, GetPortInput } from 'get-port-please'
 import chalk from 'chalk'
 import { generate as generalSSL, SelfsignedOptions } from 'selfsigned'
 import defu from 'defu'
 import open from 'open'
 import clipboardy from 'clipboardy'
+
+interface Certificate {
+  key: string
+  cert: string
+}
+
+interface CertificateInput {
+  key: string
+  cert: string
+}
 
 interface ListenOptions {
   name: string
@@ -16,6 +27,7 @@ interface ListenOptions {
   selfsigned?: SelfsignedOptions
   showURL: boolean
   open: boolean
+  certificate: Certificate
   clipboard: boolean
 }
 
@@ -34,8 +46,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   let url: string
 
   if (opts.https) {
-    // @ts-ignore
-    const { private: key, cert } = await promisify(generalSSL)(opts.selfsigned?.attrs, opts.selfsigned)
+    const { key, cert } = await resolveCert(opts.certificate!) || await getSelfSignedCert(opts.selfsigned!)
     server = https.createServer({ key, cert }, handle)
     // @ts-ignore
     await promisify(server.listen.bind(server))(port)
@@ -68,4 +79,15 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     server,
     close
   }
+}
+
+async function resolveCert (input: CertificateInput): Promise<Certificate> {
+  const key = await fs.readFile(input.key, 'utf-8')
+  const cert = await fs.readFile(input.cert, 'utf-8')
+  return { key, cert }
+}
+
+function getSelfSignedCert (opts: SelfsignedOptions): Promise<Certificate> {
+  return promisify(generalSSL)(opts.attrs, opts)
+    .then((r: any) => ({ key: r.private, cert: r.cert }))
 }

@@ -92,6 +92,10 @@ Port to listen
 
 Listen with `https` protocol. By default uses a self-signed certificated
 
+### `cetificate`
+
+Path to https certificate files `{ key, cert }`
+
 ### `selfsigned`
 
 Options for self-signed certificate (see [selfsigned](https://github.com/jfromaniello/selfsigned))
