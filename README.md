@@ -17,6 +17,8 @@
 
 ✔️ Automatically generate listening URL and show on console
 
+✔️ Automatically copy URL to clipboard
+
 ✔️ Automatically open in browser (opt-in)
 
 ✔️ Automatically generate self signed certificate
@@ -104,7 +106,11 @@ Show a CLI message for listening URL
 
 - Default: `false`
 
-Open URL in browser
+### `clipboard`
+
+- Default: `true`
+
+Copy URL to clipboard
 
 ## License
 

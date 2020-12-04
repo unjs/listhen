@@ -8,6 +8,7 @@ function handle (_req, res) {
   res.end('works')
 }
 
+// eslint-disable-next-line no-console
 console.log = jest.fn()
 
 describe('listhen', () => {
@@ -22,6 +23,7 @@ describe('listhen', () => {
   test('listen', async () => {
     listener = await listen(handle)
     expect(listener.url.startsWith('http://')).toBe(true)
+    // eslint-disable-next-line no-console
     expect(console.log).toHaveBeenCalledWith(`> server listening on ${listener.url}`)
   })
 })
