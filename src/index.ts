@@ -9,6 +9,7 @@ import { generate as generalSSL, SelfsignedOptions } from 'selfsigned'
 import defu from 'defu'
 import open from 'open'
 import clipboardy from 'clipboardy'
+import { joinURL } from '@nuxt/ufo'
 
 interface Certificate {
   key: string
@@ -96,6 +97,8 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     console.log(`> ${opts.name} listening on ${chalk.cyan.underline(decodeURI(url))}`, add)
   }
 
+  const getURL = (...path: string[]) => joinURL(url, ...path)
+
   if (opts.open) {
     await open(url).catch(() => {})
   }
@@ -112,6 +115,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
 
   return {
     url,
+    getURL,
     server,
     close
   }

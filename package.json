@@ -17,6 +17,7 @@
     "test": "yarn lint && jest"
   },
   "dependencies": {
+    "@nuxt/ufo": "^0.0.3",
     "chalk": "^4.1.0",
     "clipboardy": "^2.3.0",
     "defu": "^3.2.2",

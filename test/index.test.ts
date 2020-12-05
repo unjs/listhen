@@ -49,6 +49,11 @@ describe('listhen', () => {
     expect(console.log).toHaveBeenCalledWith(`> server listening on ${listener.url}`, '(copied to clipboard)')
   })
 
+  test('getURL', async () => {
+    const { getURL } = await listen(handle, { baseURL: '/foo/' })
+    expect(getURL('/bar/baz')).toMatch('/foo/bar/baz')
+  })
+
   test('listen (https - selfsigned)', async () => {
     listener = await listen(handle, { https: true })
     expect(listener.url.startsWith('https://')).toBe(true)
