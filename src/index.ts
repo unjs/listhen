@@ -61,7 +61,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   const close = () => promisify(server.close.bind(server))()
 
   if (opts.clipboard) {
-    await clipboardy.write(url)
+    await clipboardy.write(url).catch(() => { opts.clipboard = false })
   }
 
   if (opts.showURL) {
@@ -71,7 +71,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   }
 
   if (opts.open) {
-    await open(url)
+    await open(url).catch(() => {})
   }
 
   return {
