@@ -107,10 +107,6 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     for (const signal of opts.autoCloseSignals!) {
       process.on(signal, close)
     }
-    if (opts.isTest && global.afterAll) {
-      // istanbul ignore next
-      global.afterAll(() => close())
-    }
   }
 
   return {
