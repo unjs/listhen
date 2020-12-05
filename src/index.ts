@@ -26,6 +26,7 @@ interface ListenOptions {
   https?: boolean
   selfsigned?: SelfsignedOptions
   showURL: boolean
+  baseURL: string
   open: boolean
   certificate: Certificate
   clipboard: boolean
@@ -40,6 +41,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     name: 'server',
     port: process.env.PORT,
     showURL: true,
+    baseURL: '/',
     open: false,
     clipboard: true,
     isTest: process.env.NODE_ENV === 'test',
@@ -67,12 +69,12 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     server = https.createServer({ key, cert }, handle)
     // @ts-ignore
     await promisify(server.listen.bind(server))(port)
-    url = `https://localhost:${port}`
+    url = `https://localhost:${port}${opts.baseURL}`
   } else {
     server = http.createServer(handle)
     // @ts-ignore
     await promisify(server.listen.bind(server))(port)
-    url = `http://localhost:${port}`
+    url = `http://localhost:${port}${opts.baseURL}`
   }
 
   let _closed = false

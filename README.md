@@ -106,9 +106,13 @@ Options for self-signed certificate (see [selfsigned](https://github.com/jfroman
 
 ### `showURL`
 
-- Default: `true`(force disabled on test environment)
+- Default: `true` (force disabled on test environment)
 
 Show a CLI message for listening URL.
+
+### `baseURL`
+
+- Default: `/`
 
 ### `open`
 
