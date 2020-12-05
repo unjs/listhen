@@ -31,6 +31,8 @@ interface ListenOptions {
   clipboard: boolean
   isTest: Boolean
   isProd: Boolean
+  autoClose: Boolean
+  autoCloseSignals: string[]
 }
 
 export async function listen (handle: http.RequestListener, opts: Partial<ListenOptions> = {}) {
@@ -41,7 +43,9 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     open: false,
     clipboard: true,
     isTest: process.env.NODE_ENV === 'test',
-    isProd: process.env.NODE_ENV === 'production'
+    isProd: process.env.NODE_ENV === 'production',
+    autoClose: true,
+    autoCloseSignals: ['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'SIGTERM']
   })
 
   if (opts.isTest) {
@@ -92,6 +96,12 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
 
   if (opts.open) {
     await open(url).catch(() => {})
+  }
+
+  if (opts.autoClose) {
+    for (const signal of opts.autoCloseSignals!) {
+      process.on(signal, close)
+    }
   }
 
   return {

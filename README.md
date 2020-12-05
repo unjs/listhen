@@ -25,6 +25,8 @@
 
 ✔️ Automatically detect test and production environments
 
+✔️ Automatically close with graceful shutdown
+
 ## Install
 
 Install using npm or yarn:
@@ -127,12 +129,17 @@ Copy URL to clipboard. Silently ignores errors.
 Detect if running in a test environment to disable some features.
 
 
-### `isProd`
+### `autoClose`
 
-- Default: `process.env.NODE_ENV === 'production'`
+- Default: `true`
 
-Detect if running in a production environment to disable some features.
+Automatically close when an exit signal is recieved on process.
 
+### `autoCloseSignals`
+
+- Default: `['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'SIGTERM']`
+
+Signals to auto close.
 
 ## License
 
