@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/nuxt-contrib/listhen/compare/v0.0.3...v0.0.4) (2020-12-05)
+
+
+### Features
+
+* baseURL ([99d5471](https://github.com/nuxt-contrib/listhen/commit/99d5471df4fa736a58e4f365999b07f0ff45f095))
+* getURL utility ([1fa41a0](https://github.com/nuxt-contrib/listhen/commit/1fa41a0719666ab70579dc9567502c498f031fdf))
+
 ### [0.0.3](https://github.com/nuxt-contrib/listhen/compare/v0.0.2...v0.0.3) (2020-12-05)
 
 
