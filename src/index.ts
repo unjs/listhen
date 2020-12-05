@@ -71,7 +71,14 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     url = `http://localhost:${port}`
   }
 
-  const close = () => promisify(server.close.bind(server))()
+  let _closed = false
+  const close = () => {
+    if (_closed) {
+      return Promise.resolve()
+    }
+    _closed = true
+    return promisify(server.close.bind(server))()
+  }
 
   if (opts.clipboard) {
     await clipboardy.write(url).catch(() => { opts.clipboard = false })

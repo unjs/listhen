@@ -63,4 +63,10 @@ describe('listhen', () => {
     open.mockImplementationOnce(() => Promise.reject(new Error('')))
     listener = await listen(handle, { isTest: false, clipboard: true, open: true })
   })
+
+  test('double close', async () => {
+    listener = await listen(handle, { isTest: false, clipboard: true, open: true })
+    await listener.close()
+    await listener.close()
+  })
 })
