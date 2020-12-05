@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.1.0](https://github.com/nuxt-contrib/listhen/compare/v0.0.4...v0.1.0) (2020-12-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* unsupport jest as is unstable
+
+### Features
+
+* unsupport jest as is unstable ([5ec0d07](https://github.com/nuxt-contrib/listhen/commit/5ec0d078facad58bfbe0843d9c75d776160cce09))
+
 ### [0.0.4](https://github.com/nuxt-contrib/listhen/compare/v0.0.3...v0.0.4) (2020-12-05)
 
 
