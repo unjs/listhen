@@ -7,7 +7,7 @@
 [![Github Actions][github-actions-src]][github-actions-href]
 [![Codecov][codecov-src]][codecov-href]
 
-✔️ Promisified interface for listening and closing server\
+✔️ Promisified interface for listening and closing server
 
 ✔️ Works with express/connect or plain http handle function
 
@@ -22,6 +22,8 @@
 ✔️ Automatically open in browser (opt-in)
 
 ✔️ Automatically generate self signed certificate
+
+✔️ Automatically detect test and production environments
 
 ## Install
 
@@ -78,19 +80,19 @@ listen(app)
 
 - Default: `'server'`
 
-Instance name used for CLI message
+Instance name used for CLI message.
 
 ### `port`
 
 - Default: `process.env.PORT` or 3000 or memorized random (see [get-port-please](https://github.com/nuxt-contrib/get-port-please))
 
-Port to listen
+Port to listen.
 
 ### `https`
 
 - Default: `false`
 
-Listen with `https` protocol. By default uses a self-signed certificated
+Listen with `https` protocol. By default uses a self-signed certificated.
 
 ### `cetificate`
 
@@ -98,23 +100,39 @@ Path to https certificate files `{ key, cert }`
 
 ### `selfsigned`
 
-Options for self-signed certificate (see [selfsigned](https://github.com/jfromaniello/selfsigned))
+Options for self-signed certificate (see [selfsigned](https://github.com/jfromaniello/selfsigned)).
 
 ### `showURL`
 
-- Default: `true`
+- Default: `true`(force disabled on test environment)
 
-Show a CLI message for listening URL
+Show a CLI message for listening URL.
 
 ### `open`
 
-- Default: `false`
+- Default: `false` (force disabled on test and production environments)
+
+Open URL in browser. Silently ignores errors.
 
 ### `clipboard`
 
-- Default: `true`
+- Default: `true` (force disabled on test and production environments)
 
-Copy URL to clipboard
+Copy URL to clipboard. Silently ignores errors.
+
+### `isTest`
+
+- Default: `process.env.NODE_ENV === 'test'`
+
+Detect if running in a test environment to disable some features.
+
+
+### `isProd`
+
+- Default: `process.env.NODE_ENV === 'production'`
+
+Detect if running in a production environment to disable some features.
+
 
 ## License
 

@@ -29,6 +29,8 @@ interface ListenOptions {
   open: boolean
   certificate: Certificate
   clipboard: boolean
+  isTest: Boolean
+  isProd: Boolean
 }
 
 export async function listen (handle: http.RequestListener, opts: Partial<ListenOptions> = {}) {
@@ -37,8 +39,19 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     port: process.env.PORT,
     showURL: true,
     open: false,
-    clipboard: true
+    clipboard: true,
+    isTest: process.env.NODE_ENV === 'test',
+    isProd: process.env.NODE_ENV === 'production'
   })
+
+  if (opts.isTest) {
+    opts.showURL = false
+  }
+
+  if (opts.isProd || opts.isTest) {
+    opts.open = false
+    opts.clipboard = false
+  }
 
   const port = await getPort(opts.port || process.env.PORT)
 
@@ -46,7 +59,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   let url: string
 
   if (opts.https) {
-    const { key, cert } = await resolveCert(opts.certificate!) || await getSelfSignedCert(opts.selfsigned!)
+    const { key, cert } = opts.certificate ? await resolveCert(opts.certificate) : await getSelfSignedCert(opts.selfsigned)
     server = https.createServer({ key, cert }, handle)
     // @ts-ignore
     await promisify(server.listen.bind(server))(port)
@@ -87,7 +100,8 @@ async function resolveCert (input: CertificateInput): Promise<Certificate> {
   return { key, cert }
 }
 
-function getSelfSignedCert (opts: SelfsignedOptions): Promise<Certificate> {
+function getSelfSignedCert (opts: SelfsignedOptions = {}): Promise<Certificate> {
+  // @ts-ignore
   return promisify(generalSSL)(opts.attrs, opts)
     .then((r: any) => ({ key: r.private, cert: r.cert }))
 }
