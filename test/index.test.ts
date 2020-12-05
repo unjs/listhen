@@ -36,7 +36,7 @@ describe('listhen', () => {
   })
 
   test('listen (http)', async () => {
-    listener = await listen(handle, { isTest: false, clipboard: true, open: true })
+    listener = await listen(handle, { isTest: false, autoClose: false, clipboard: true, open: true })
     expect(listener.url.startsWith('http://')).toBe(true)
     // eslint-disable-next-line no-console
     expect(console.log).toHaveBeenCalledWith(`> server listening on ${listener.url}`, '(copied to clipboard)')
