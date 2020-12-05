@@ -25,7 +25,7 @@
 
 ✔️ Automatically detect test and production environments
 
-✔️ Automatically close with graceful shutdown
+✔️ Automatically close with shutdown signal and jest afterAll hook
 
 ## Install
 
@@ -132,12 +132,13 @@ Copy URL to clipboard. Silently ignores errors.
 
 Detect if running in a test environment to disable some features.
 
-
 ### `autoClose`
 
 - Default: `true`
 
 Automatically close when an exit signal is recieved on process.
+
+Also if `isTest` is set and `global.afterAll` is defined, will be used for zero config jest integration
 
 ### `autoCloseSignals`
 

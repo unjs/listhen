@@ -77,6 +77,10 @@ describe('listhen', () => {
     await listener.close()
   })
 
+  test('autoClose(jest)', async () => {
+    /* not passing close */ await listen(handle)
+  })
+
   test('autoClose', async () => {
     /* not passing close */ await listen(handle)
     process.emit('SIGINT')
