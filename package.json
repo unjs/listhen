@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build": "siroc build",
-    "dev": "jiti test/app",
+    "dev": "jiti test/fixture/app",
     "lint": "eslint --ext .ts .",
     "release": "yarn test && yarn build && standard-version && git push --follow-tags && npm publish",
     "test": "yarn lint && jest"

@@ -1,4 +1,4 @@
-import { listen } from '../src'
+import { listen } from '../../src'
 
 listen((_req, res) => {
   res.end('works!')
