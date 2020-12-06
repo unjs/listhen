@@ -51,7 +51,7 @@ import { listen } from 'listhen'
 
 ## Usage
 
-**Function signuture:**
+**Function signature:**
 
 ```ts
 const { url, getURL, server, close } = await listen(handle, options?)
@@ -98,7 +98,7 @@ Port to listen.
 
 Listen with `https` protocol. By default uses a self-signed certificated.
 
-### `cetificate`
+### `certificate`
 
 Path to https certificate files `{ key, cert }`
 
@@ -138,7 +138,7 @@ Detect if running in a test environment to disable some features.
 
 - Default: `true`
 
-Automatically close when an exit signal is recieved on process.
+Automatically close when an exit signal is received on process.
 
 ### `autoCloseSignals`
 
