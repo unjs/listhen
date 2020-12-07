@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/nuxt-contrib/listhen/compare/v0.1.1...v0.1.2) (2020-12-07)
+
+
+### Bug Fixes
+
+* graceful shutdown ([#6](https://github.com/nuxt-contrib/listhen/issues/6)) ([3e1e001](https://github.com/nuxt-contrib/listhen/commit/3e1e0019539f9e988ba9fd14fb366fcb79d18193))
+
 ### [0.1.1](https://github.com/nuxt-contrib/listhen/compare/v0.1.0...v0.1.1) (2020-12-07)
 
 
