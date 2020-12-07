@@ -27,7 +27,9 @@
 
 ✔️ Automatically detect test and production environments
 
-✔️ Automatically close with process shutdown signal
+✔️ Automatically close on exit signal
+
+✔️ Gracefully shutdown server with [http-shutdown](https://github.com/thedillonb/http-shutdown)
 
 ## Install
 
@@ -139,12 +141,6 @@ Detect if running in a test environment to disable some features.
 - Default: `true`
 
 Automatically close when an exit signal is received on process.
-
-### `autoCloseSignals`
-
-- Default: `['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'SIGTERM']`
-
-Signals to auto close.
 
 ## License
 

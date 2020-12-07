@@ -9,6 +9,7 @@ import { generate as generalSSL, SelfsignedOptions } from 'selfsigned'
 import defu from 'defu'
 import open from 'open'
 import clipboardy from 'clipboardy'
+import addShutdown from 'http-shutdown'
 import { joinURL } from '@nuxt/ufo'
 
 export interface Certificate {
@@ -54,8 +55,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     clipboard: true,
     isTest: process.env.NODE_ENV === 'test',
     isProd: process.env.NODE_ENV === 'production',
-    autoClose: true,
-    autoCloseSignals: ['exit', 'SIGINT', 'SIGUSR1', 'SIGUSR2', 'SIGTERM']
+    autoClose: true
   })
 
   if (opts.isTest) {
@@ -75,11 +75,13 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   if (opts.https) {
     const { key, cert } = opts.certificate ? await resolveCert(opts.certificate) : await getSelfSignedCert(opts.selfsigned)
     server = https.createServer({ key, cert }, handle)
+    addShutdown(server)
     // @ts-ignore
     await promisify(server.listen.bind(server))(port)
     url = `https://localhost:${port}${opts.baseURL}`
   } else {
     server = http.createServer(handle)
+    addShutdown(server)
     // @ts-ignore
     await promisify(server.listen.bind(server))(port)
     url = `http://localhost:${port}${opts.baseURL}`
@@ -91,7 +93,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
       return Promise.resolve()
     }
     _closed = true
-    return promisify(server.close.bind(server))()
+    return promisify((server as any).shutdown)()
   }
 
   if (opts.clipboard) {
@@ -111,9 +113,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   }
 
   if (opts.autoClose) {
-    for (const signal of opts.autoCloseSignals!) {
-      process.on(signal, close)
-    }
+    process.on('exit', () => close())
   }
 
   return <Listener>{

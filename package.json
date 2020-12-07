@@ -22,6 +22,7 @@
     "clipboardy": "^2.3.0",
     "defu": "^3.2.2",
     "get-port-please": "^2.1.0",
+    "http-shutdown": "^1.2.2",
     "open": "^7.3.0",
     "selfsigned": "^1.10.8"
   },
