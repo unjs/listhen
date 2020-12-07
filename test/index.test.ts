@@ -84,6 +84,6 @@ describe('listhen', () => {
 
   test('autoClose', async () => {
     /* not passing close */ await listen(handle)
-    process.emit('SIGINT')
+    process.emit('exit')
   })
 })
