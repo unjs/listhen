@@ -11,17 +11,17 @@ import open from 'open'
 import clipboardy from 'clipboardy'
 import { joinURL } from '@nuxt/ufo'
 
-interface Certificate {
+export interface Certificate {
   key: string
   cert: string
 }
 
-interface CertificateInput {
+export interface CertificateInput {
   key: string
   cert: string
 }
 
-interface ListenOptions {
+export interface ListenOptions {
   name: string
   port?: GetPortInput,
   https?: boolean
@@ -37,7 +37,14 @@ interface ListenOptions {
   autoCloseSignals: string[]
 }
 
-export async function listen (handle: http.RequestListener, opts: Partial<ListenOptions> = {}) {
+export interface Listener {
+  url: string,
+  getURL: (url: string) => string,
+  server: http.Server | https.Server,
+  close: () => Promise<any>
+}
+
+export async function listen (handle: http.RequestListener, opts: Partial<ListenOptions> = {}): Promise<Listener> {
   opts = defu(opts, {
     name: 'server',
     port: process.env.PORT,
@@ -109,7 +116,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     }
   }
 
-  return {
+  return <Listener>{
     url,
     getURL,
     server,
