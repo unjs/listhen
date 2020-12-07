@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/nuxt-contrib/listhen/compare/v0.1.0...v0.1.1) (2020-12-07)
+
+
+### Features
+
+* **types:** expose Listener type ([6ccb5e2](https://github.com/nuxt-contrib/listhen/commit/6ccb5e2eca71c5370a3ed1f0911620a4b29761c7))
+
 ## [0.1.0](https://github.com/nuxt-contrib/listhen/compare/v0.0.4...v0.1.0) (2020-12-05)
 
 
