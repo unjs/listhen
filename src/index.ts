@@ -10,7 +10,7 @@ import defu from 'defu'
 import open from 'open'
 import clipboardy from 'clipboardy'
 import addShutdown from 'http-shutdown'
-import { joinURL } from '@nuxt/ufo'
+import { joinURL } from 'ufo'
 
 export interface Certificate {
   key: string
