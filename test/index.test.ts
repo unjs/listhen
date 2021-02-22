@@ -16,8 +16,8 @@ open.mockImplementation(() => Promise.resolve())
 // eslint-disable-next-line no-console
 console.log = jest.fn()
 
-function handle (_req, res) {
-  res.end('works')
+function handle (req, res) {
+  res.end(req.url)
 }
 
 describe('listhen', () => {
@@ -80,6 +80,11 @@ describe('listhen', () => {
     listener = await listen(handle, { isTest: false, clipboard: true, open: true })
     await listener.close()
     await listener.close()
+  })
+
+  test('$fetch', async () => {
+    const { $fetch } = await listen(handle, { baseURL: '/foo/' })
+    expect(await $fetch('/bar/baz', { params: { foo: 123 } })).toBe('/foo/bar/baz?foo=123')
   })
 
   test('autoClose', async () => {

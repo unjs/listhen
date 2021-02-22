@@ -17,6 +17,8 @@
 
 ✔️ URL Generator utility (useful for tests)
 
+✔️ Fetch utility (useful for tests)
+
 ✔️ Automatically assign a port or fallback to human friendly alternative (with [get-port-please](https://github.com/nuxt-contrib/get-port-please))
 
 ✔️ Automatically generate listening URL and show on console

@@ -8,6 +8,7 @@ import chalk from 'chalk'
 import { generate as generalSSL, SelfsignedOptions } from 'selfsigned'
 import defu from 'defu'
 import open from 'open'
+import { $fetch, FetchRequest, FetchOptions } from 'ohmyfetch/node'
 import clipboardy from 'clipboardy'
 import addShutdown from 'http-shutdown'
 import { joinURL } from 'ufo'
@@ -42,7 +43,8 @@ export interface Listener {
   url: string,
   getURL: (url: string) => string,
   server: http.Server | https.Server,
-  close: () => Promise<any>
+  close: () => Promise<any>,
+  $fetch: typeof $fetch
 }
 
 export async function listen (handle: http.RequestListener, opts: Partial<ListenOptions> = {}): Promise<Listener> {
@@ -120,7 +122,8 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     url,
     getURL,
     server,
-    close
+    close,
+    $fetch: (request: FetchRequest, opts: FetchOptions) => $fetch(request, { ...opts, baseURL: url })
   }
 }
 
