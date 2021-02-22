@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/nuxt-contrib/listhen/compare/v0.1.3...v0.1.4) (2021-02-22)
+
+
+### Features
+
+* expose $fetch utility ([38e6b2c](https://github.com/nuxt-contrib/listhen/commit/38e6b2c2e021adcdabc4a5e45a31b4c21fba618d))
+
 ### [0.1.3](https://github.com/nuxt-contrib/listhen/compare/v0.1.2...v0.1.3) (2021-02-18)
 
 ### [0.1.2](https://github.com/nuxt-contrib/listhen/compare/v0.1.1...v0.1.2) (2020-12-07)
