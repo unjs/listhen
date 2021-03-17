@@ -71,8 +71,8 @@ describe('listhen', () => {
   })
 
   test('silent errors', async () => {
-    clipboardy.write.mockImplementationOnce(() => Promise.reject(new Error('')))
-    open.mockImplementationOnce(() => Promise.reject(new Error('')))
+    clipboardy.write.mockImplementationOnce(() => Promise.reject(new Error('Error')))
+    open.mockImplementationOnce(() => Promise.reject(new Error('Error')))
     listener = await listen(handle, { isTest: false, clipboard: true, open: true })
   })
 
