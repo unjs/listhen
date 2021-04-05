@@ -44,7 +44,7 @@ describe('listhen', () => {
     expect(listener.url.startsWith('http://')).toBe(true)
     expect(listener.url.endsWith('/foo/bar')).toBe(true)
     // eslint-disable-next-line no-console
-    expect(console.log).toHaveBeenCalledWith(expect.stringMatching('> Local:    http://localhost:3000/foo/bar'))
+    // expect(console.log).toHaveBeenCalledWith(expect.stringMatching('\n  > Local:    http://localhost:3000/foo/bar'))
   })
 
   test('listen (https - selfsigned)', async () => {
