@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/unjs/listhen/compare/v0.2.0...v0.2.1) (2021-04-05)
+
+
+### Features
+
+* allow deferred open ([2b4a3f8](https://github.com/unjs/listhen/commit/2b4a3f8c3d77bbee2abf021854959a2475a46e05))
+
 ## [0.2.0](https://github.com/unjs/listhen/compare/v0.1.4...v0.2.0) (2021-04-05)
 
 
