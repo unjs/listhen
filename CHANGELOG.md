@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.3](https://github.com/unjs/listhen/compare/v0.2.2...v0.2.3) (2021-04-05)
+
+
+### Bug Fixes
+
+* add \n to surrounding of listen message ([b4b1300](https://github.com/unjs/listhen/commit/b4b13005833232798d1d50b1b8208a560968834d))
+
 ### [0.2.2](https://github.com/unjs/listhen/compare/v0.2.1...v0.2.2) (2021-04-05)
 
 
