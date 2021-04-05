@@ -2,7 +2,7 @@
   "name": "listhen",
   "version": "0.1.4",
   "description": "",
-  "repository": "nuxt-contrib/listhen",
+  "repository": "unjs/listhen",
   "license": "MIT",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

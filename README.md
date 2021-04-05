@@ -19,7 +19,7 @@
 
 ✔️ Fetch utility (useful for tests)
 
-✔️ Automatically assign a port or fallback to human friendly alternative (with [get-port-please](https://github.com/nuxt-contrib/get-port-please))
+✔️ Automatically assign a port or fallback to human friendly alternative (with [get-port-please](https://github.com/unjs/get-port-please))
 
 ✔️ Automatically generate listening URL and show on console
 
@@ -94,7 +94,7 @@ Instance name used for CLI message.
 
 ### `port`
 
-- Default: `process.env.PORT` or 3000 or memorized random (see [get-port-please](https://github.com/nuxt-contrib/get-port-please))
+- Default: `process.env.PORT` or 3000 or memorized random (see [get-port-please](https://github.com/unjs/get-port-please))
 
 Port to listen.
 
@@ -157,8 +157,8 @@ MIT. Made with 💖
 [npm-downloads-src]: https://img.shields.io/npm/dm/listhen?style=flat-square
 [npm-downloads-href]: https://npmjs.com/package/listhen
 
-[github-actions-src]: https://img.shields.io/github/workflow/status/nuxt-contrib/listhen/ci/main?style=flat-square
-[github-actions-href]: https://github.com/nuxt-contrib/listhen/actions?query=workflow%3Aci
+[github-actions-src]: https://img.shields.io/github/workflow/status/unjs/listhen/ci/main?style=flat-square
+[github-actions-href]: https://github.com/unjs/listhen/actions?query=workflow%3Aci
 
-[codecov-src]: https://img.shields.io/codecov/c/gh/nuxt-contrib/listhen/main?style=flat-square
-[codecov-href]: https://codecov.io/gh/nuxt-contrib/listhen
+[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/listhen/main?style=flat-square
+[codecov-href]: https://codecov.io/gh/unjs/listhen
