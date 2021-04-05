@@ -38,9 +38,9 @@ export interface ListenOptions {
 
 export interface Listener {
   url: string,
-  getURL: (url: string) => string,
   server: http.Server | https.Server,
-  close: () => Promise<any>
+  close: () => Promise<void>,
+  open: () => Promise<void>
 }
 
 export async function listen (handle: http.RequestListener, opts: Partial<ListenOptions> = {}): Promise<Listener> {
@@ -115,9 +115,12 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     }
   }
 
-  if (opts.open) {
+  const _open = async () => {
     const { default: open } = await import('open')
-    await open(url).catch(() => {})
+    await open(url).catch(() => { })
+  }
+  if (opts.open) {
+    await _open()
   }
 
   if (opts.autoClose) {
@@ -127,6 +130,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   return <Listener>{
     url,
     server,
+    open: _open,
     close
   }
 }
