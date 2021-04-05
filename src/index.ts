@@ -105,14 +105,17 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
 
   if (opts.showURL) {
     const add = opts.clipboard ? gray('(copied to clipboard)') : ''
+    const lines = []
     // eslint-disable-next-line no-console
-    console.log(`  > Local:    ${formatURL(url)} ${add}`)
+    lines.push(`  > Local:    ${formatURL(url)} ${add}`)
     if (isExternal) {
       for (const ip of getExternalIps()) {
         // eslint-disable-next-line no-console
-        console.log(`  > Network:  ${formatURL(url.replace('localhost', ip))}`)
+        lines.push(`  > Network:  ${formatURL(url.replace('localhost', ip))}`)
       }
     }
+    // eslint-disable-next-line no-console
+    console.log(lines.join('\n') + '\n')
   }
 
   const _open = async () => {
