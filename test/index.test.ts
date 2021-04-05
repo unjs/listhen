@@ -1,9 +1,7 @@
 // @ts-nocheck
+import './setup'
 import { resolve } from 'path'
-import chalk from 'chalk'
 import { listen } from '../src'
-
-chalk.level = 0
 
 jest.mock('clipboardy')
 const clipboardy = require('clipboardy')
@@ -46,12 +44,7 @@ describe('listhen', () => {
     expect(listener.url.startsWith('http://')).toBe(true)
     expect(listener.url.endsWith('/foo/bar')).toBe(true)
     // eslint-disable-next-line no-console
-    expect(console.log).toHaveBeenCalledWith(`> server listening on ${listener.url}`, '(copied to clipboard)')
-  })
-
-  test('getURL', async () => {
-    const { getURL } = await listen(handle, { baseURL: '/foo/' })
-    expect(getURL('/bar/baz')).toMatch('/foo/bar/baz')
+    expect(console.log).toHaveBeenCalledWith('  > Local:    http://localhost:3000/foo/bar (copied to clipboard)')
   })
 
   test('listen (https - selfsigned)', async () => {
@@ -82,13 +75,9 @@ describe('listhen', () => {
     await listener.close()
   })
 
-  test('$fetch', async () => {
-    const { $fetch } = await listen(handle, { baseURL: '/foo/' })
-    expect(await $fetch('/bar/baz', { params: { foo: 123 } })).toBe('/foo/bar/baz?foo=123')
-  })
-
   test('autoClose', async () => {
     /* not passing close */ await listen(handle)
+    // @ts-ignore
     process.emit('exit')
   })
 })

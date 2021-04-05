@@ -17,15 +17,12 @@
     "test": "yarn lint && jest"
   },
   "dependencies": {
-    "chalk": "^4.1.0",
     "clipboardy": "^2.3.0",
-    "defu": "^3.2.2",
+    "colorette": "^1.2.2",
     "get-port-please": "^2.1.0",
     "http-shutdown": "^1.2.2",
-    "ohmyfetch": "^0.1.8",
-    "open": "^7.3.0",
-    "selfsigned": "^1.10.8",
-    "ufo": "^0.6.6"
+    "open": "^8.0.5",
+    "selfsigned": "^1.10.8"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "latest",
@@ -35,7 +32,7 @@
     "@types/node": "latest",
     "eslint": "latest",
     "jest": "latest",
-    "jiti": "^0.1.17",
+    "jiti": "latest",
     "siroc": "latest",
     "standard-version": "latest",
     "ts-jest": "latest",

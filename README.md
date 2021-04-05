@@ -15,10 +15,6 @@
 
 ✔️ Support HTTP and HTTPS
 
-✔️ URL Generator utility (useful for tests)
-
-✔️ Fetch utility (useful for tests)
-
 ✔️ Automatically assign a port or fallback to human friendly alternative (with [get-port-please](https://github.com/unjs/get-port-please))
 
 ✔️ Automatically generate listening URL and show on console
@@ -86,12 +82,6 @@ listen(app)
 
 ## Options
 
-### `name`
-
-- Default: `'server'`
-
-Instance name used for CLI message.
-
 ### `port`
 
 - Default: `process.env.PORT` or 3000 or memorized random (see [get-port-please](https://github.com/unjs/get-port-please))
@@ -130,7 +120,7 @@ Open URL in browser. Silently ignores errors.
 
 ### `clipboard`
 
-- Default: `true` (force disabled on test and production environments)
+- Default: `false` (force disabled on test and production environments)
 
 Copy URL to clipboard. Silently ignores errors.
 

@@ -3,15 +3,11 @@ import http from 'http'
 import https from 'https'
 import { promisify } from 'util'
 import { promises as fs } from 'fs'
+import { networkInterfaces } from 'os'
+import { cyan, gray, underline, bold } from 'colorette'
+import type { SelfsignedOptions } from 'selfsigned'
 import { getPort, GetPortInput } from 'get-port-please'
-import chalk from 'chalk'
-import { generate as generalSSL, SelfsignedOptions } from 'selfsigned'
-import defu from 'defu'
-import open from 'open'
-import { $fetch, FetchRequest, FetchOptions } from 'ohmyfetch/node'
-import clipboardy from 'clipboardy'
 import addShutdown from 'http-shutdown'
-import { joinURL } from 'ufo'
 
 export interface Certificate {
   key: string
@@ -26,6 +22,7 @@ export interface CertificateInput {
 export interface ListenOptions {
   name: string
   port?: GetPortInput,
+  hostname?: string,
   https?: boolean
   selfsigned?: SelfsignedOptions
   showURL: boolean
@@ -43,22 +40,22 @@ export interface Listener {
   url: string,
   getURL: (url: string) => string,
   server: http.Server | https.Server,
-  close: () => Promise<any>,
-  $fetch: typeof $fetch
+  close: () => Promise<any>
 }
 
 export async function listen (handle: http.RequestListener, opts: Partial<ListenOptions> = {}): Promise<Listener> {
-  opts = defu(opts, {
-    name: 'server',
-    port: process.env.PORT,
+  opts = {
+    port: process.env.PORT || 3000,
+    hostname: process.env.HOST || '0.0.0.0',
     showURL: true,
     baseURL: '/',
     open: false,
-    clipboard: true,
+    clipboard: false,
     isTest: process.env.NODE_ENV === 'test',
     isProd: process.env.NODE_ENV === 'production',
-    autoClose: true
-  })
+    autoClose: true,
+    ...opts
+  }
 
   if (opts.isTest) {
     opts.showURL = false
@@ -69,24 +66,27 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     opts.clipboard = false
   }
 
-  const port = await getPort(opts.port || process.env.PORT)
+  const port = await getPort(opts.port)
 
   let server: http.Server | https.Server
   let url: string
+
+  const isExternal = opts.hostname === '0.0.0.0'
+  const displayHost = isExternal ? 'localhost' : opts.hostname
 
   if (opts.https) {
     const { key, cert } = opts.certificate ? await resolveCert(opts.certificate) : await getSelfSignedCert(opts.selfsigned)
     server = https.createServer({ key, cert }, handle)
     addShutdown(server)
     // @ts-ignore
-    await promisify(server.listen.bind(server))(port)
-    url = `https://localhost:${port}${opts.baseURL}`
+    await promisify(server.listen.bind(server))(port, opts.host)
+    url = `https://${displayHost}:${port}${opts.baseURL}`
   } else {
     server = http.createServer(handle)
     addShutdown(server)
     // @ts-ignore
-    await promisify(server.listen.bind(server))(port)
-    url = `http://localhost:${port}${opts.baseURL}`
+    await promisify(server.listen.bind(server))(port, opts.host)
+    url = `http://${displayHost}:${port}${opts.baseURL}`
   }
 
   let _closed = false
@@ -99,18 +99,24 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   }
 
   if (opts.clipboard) {
+    const clipboardy = await import('clipboardy')
     await clipboardy.write(url).catch(() => { opts.clipboard = false })
   }
 
   if (opts.showURL) {
-    const add = opts.clipboard ? chalk.gray('(copied to clipboard)') : ''
+    const add = opts.clipboard ? gray('(copied to clipboard)') : ''
     // eslint-disable-next-line no-console
-    console.log(`> ${opts.name} listening on ${chalk.cyan.underline(decodeURI(url))}`, add)
+    console.log(`  > Local:    ${formatURL(url)} ${add}`)
+    if (isExternal) {
+      for (const ip of getExternalIps()) {
+        // eslint-disable-next-line no-console
+        console.log(`  > Network:  ${formatURL(url.replace('localhost', ip))}`)
+      }
+    }
   }
 
-  const getURL = (...path: string[]) => joinURL(url, ...path)
-
   if (opts.open) {
+    const { default: open } = await import('open')
     await open(url).catch(() => {})
   }
 
@@ -120,10 +126,8 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
 
   return <Listener>{
     url,
-    getURL,
     server,
-    close,
-    $fetch: (request: FetchRequest, opts: FetchOptions) => $fetch(request, { ...opts, baseURL: url })
+    close
   }
 }
 
@@ -133,8 +137,28 @@ async function resolveCert (input: CertificateInput): Promise<Certificate> {
   return { key, cert }
 }
 
-function getSelfSignedCert (opts: SelfsignedOptions = {}): Promise<Certificate> {
+async function getSelfSignedCert (opts: SelfsignedOptions = {}): Promise<Certificate> {
   // @ts-ignore
-  return promisify(generalSSL)(opts.attrs, opts)
-    .then((r: any) => ({ key: r.private, cert: r.cert }))
+  const { generate } = await import('selfsigned')
+  // @ts-ignore
+  const { private: key, cert } = await promisify(generate)(opts.attrs, opts)
+  return { key, cert }
+}
+
+function getExternalIps (): string[] {
+  const ips = new Set<string>()
+  for (const details of Object.values(networkInterfaces())) {
+    if (details) {
+      for (const d of details) {
+        if (d.family === 'IPv4' && !d.internal) {
+          ips.add(d.address)
+        }
+      }
+    }
+  }
+  return Array.from(ips)
+}
+
+function formatURL (url: string) {
+  return cyan(underline(decodeURI(url).replace(/:(\d+)\//g, `:${bold('$1')}/`)))
 }
