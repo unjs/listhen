@@ -33,6 +33,7 @@
     "eslint": "latest",
     "jest": "latest",
     "jiti": "latest",
+    "ohmyfetch": "^0.2.0",
     "siroc": "latest",
     "standard-version": "latest",
     "ts-jest": "latest",

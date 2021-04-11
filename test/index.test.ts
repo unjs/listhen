@@ -1,7 +1,8 @@
 // @ts-nocheck
 import './setup'
 import { resolve } from 'path'
-import { listen } from '../src'
+import { $fetch } from 'ohmyfetch/node'
+import { listen, Listener } from '../src'
 
 jest.mock('clipboardy')
 const clipboardy = require('clipboardy')
@@ -19,7 +20,7 @@ function handle (req, res) {
 }
 
 describe('listhen', () => {
-  let listener
+  let listener: Listener
 
   afterEach(async () => {
     if (listener) {
@@ -31,6 +32,15 @@ describe('listhen', () => {
   test('listen (no args)', async () => {
     listener = await listen(handle)
     expect(listener.url.startsWith('http://')).toBe(true)
+  })
+
+  test('listen (host)', async () => {
+    listener = await listen(handle, {
+      host: '127.0.0.1'
+    })
+    const response = await $fetch<string>(listener.url + 'test')
+    expect(listener.url).toContain('127.0.0.1')
+    expect(response).toEqual('/test')
   })
 
   test('listen (http)', async () => {
