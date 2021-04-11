@@ -84,9 +84,15 @@ listen(app)
 
 ### `port`
 
-- Default: `process.env.PORT` or 3000 or memorized random (see [get-port-please](https://github.com/unjs/get-port-please))
+- Default: `process.env.PORT || 3000` or memorized random (see [get-port-please](https://github.com/unjs/get-port-please))
 
 Port to listen.
+
+### host
+
+- Default: `process.env.HOST || '0.0.0.0'`
+
+Host to listen on.
 
 ### `https`
 

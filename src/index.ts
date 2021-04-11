@@ -21,8 +21,8 @@ export interface CertificateInput {
 
 export interface ListenOptions {
   name: string
-  port?: GetPortInput,
-  hostname?: string,
+  port?: GetPortInput
+  host?: string
   https?: boolean
   selfsigned?: SelfsignedOptions
   showURL: boolean
@@ -46,7 +46,7 @@ export interface Listener {
 export async function listen (handle: http.RequestListener, opts: Partial<ListenOptions> = {}): Promise<Listener> {
   opts = {
     port: process.env.PORT || 3000,
-    hostname: process.env.HOST || '0.0.0.0',
+    host: process.env.HOST || '0.0.0.0',
     showURL: true,
     baseURL: '/',
     open: false,
@@ -71,8 +71,8 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   let server: http.Server | https.Server
   let url: string
 
-  const isExternal = opts.hostname === '0.0.0.0'
-  const displayHost = isExternal ? 'localhost' : opts.hostname
+  const isExternal = opts.host === '0.0.0.0'
+  const displayHost = isExternal ? 'localhost' : opts.host
 
   if (opts.https) {
     const { key, cert } = opts.certificate ? await resolveCert(opts.certificate) : await getSelfSignedCert(opts.selfsigned)
