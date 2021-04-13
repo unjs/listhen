@@ -40,7 +40,8 @@ export interface Listener {
   url: string,
   server: http.Server | https.Server,
   close: () => Promise<void>,
-  open: () => Promise<void>
+  open: () => Promise<void>,
+  showURL: () => void
 }
 
 export async function listen (handle: http.RequestListener, opts: Partial<ListenOptions> = {}): Promise<Listener> {
@@ -103,7 +104,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     await clipboardy.write(url).catch(() => { opts.clipboard = false })
   }
 
-  if (opts.showURL) {
+  const showURL = () => {
     const add = opts.clipboard ? gray('(copied to clipboard)') : ''
     const lines = []
     lines.push(`  > Local:    ${formatURL(url)} ${add}`)
@@ -114,6 +115,10 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     }
     // eslint-disable-next-line no-console
     console.log('\n' + lines.join('\n') + '\n')
+  }
+
+  if (opts.showURL) {
+    showURL()
   }
 
   const _open = async () => {
@@ -132,6 +137,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     url,
     server,
     open: _open,
+    showURL,
     close
   }
 }
