@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.4](https://github.com/unjs/listhen/compare/v0.2.3...v0.2.4) (2021-04-13)
+
+
+### Features
+
+* allow recalling showURL ([cd00e79](https://github.com/unjs/listhen/commit/cd00e7911f35773ff4904b73e6fcd8ef36044f50))
+
 ### [0.2.3](https://github.com/unjs/listhen/compare/v0.2.2...v0.2.3) (2021-04-05)
 
 
