@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.5](https://github.com/unjs/listhen/compare/v0.2.4...v0.2.5) (2021-10-14)
+
+
+### Bug Fixes
+
+* use defu for defaults ([f866a61](https://github.com/unjs/listhen/commit/f866a6134f068bda1e20619a896a2b792c96e315))
+
 ### [0.2.4](https://github.com/unjs/listhen/compare/v0.2.3...v0.2.4) (2021-04-13)
 
 
