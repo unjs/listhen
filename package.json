@@ -19,6 +19,7 @@
   "dependencies": {
     "clipboardy": "^2.3.0",
     "colorette": "^1.2.2",
+    "defu": "^5.0.0",
     "get-port-please": "^2.1.0",
     "http-shutdown": "^1.2.2",
     "open": "^8.0.5",

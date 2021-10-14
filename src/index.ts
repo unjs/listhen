@@ -8,6 +8,7 @@ import { cyan, gray, underline, bold } from 'colorette'
 import type { SelfsignedOptions } from 'selfsigned'
 import { getPort, GetPortInput } from 'get-port-please'
 import addShutdown from 'http-shutdown'
+import defu from 'defu'
 
 export interface Certificate {
   key: string
@@ -45,7 +46,7 @@ export interface Listener {
 }
 
 export async function listen (handle: http.RequestListener, opts: Partial<ListenOptions> = {}): Promise<Listener> {
-  opts = {
+  opts = defu(opts, {
     port: process.env.PORT || 3000,
     hostname: process.env.HOST || '0.0.0.0',
     showURL: true,
@@ -54,9 +55,8 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     clipboard: false,
     isTest: process.env.NODE_ENV === 'test',
     isProd: process.env.NODE_ENV === 'production',
-    autoClose: true,
-    ...opts
-  }
+    autoClose: true
+  })
 
   if (opts.isTest) {
     opts.showURL = false
