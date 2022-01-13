@@ -1,11 +1,7 @@
-// @ts-nocheck
 import './setup'
 import { resolve } from 'path'
-import { listen } from '../src'
-
-jest.mock('clipboardy')
-const clipboardy = require('clipboardy')
-clipboardy.write = jest.fn().mockImplementation(() => Promise.resolve())
+import type { IncomingMessage, ServerResponse } from 'http'
+import { listen, Listener } from '../src'
 
 jest.mock('open')
 const open = require('open')
@@ -14,12 +10,12 @@ open.mockImplementation(() => Promise.resolve())
 // eslint-disable-next-line no-console
 console.log = jest.fn()
 
-function handle (req, res) {
+function handle (req: IncomingMessage, res: ServerResponse) {
   res.end(req.url)
 }
 
 describe('listhen', () => {
-  let listener
+  let listener: Listener | null
 
   afterEach(async () => {
     if (listener) {
@@ -37,7 +33,6 @@ describe('listhen', () => {
     listener = await listen(handle, {
       isTest: false,
       autoClose: false,
-      clipboard: true,
       open: true,
       baseURL: '/foo/bar'
     })
@@ -63,14 +58,8 @@ describe('listhen', () => {
     expect(listener.url.startsWith('https://')).toBe(true)
   })
 
-  test('silent errors', async () => {
-    clipboardy.write.mockImplementationOnce(() => Promise.reject(new Error('Error')))
-    open.mockImplementationOnce(() => Promise.reject(new Error('Error')))
-    listener = await listen(handle, { isTest: false, clipboard: true, open: true })
-  })
-
   test('double close', async () => {
-    listener = await listen(handle, { isTest: false, clipboard: true, open: true })
+    listener = await listen(handle, { isTest: false, open: true })
     await listener.close()
     await listener.close()
   })

@@ -100,7 +100,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   }
 
   if (opts.clipboard) {
-    const clipboardy = await import('clipboardy')
+    const clipboardy = await import('clipboardy').then(r => r.default || r)
     await clipboardy.write(url).catch(() => { opts.clipboard = false })
   }
 

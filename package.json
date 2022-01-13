@@ -4,39 +4,45 @@
   "description": "",
   "repository": "unjs/listhen",
   "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "siroc build",
+    "build": "unbuild",
     "dev": "jiti test/fixture/app",
     "lint": "eslint --ext .ts .",
     "release": "yarn test && yarn build && standard-version && git push --follow-tags && npm publish",
     "test": "yarn lint && jest"
   },
   "dependencies": {
-    "clipboardy": "^2.3.0",
-    "colorette": "^1.2.2",
+    "clipboardy": "^3.0.0",
+    "colorette": "^2.0.16",
     "defu": "^5.0.0",
     "get-port-please": "^2.1.0",
     "http-shutdown": "^1.2.2",
     "open": "^8.0.5",
-    "selfsigned": "^1.10.8"
+    "selfsigned": "^2.0.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "latest",
-    "@types/cheerio": "^0.22.22",
+    "@types/cheerio": "latest",
     "@types/flat": "latest",
     "@types/jest": "latest",
     "@types/node": "latest",
     "eslint": "latest",
     "jest": "latest",
     "jiti": "latest",
-    "siroc": "latest",
     "standard-version": "latest",
     "ts-jest": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "unbuild": "latest"
   }
 }
