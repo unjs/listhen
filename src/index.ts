@@ -55,7 +55,11 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     clipboard: false,
     isTest: process.env.NODE_ENV === 'test',
     isProd: process.env.NODE_ENV === 'production',
-    autoClose: true
+    autoClose: true,
+    selfsigned: {
+      // https://github.com/jfromaniello/selfsigned/issues/33
+      keySize: 2048
+    }
   })
 
   if (opts.isTest) {
@@ -153,6 +157,8 @@ async function getSelfSignedCert (opts: SelfsignedOptions = {}): Promise<Certifi
   const { generate } = await import('selfsigned')
   // @ts-ignore
   const { private: key, cert } = await promisify(generate)(opts.attrs, opts)
+  fs.writeFile('cert.pem', cert)
+  fs.writeFile('key.pem', key)
   return { key, cert }
 }
 
