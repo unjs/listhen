@@ -157,8 +157,6 @@ async function getSelfSignedCert (opts: SelfsignedOptions = {}): Promise<Certifi
   const { generate } = await import('selfsigned')
   // @ts-ignore
   const { private: key, cert } = await promisify(generate)(opts.attrs, opts)
-  fs.writeFile('cert.pem', cert)
-  fs.writeFile('key.pem', key)
   return { key, cert }
 }
 
