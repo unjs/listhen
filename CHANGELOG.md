@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.7](https://github.com/unjs/listhen/compare/v0.2.6...v0.2.7) (2022-04-07)
+
+
+### Bug Fixes
+
+* update ssl keySize to 2048 ([f63967b](https://github.com/unjs/listhen/commit/f63967bfee8444f1d72c86d3e995d7be01e3279c))
+
 ### [0.2.6](https://github.com/unjs/listhen/compare/v0.2.5...v0.2.6) (2022-01-13)
 
 
