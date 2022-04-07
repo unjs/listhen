@@ -9,8 +9,7 @@
     "declaration": true,
     "types": [
       "node",
-      "flat",
-      "jest"
+      "flat"
     ]
   },
   "include": [

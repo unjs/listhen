@@ -1,14 +1,11 @@
 import './setup'
 import { resolve } from 'path'
 import type { IncomingMessage, ServerResponse } from 'http'
+import { describe, afterEach, test, expect } from 'vitest'
 import { listen, Listener } from '../src'
 
-jest.mock('open')
-const open = require('open')
-open.mockImplementation(() => Promise.resolve())
-
 // eslint-disable-next-line no-console
-console.log = jest.fn()
+// console.log = fn()
 
 function handle (req: IncomingMessage, res: ServerResponse) {
   res.end(req.url)
@@ -33,7 +30,6 @@ describe('listhen', () => {
     listener = await listen(handle, {
       isTest: false,
       autoClose: false,
-      open: true,
       baseURL: '/foo/bar'
     })
     expect(listener.url.startsWith('http://')).toBe(true)
@@ -59,7 +55,7 @@ describe('listhen', () => {
   })
 
   test('double close', async () => {
-    listener = await listen(handle, { isTest: false, open: true })
+    listener = await listen(handle, { isTest: false })
     await listener.close()
     await listener.close()
   })
