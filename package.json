@@ -27,10 +27,10 @@
     "clipboardy": "^3.0.0",
     "colorette": "^2.0.16",
     "defu": "^6.0.0",
-    "get-port-please": "^2.1.0",
+    "get-port-please": "^2.4.3",
     "http-shutdown": "^1.2.2",
-    "open": "^8.0.5",
-    "selfsigned": "^2.0.0"
+    "open": "^8.4.0",
+    "selfsigned": "^2.0.1"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "latest",
@@ -43,7 +43,7 @@
     "standard-version": "latest",
     "typescript": "latest",
     "unbuild": "latest",
-    "vitest": "^0.9.0"
+    "vitest": "^0.9.2"
   },
-  "packageManager": "pnpm@6.32.3"
+  "packageManager": "pnpm@6.32.4"
 }
