@@ -10,7 +10,7 @@ specifiers:
   colorette: ^2.0.16
   defu: ^6.0.0
   eslint: latest
-  get-port-please: ^2.4.3
+  get-port-please: ^2.5.0
   http-shutdown: ^1.2.2
   jiti: latest
   open: ^8.4.0
@@ -18,13 +18,13 @@ specifiers:
   standard-version: latest
   typescript: latest
   unbuild: latest
-  vitest: ^0.9.2
+  vitest: ^0.9.3
 
 dependencies:
   clipboardy: 3.0.0
   colorette: 2.0.16
   defu: 6.0.0
-  get-port-please: 2.4.3
+  get-port-please: 2.5.0
   http-shutdown: 1.2.2
   open: 8.4.0
   selfsigned: 2.0.1
@@ -40,7 +40,7 @@ devDependencies:
   standard-version: 9.3.2
   typescript: 4.6.3
   unbuild: 0.7.2
-  vitest: 0.9.2_c8@7.11.0
+  vitest: 0.9.3_c8@7.11.0
 
 packages:
 
@@ -2171,8 +2171,8 @@ packages:
       yargs: 16.2.0
     dev: true
 
-  /get-port-please/2.4.3:
-    resolution: {integrity: sha512-l5zVrG3mzz+I7MfbPwyJJ4xZKIdQfARpOtsBjUDUZ0iXlF0IXc1wMBg3Jb7G1te7tRzjOxu+MRLpvgxxTdCkwg==}
+  /get-port-please/2.5.0:
+    resolution: {integrity: sha512-NblPebBznYARC1R2r1qmusbJAAgBr954gWhEZgwTerzR8r3ud6U5PI1SG4Lue43r87aikPPjObs85VieIDK99A==}
     dependencies:
       fs-memo: 1.2.0
     dev: false
@@ -2757,6 +2757,7 @@ packages:
   /lru-cache/7.7.3:
     resolution: {integrity: sha512-WY9wjJNQt9+PZilnLbuFKM+SwDull9+6IAguOrarOMoOHTcJ9GnXSO11+Gw6c7xtDkBkthR57OZMtZKYr+1CEw==}
     engines: {node: '>=12'}
+    deprecated: Please update to latest patch version to fix memory leak https://github.com/isaacs/node-lru-cache/issues/227
     dev: true
 
   /magic-string/0.25.9:
@@ -3861,8 +3862,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.9.2_c8@7.11.0:
-    resolution: {integrity: sha512-XgR42njw350OxBfKD4MK0cNIzgQrhSUKJq9sgbgRR+bD8GonPCyjpFFmPejptaiEyjmQ2FXpEvFHN37b9X2HJA==}
+  /vitest/0.9.3_c8@7.11.0:
+    resolution: {integrity: sha512-hKjqdBI732cV5giNLERyAsaJBebstrX5mvTbZr+jUDYUHnX1O4DpAJcHtqBOutuBi7lVIGQ5IF8eWvHHqbCHBA==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
