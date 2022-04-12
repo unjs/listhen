@@ -84,13 +84,13 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     server = https.createServer({ key, cert }, handle)
     addShutdown(server)
     // @ts-ignore
-    await promisify(server.listen.bind(server))(port, opts.host)
+    await promisify(server.listen.bind(server))(port, opts.hostname)
     url = `https://${displayHost}:${port}${opts.baseURL}`
   } else {
     server = http.createServer(handle)
     addShutdown(server)
     // @ts-ignore
-    await promisify(server.listen.bind(server))(port, opts.host)
+    await promisify(server.listen.bind(server))(port, opts.hostname)
     url = `http://${displayHost}:${port}${opts.baseURL}`
   }
 
