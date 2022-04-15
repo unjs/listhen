@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.9](https://github.com/unjs/listhen/compare/v0.2.8...v0.2.9) (2022-04-15)
+
+
+### Bug Fixes
+
+* inline `open` package for esm bundling support ([3c2948f](https://github.com/unjs/listhen/commit/3c2948f7432fb29c7cb9d020c20a7bb5cd83b253)), closes [nuxt/framework#4352](https://github.com/nuxt/framework/issues/4352)
+* use `options.hostname` for listening ([#19](https://github.com/unjs/listhen/issues/19)) ([10164d5](https://github.com/unjs/listhen/commit/10164d5931fd5511298f84b0f786dcdc2138856a))
+
 ### [0.2.8](https://github.com/unjs/listhen/compare/v0.2.7...v0.2.8) (2022-04-07)
 
 ### [0.2.7](https://github.com/unjs/listhen/compare/v0.2.6...v0.2.7) (2022-04-07)
