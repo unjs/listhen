@@ -13,7 +13,8 @@
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "lib"
   ],
   "scripts": {
     "build": "unbuild",
@@ -29,7 +30,6 @@
     "defu": "^6.0.0",
     "get-port-please": "^2.5.0",
     "http-shutdown": "^1.2.2",
-    "open": "^8.4.0",
     "selfsigned": "^2.0.1"
   },
   "devDependencies": {

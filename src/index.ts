@@ -9,6 +9,7 @@ import type { SelfsignedOptions } from 'selfsigned'
 import { getPort, GetPortInput } from 'get-port-please'
 import addShutdown from 'http-shutdown'
 import defu from 'defu'
+import { open } from './open'
 
 export interface Certificate {
   key: string
@@ -126,7 +127,6 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   }
 
   const _open = async () => {
-    const { default: open } = await import('open')
     await open(url).catch(() => { })
   }
   if (opts.open) {
