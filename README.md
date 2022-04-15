@@ -88,6 +88,12 @@ listen(app)
 
 Port to listen.
 
+### `hostname`
+
+- Default: `process.env.HOST || '0.0.0.0'`
+
+Default hostname to listen.
+
 ### `https`
 
 - Default: `false`
