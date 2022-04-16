@@ -9,7 +9,7 @@ import type { SelfsignedOptions } from 'selfsigned'
 import { getPort, GetPortInput } from 'get-port-please'
 import addShutdown from 'http-shutdown'
 import defu from 'defu'
-import { open } from './open'
+import { open } from './lib/open'
 
 export interface Certificate {
   key: string

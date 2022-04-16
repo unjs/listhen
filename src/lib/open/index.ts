@@ -5,12 +5,9 @@
  */
 // @ts-nocheck
 import childProcess from 'child_process'
-import { promises as fs, readFileSync, constants as fsConstants, statSync } from 'fs'
+import { promises as fs, readFileSync, constants as fsConstants, statSync, writeFileSync, existsSync, chmodSync } from 'fs'
 import os from 'os'
-import { fileURLToPath } from 'url'
-
-// Path to included `xdg-open`.
-const localXdgOpenPath = import.meta.url ? fileURLToPath(new URL('../lib/xdg-open', import.meta.url)) : null
+import { join } from 'path'
 
 const { platform, arch } = process
 
@@ -172,18 +169,23 @@ const baseOpen = async (options) => {
     if (app) {
       command = app
     } else {
-      // When bundled by Webpack, there's no actual package file path and no local `xdg-open`.
-      const isBundled = !localXdgOpenPath
-
-      // Check if local `xdg-open` exists and is executable.
-      let exeLocalXdgOpen = false
-      try {
-        await fs.access(localXdgOpenPath, fsConstants.X_OK)
-        exeLocalXdgOpen = true
-      } catch {}
-
-      const useSystemXdgOpen = process.versions.electron || platform === 'android' || isBundled || !exeLocalXdgOpen
-      command = useSystemXdgOpen ? 'xdg-open' : localXdgOpenPath
+      command = 'xdg-open'
+      const useSystemXdgOpen = process.versions.electron || platform === 'android'
+      if (!useSystemXdgOpen) {
+        command = join(os.tmpdir(), 'xdg-open')
+        if (!existsSync(command)) {
+          try {
+            writeFileSync(
+              join(os.tmpdir(), 'xdg-open'),
+              await import('./xdg-open').then(r => r.xdgOpenScript()),
+              'utf8'
+            )
+            chmodSync(command, 0o755 /* rwx r-x r-x */)
+          } catch {
+            command = 'xdg-open'
+          }
+        }
+      }
     }
 
     if (appArguments.length > 0) {

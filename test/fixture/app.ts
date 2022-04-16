@@ -3,5 +3,5 @@ import { listen } from '../../src'
 listen((_req, res) => {
   res.end('works!')
 }, {
-  // open: true
+  open: process.argv.some(arg => arg === '-o' || arg === '--open')
 })
