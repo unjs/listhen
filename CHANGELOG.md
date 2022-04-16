@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.10](https://github.com/unjs/listhen/compare/v0.2.9...v0.2.10) (2022-04-16)
+
+
+### Bug Fixes
+
+* bundle `xdg-open` as an async chunk ([890a4a9](https://github.com/unjs/listhen/commit/890a4a9b2569401b86e14b85e2d0b1d6d0e91d7e))
+
 ### [0.2.9](https://github.com/unjs/listhen/compare/v0.2.8...v0.2.9) (2022-04-15)
 
 
