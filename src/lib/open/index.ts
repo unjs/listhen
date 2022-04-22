@@ -358,7 +358,7 @@ function _isWsl () {
 let isWSLCached
 function isWsl () {
   if (isWSLCached === undefined) {
-    isDockerCached = _isWsl()
+    isWSLCached = _isWsl()
   }
   return isWSLCached
 }
