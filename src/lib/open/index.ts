@@ -125,7 +125,7 @@ const baseOpen = async (options) => {
   } else if (platform === 'win32' || (isWsl() && !isDocker())) {
     const mountPoint = await getWslDrivesMountPoint()
 
-    command = isWsl
+    command = isWsl()
       ? `${mountPoint}c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe`
       : `${process.env.SYSTEMROOT}\\System32\\WindowsPowerShell\\v1.0\\powershell`
 
@@ -137,7 +137,7 @@ const baseOpen = async (options) => {
       '-EncodedCommand'
     )
 
-    if (!isWsl) {
+    if (!isWsl()) {
       childProcessOptions.windowsVerbatimArguments = true
     }
 
@@ -275,7 +275,7 @@ function detectArchBinary (binary) {
 }
 
 function detectPlatformBinary ({ [platform]: platformBinary }, { wsl }) {
-  if (wsl && isWsl) {
+  if (wsl && isWsl()) {
     return detectArchBinary(wsl)
   }
 
