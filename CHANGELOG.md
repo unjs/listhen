@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.11](https://github.com/unjs/listhen/compare/v0.2.10...v0.2.11) (2022-04-25)
+
+
+### Bug Fixes
+
+* properly invoke isWsl as a function ([#22](https://github.com/unjs/listhen/issues/22)) ([2951376](https://github.com/unjs/listhen/commit/295137644b50f8d3a909091f88bdcb232d060157)), closes [nuxt/framework#4495](https://github.com/nuxt/framework/issues/4495)
+
 ### [0.2.10](https://github.com/unjs/listhen/compare/v0.2.9...v0.2.10) (2022-04-16)
 
 
