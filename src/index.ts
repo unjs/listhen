@@ -112,10 +112,11 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   const showURL = () => {
     const add = opts.clipboard ? gray('(copied to clipboard)') : ''
     const lines = []
-    lines.push(`  > Local:    ${formatURL(url)} ${add}`)
+    const baseURL = (opts.baseURL || '').slice(1)
+    lines.push(`  > Local:    ${formatURL(url + baseURL)} ${add}`)
     if (isExternal) {
       for (const ip of getExternalIps()) {
-        lines.push(`  > Network:  ${formatURL(url.replace('localhost', ip))}`)
+        lines.push(`  > Network:  ${formatURL(url.replace('localhost', ip) + baseURL)}`)
       }
     }
     // eslint-disable-next-line no-console
