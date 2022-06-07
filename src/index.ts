@@ -43,7 +43,7 @@ export interface Listener {
   server: http.Server | https.Server,
   close: () => Promise<void>,
   open: () => Promise<void>,
-  showURL: () => void
+  showURL: (options?: Pick<ListenOptions, 'baseURL'>) => void
 }
 
 export async function listen (handle: http.RequestListener, opts: Partial<ListenOptions> = {}): Promise<Listener> {
@@ -109,10 +109,10 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     await clipboardy.write(url).catch(() => { opts.clipboard = false })
   }
 
-  const showURL = () => {
+  const showURL = (overrides?: Pick<ListenOptions, 'baseURL'>) => {
     const add = opts.clipboard ? gray('(copied to clipboard)') : ''
     const lines = []
-    const baseURL = (opts.baseURL || '').slice(1)
+    const baseURL = (overrides?.baseURL || opts.baseURL || '').slice(1)
     lines.push(`  > Local:    ${formatURL(url + baseURL)} ${add}`)
     if (isExternal) {
       for (const ip of getExternalIps()) {
