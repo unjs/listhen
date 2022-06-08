@@ -165,7 +165,7 @@ function getExternalIps (): string[] {
   for (const details of Object.values(networkInterfaces())) {
     if (details) {
       for (const d of details) {
-        if ((d.family === 'IPv4' || d.family === 4) && !d.internal) {
+        if ((d.family === 'IPv4' || +d.family === 4) && !d.internal) {
           ips.add(d.address)
         }
       }
