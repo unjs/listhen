@@ -4,6 +4,7 @@ import https from 'https'
 import { promisify } from 'util'
 import { promises as fs } from 'fs'
 import { networkInterfaces } from 'os'
+import { withoutLeadingSlash } from 'ufo'
 import { cyan, gray, underline, bold } from 'colorette'
 import type { SelfsignedOptions } from 'selfsigned'
 import { getPort, GetPortInput } from 'get-port-please'
@@ -117,7 +118,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   const showURL = (options?: ShowURLOptions) => {
     const add = opts.clipboard ? gray('(copied to clipboard)') : ''
     const lines = []
-    const baseURL = (options?.baseURL || opts.baseURL || '').slice(1)
+    const baseURL = withoutLeadingSlash(options?.baseURL || opts.baseURL || '')
     const name = options?.name ? ` (${options.name})` : ''
     lines.push(`  > Local${name}:    ${formatURL(url + baseURL)} ${add}`)
     if (isExternal) {

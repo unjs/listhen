@@ -30,7 +30,8 @@
     "defu": "^6.0.0",
     "get-port-please": "^2.5.0",
     "http-shutdown": "^1.2.2",
-    "selfsigned": "^2.0.1"
+    "selfsigned": "^2.0.1",
+    "ufo": "^0.8.4"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "latest",
