@@ -38,6 +38,11 @@ export interface ListenOptions {
   autoCloseSignals: string[]
 }
 
+export interface ShowURLOptions {
+  baseURL: string
+  name?: string
+}
+
 export interface Listener {
   url: string,
   server: http.Server | https.Server,
@@ -109,14 +114,15 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     await clipboardy.write(url).catch(() => { opts.clipboard = false })
   }
 
-  const showURL = (overrides?: Pick<ListenOptions, 'baseURL'>) => {
+  const showURL = (options?: ShowURLOptions) => {
     const add = opts.clipboard ? gray('(copied to clipboard)') : ''
     const lines = []
-    const baseURL = (overrides?.baseURL || opts.baseURL || '').slice(1)
-    lines.push(`  > Local:    ${formatURL(url + baseURL)} ${add}`)
+    const baseURL = (options?.baseURL || opts.baseURL || '').slice(1)
+    const name = options?.name ? ` (${options.name})` : ''
+    lines.push(`  > Local${name}:    ${formatURL(url + baseURL)} ${add}`)
     if (isExternal) {
       for (const ip of getExternalIps()) {
-        lines.push(`  > Network:  ${formatURL(url.replace('localhost', ip) + baseURL)}`)
+        lines.push(`  > Network${name}:  ${formatURL(url.replace('localhost', ip) + baseURL)}`)
       }
     }
     // eslint-disable-next-line no-console
@@ -166,7 +172,7 @@ function getExternalIps (): string[] {
   for (const details of Object.values(networkInterfaces())) {
     if (details) {
       for (const d of details) {
-        if ((d.family === 'IPv4' || d.family === 4) && !d.internal) {
+        if ((d.family === 'IPv4' || +d.family === 4) && !d.internal) {
           ips.add(d.address)
         }
       }
