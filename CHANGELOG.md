@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.12](https://github.com/unjs/listhen/compare/v0.2.11...v0.2.12) (2022-06-13)
+
+
+### Features
+
+* option to show baseURL in `showURL` ([#28](https://github.com/unjs/listhen/issues/28)) ([4ce9347](https://github.com/unjs/listhen/commit/4ce93479f2767647cd7b2fb68ed7e2923f245b19))
+
 ### [0.2.11](https://github.com/unjs/listhen/compare/v0.2.10...v0.2.11) (2022-04-25)
 
 
