@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.13](https://github.com/unjs/listhen/compare/v0.2.12...v0.2.13) (2022-06-15)
+
+
+### Bug Fixes
+
+* avoid double `//` at end of url ([#30](https://github.com/unjs/listhen/issues/30)) ([2322064](https://github.com/unjs/listhen/commit/23220641333237a2b8df8983ed33ec4231386557))
+
 ### [0.2.12](https://github.com/unjs/listhen/compare/v0.2.11...v0.2.12) (2022-06-13)
 
 
