@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "clipboardy": "^3.0.0",
-    "colorette": "^2.0.16",
+    "colorette": "^2.0.19",
     "defu": "^6.0.0",
     "get-port-please": "^2.5.0",
     "http-shutdown": "^1.2.2",
@@ -44,7 +44,7 @@
     "standard-version": "latest",
     "typescript": "latest",
     "unbuild": "latest",
-    "vitest": "^0.13.1"
+    "vitest": "^0.15.1"
   },
-  "packageManager": "pnpm@7.1.7"
+  "packageManager": "pnpm@7.2.1"
 }
