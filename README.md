@@ -62,7 +62,7 @@ const { url, getURL, server, close } = await listen(handle, options?)
 **Plain handle function:**
 
 ```ts
-listen('/', ((_req, res) => {
+listen(((_req, res) => {
   res.end('hi')
 })
 ```
