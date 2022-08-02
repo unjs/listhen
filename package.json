@@ -31,20 +31,20 @@
     "get-port-please": "^2.5.0",
     "http-shutdown": "^1.2.2",
     "selfsigned": "^2.0.1",
-    "ufo": "^0.8.4"
+    "ufo": "^0.8.5"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "latest",
     "@types/cheerio": "latest",
     "@types/flat": "latest",
     "@types/node": "latest",
-    "c8": "^7.11.3",
+    "c8": "^7.12.0",
     "eslint": "latest",
     "jiti": "latest",
     "standard-version": "latest",
     "typescript": "latest",
     "unbuild": "latest",
-    "vitest": "^0.15.1"
+    "vitest": "^0.20.2"
   },
-  "packageManager": "pnpm@7.2.1"
+  "packageManager": "pnpm@7.8.0"
 }
