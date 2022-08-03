@@ -78,7 +78,10 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     opts.clipboard = false
   }
 
-  const port = await getPort(opts.port)
+  const port = await getPort({
+    port: Number(opts.port),
+    host: opts.hostname
+  })
 
   let server: http.Server | https.Server
   let url: string
