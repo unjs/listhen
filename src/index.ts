@@ -9,7 +9,7 @@ import { cyan, gray, underline, bold } from 'colorette'
 import type { SelfsignedOptions } from 'selfsigned'
 import { getPort, GetPortInput } from 'get-port-please'
 import addShutdown from 'http-shutdown'
-import defu from 'defu'
+import { defu } from 'defu'
 import { open } from './lib/open'
 
 export interface Certificate {
