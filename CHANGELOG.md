@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.15](https://github.com/unjs/listhen/compare/v0.2.14...v0.2.15) (2022-08-08)
+
+
+### Bug Fixes
+
+* **deps:** update get-port please ([d0267d8](https://github.com/unjs/listhen/commit/d0267d8008f2bc0b97bfa3273f1ac8b5c6f2b8c4))
+
 ### [0.2.14](https://github.com/unjs/listhen/compare/v0.2.13...v0.2.14) (2022-08-08)
 
 
