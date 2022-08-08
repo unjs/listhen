@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.14](https://github.com/unjs/listhen/compare/v0.2.13...v0.2.14) (2022-08-08)
+
+
+### Features
+
+* update ger-port-please with verbose error ([8e6f023](https://github.com/unjs/listhen/commit/8e6f023489a58929dcf88c35d1cc26731727a9fb))
+
+
+### Bug Fixes
+
+* pass hostname to `getPort` as well ([#34](https://github.com/unjs/listhen/issues/34)) ([0ced0a4](https://github.com/unjs/listhen/commit/0ced0a46937ff8d19613ff9905f078a6b0643d5c))
+
 ### [0.2.13](https://github.com/unjs/listhen/compare/v0.2.12...v0.2.13) (2022-06-15)
 
 
