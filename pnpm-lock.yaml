@@ -10,7 +10,7 @@ specifiers:
   colorette: ^2.0.19
   defu: ^6.0.0
   eslint: latest
-  get-port-please: ^2.5.0
+  get-port-please: ^2.6.0
   http-shutdown: ^1.2.2
   jiti: latest
   selfsigned: ^2.0.1
@@ -24,7 +24,7 @@ dependencies:
   clipboardy: 3.0.0
   colorette: 2.0.19
   defu: 6.0.0
-  get-port-please: 2.5.0
+  get-port-please: 2.6.0
   http-shutdown: 1.2.2
   selfsigned: 2.0.1
   ufo: 0.8.5
@@ -2070,8 +2070,8 @@ packages:
       yargs: 16.2.0
     dev: true
 
-  /get-port-please/2.5.0:
-    resolution: {integrity: sha512-NblPebBznYARC1R2r1qmusbJAAgBr954gWhEZgwTerzR8r3ud6U5PI1SG4Lue43r87aikPPjObs85VieIDK99A==}
+  /get-port-please/2.6.0:
+    resolution: {integrity: sha512-YYUtEV6TGpbtjda8sMUSFsUYEtUPti3BBfuBBBCmYcF+unt0sutupFCDGVnageV2TVhPhhQJpJewvPBO3R5+tg==}
     dependencies:
       fs-memo: 1.2.0
     dev: false

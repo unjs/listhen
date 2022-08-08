@@ -80,6 +80,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
 
   const port = await getPort({
     port: Number(opts.port),
+    verbose: !opts.isTest,
     host: opts.hostname
   })
 
