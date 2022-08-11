@@ -23,7 +23,7 @@
 
 ✔️ Automatically open in browser (opt-in)
 
-✔️ Automatically generate self signed certificate
+✔️ Automatically generate self-signed certificate
 
 ✔️ Automatically detect test and production environments
 
