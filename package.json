@@ -27,10 +27,10 @@
   "dependencies": {
     "clipboardy": "^3.0.0",
     "colorette": "^2.0.19",
-    "defu": "^6.0.0",
+    "defu": "^6.1.0",
     "get-port-please": "^2.6.1",
     "http-shutdown": "^1.2.2",
-    "selfsigned": "^2.0.1",
+    "selfsigned": "^2.1.1",
     "ufo": "^0.8.5"
   },
   "devDependencies": {
@@ -44,7 +44,7 @@
     "standard-version": "latest",
     "typescript": "latest",
     "unbuild": "latest",
-    "vitest": "^0.21.0"
+    "vitest": "^0.23.2"
   },
-  "packageManager": "pnpm@7.9.0"
+  "packageManager": "pnpm@7.11.0"
 }
