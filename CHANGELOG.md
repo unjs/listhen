@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.1](https://github.com/unjs/listhen/compare/v0.3.0...v0.3.1) (2022-09-15)
+
+
+### Features
+
+* ipv6 support ([eb9f5ef](https://github.com/unjs/listhen/commit/eb9f5ef436be6dc0242bcf2f560c7713fcda736f))
+
 ## [0.3.0](https://github.com/unjs/listhen/compare/v0.2.15...v0.3.0) (2022-09-15)
 
 
