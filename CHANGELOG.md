@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/unjs/listhen/compare/v0.2.15...v0.3.0) (2022-09-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* `certificate` and `selfsigned` options are merged with `https`
+
+### Features
+
+* improved ssl support ([71256e6](https://github.com/unjs/listhen/commit/71256e6980af11c510c2bcde72534bb400a37098))
+
 ### [0.2.15](https://github.com/unjs/listhen/compare/v0.2.14...v0.2.15) (2022-08-08)
 
 
