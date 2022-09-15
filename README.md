@@ -96,17 +96,25 @@ Default hostname to listen.
 
 ### `https`
 
+- Type: Boolean | Object
 - Default: `false`
 
-Listen with `https` protocol. By default uses a self-signed certificated.
+Listen on https with SSL enabled.
 
-### `certificate`
+#### Self Signed Certificate
 
-Path to https certificate files `{ key, cert }`
+By setting `https: true`, listhen will use an auto generated self-signed certificate.
 
-### `selfsigned`
+You can set https to an object for custom options. Possible options:
 
-Options for self-signed certificate (see [selfsigned](https://github.com/jfromaniello/selfsigned)).
+- `domains`: (Array) Default is `['localhost', '127.0.0.1', '::1']`.
+- `validityDays`: (Number) Default is `1`.
+
+#### User Provided Certificate
+
+Set `https: { cert, key }` where cert and key are path to the ssl certificates.
+
+You can also provide inline cert and key instead of reading from filesystem. In this case, they should start with `--`.
 
 ### `showURL`
 

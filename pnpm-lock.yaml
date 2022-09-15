@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@nuxtjs/eslint-config-typescript': ^11.0.0
   '@types/node': ^18.7.18
+  '@types/node-forge': ^1.0.4
   '@vitest/coverage-c8': ^0.23.2
   clipboardy: ^3.0.0
   colorette: ^2.0.19
@@ -10,8 +11,9 @@ specifiers:
   eslint: ^8.23.1
   get-port-please: ^2.6.1
   http-shutdown: ^1.2.2
+  ip-regex: ^5.0.0
   jiti: ^1.15.0
-  selfsigned: ^2.1.1
+  node-forge: ^1.3.1
   standard-version: ^9.5.0
   typescript: ^4.8.3
   ufo: ^0.8.5
@@ -24,12 +26,14 @@ dependencies:
   defu: 6.1.0
   get-port-please: 2.6.1
   http-shutdown: 1.2.2
-  selfsigned: 2.1.1
+  ip-regex: 5.0.0
+  node-forge: 1.3.1
   ufo: 0.8.5
 
 devDependencies:
   '@nuxtjs/eslint-config-typescript': 11.0.0_irgkl5vooow2ydyo6aokmferha
   '@types/node': 18.7.18
+  '@types/node-forge': 1.0.4
   '@vitest/coverage-c8': 0.23.2
   eslint: 8.23.1
   jiti: 1.15.0
@@ -521,6 +525,12 @@ packages:
 
   /@types/minimist/1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}
+    dev: true
+
+  /@types/node-forge/1.0.4:
+    resolution: {integrity: sha512-UpX8LTRrarEZPQvQqF5/6KQAqZolOVckH7txWdlsWIJrhBFFtwEUTcqeDouhrJl6t0F7Wg5cyUOAqqF8a6hheg==}
+    dependencies:
+      '@types/node': 18.7.18
     dev: true
 
   /@types/node/18.7.18:
@@ -2604,6 +2614,11 @@ packages:
       side-channel: 1.0.4
     dev: true
 
+  /ip-regex/5.0.0:
+    resolution: {integrity: sha512-fOCG6lhoKKakwv+C6KdsOnGvgXnmgfmp0myi3bcNwj3qfwPAxRKWEuFhvEFF7ceYIz6+1jRZ+yguLFAmUNPEfw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    dev: false
+
   /is-arrayish/0.2.1:
     resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
     dev: true
@@ -3612,13 +3627,6 @@ packages:
   /scule/0.3.2:
     resolution: {integrity: sha512-zIvPdjOH8fv8CgrPT5eqtxHQXmPNnV/vHJYffZhE43KZkvULvpCTvOt1HPlFaCZx287INL9qaqrZg34e8NgI4g==}
     dev: true
-
-  /selfsigned/2.1.1:
-    resolution: {integrity: sha512-GSL3aowiF7wa/WtSFwnUrludWFoNhftq8bUkH9pkzjpN2XSPOAYEgg6e0sS9s0rZwgJzJiQRPU18A6clnoW5wQ==}
-    engines: {node: '>=10'}
-    dependencies:
-      node-forge: 1.3.1
-    dev: false
 
   /semver/5.7.1:
     resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==}

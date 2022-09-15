@@ -1,4 +1,3 @@
-import './shim'
 import http from 'http'
 import https from 'https'
 import { promisify } from 'util'
@@ -6,7 +5,6 @@ import { promises as fs } from 'fs'
 import { networkInterfaces } from 'os'
 import { joinURL } from 'ufo'
 import { cyan, gray, underline, bold } from 'colorette'
-import type { SelfsignedOptions } from 'selfsigned'
 import { getPort, GetPortInput } from 'get-port-please'
 import addShutdown from 'http-shutdown'
 import { defu } from 'defu'
@@ -17,21 +15,21 @@ export interface Certificate {
   cert: string
 }
 
-export interface CertificateInput {
-  key: string
+export interface HTTPSOptions {
   cert: string
+  key: string
+  domains?: string[]
+  validityDays?: number
 }
 
 export interface ListenOptions {
   name: string
   port?: GetPortInput,
-  hostname?: string,
-  https?: boolean
-  selfsigned?: SelfsignedOptions
+  hostname: string,
   showURL: boolean
   baseURL: string
   open: boolean
-  certificate: Certificate
+  https: boolean | HTTPSOptions
   clipboard: boolean
   isTest: Boolean
   isProd: Boolean
@@ -62,11 +60,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     clipboard: false,
     isTest: process.env.NODE_ENV === 'test',
     isProd: process.env.NODE_ENV === 'production',
-    autoClose: true,
-    selfsigned: {
-      // https://github.com/jfromaniello/selfsigned/issues/33
-      keySize: 2048
-    }
+    autoClose: true
   })
 
   if (opts.isTest) {
@@ -91,7 +85,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   const displayHost = isExternal ? 'localhost' : opts.hostname
 
   if (opts.https) {
-    const { key, cert } = opts.certificate ? await resolveCert(opts.certificate) : await getSelfSignedCert(opts.selfsigned)
+    const { key, cert } = await resolveCert({ ...opts.https as any })
     server = https.createServer({ key, cert }, handle)
     addShutdown(server)
     // @ts-ignore
@@ -158,18 +152,27 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
   }
 }
 
-async function resolveCert (input: CertificateInput): Promise<Certificate> {
-  const key = await fs.readFile(input.key, 'utf-8')
-  const cert = await fs.readFile(input.cert, 'utf-8')
-  return { key, cert }
-}
+async function resolveCert (opts: HTTPSOptions): Promise<Certificate> {
+  // Use cert if provided
+  if (opts.key && opts.cert) {
+    const isInline = (s: string = '') => s.startsWith('--')
+    const r = (s: string) => isInline(s) ? s : fs.readFile(s, 'utf-8')
+    return {
+      key: await r(opts.key),
+      cert: await r(opts.cert)
+    }
+  }
 
-async function getSelfSignedCert (opts: SelfsignedOptions = {}): Promise<Certificate> {
-  // @ts-ignore
-  const { generate } = await import('selfsigned')
-  // @ts-ignore
-  const { private: key, cert } = await promisify(generate)(opts.attrs, opts)
-  return { key, cert }
+  // Use auto generated cert
+  const { generateCA, generateSSLCert } = await import('./cert')
+  const ca = await generateCA()
+  const cert = await generateSSLCert({
+    caCert: ca.cert,
+    caKey: ca.key,
+    domains: opts.domains || ['localhost', '127.0.0.1', '::1'],
+    validityDays: opts.validityDays || 1
+  })
+  return cert
 }
 
 function getExternalIps (): string[] {

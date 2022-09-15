@@ -45,8 +45,7 @@ describe('listhen', () => {
 
   test('listen (https - custom)', async () => {
     listener = await listen(handle, {
-      https: true,
-      certificate: {
+      https: {
         key: resolve(__dirname, 'fixture/cert/key.pem'),
         cert: resolve(__dirname, 'fixture/cert/cert.pem')
       }
