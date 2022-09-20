@@ -87,7 +87,7 @@ export async function listen (handle: RequestListener, opts: Partial<ListenOptio
 
   let https: Listener['https'] = false
   if (opts.https) {
-    const { key, cert } = await resolveCert({ ...opts.https as any })
+    const { key, cert } = await resolveCert({ ...opts.https as any }, opts.hostname)
     https = { key, cert }
     server = createHTTPSServer({ key, cert }, handle)
     addShutdown(server)
@@ -163,7 +163,7 @@ export async function listen (handle: RequestListener, opts: Partial<ListenOptio
   }
 }
 
-async function resolveCert (opts: HTTPSOptions): Promise<Certificate> {
+async function resolveCert (opts: HTTPSOptions, host?: string): Promise<Certificate> {
   // Use cert if provided
   if (opts.key && opts.cert) {
     const isInline = (s: string = '') => s.startsWith('--')
@@ -180,7 +180,7 @@ async function resolveCert (opts: HTTPSOptions): Promise<Certificate> {
   const cert = await generateSSLCert({
     caCert: ca.cert,
     caKey: ca.key,
-    domains: opts.domains || ['localhost', '127.0.0.1', '::1'],
+    domains: opts.domains || ['localhost', '127.0.0.1', '::1', host].filter(Boolean) as string[],
     validityDays: opts.validityDays || 1
   })
   return cert
