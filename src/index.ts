@@ -1,5 +1,5 @@
-import http from 'http'
-import https from 'https'
+import { RequestListener, Server, createServer } from 'http'
+import { Server as HTTPServer, createServer as createHTTPSServer } from 'https'
 import { promisify } from 'util'
 import { promises as fs } from 'fs'
 import { networkInterfaces } from 'os'
@@ -45,13 +45,14 @@ export interface ShowURLOptions {
 export interface Listener {
   url: string,
   address: { },
-  server: http.Server | https.Server,
+  server: Server | HTTPServer,
+  https: boolean | Certificate,
   close: () => Promise<void>,
   open: () => Promise<void>,
   showURL: (options?: Pick<ListenOptions, 'baseURL'>) => void
 }
 
-export async function listen (handle: http.RequestListener, opts: Partial<ListenOptions> = {}): Promise<Listener> {
+export async function listen (handle: RequestListener, opts: Partial<ListenOptions> = {}): Promise<Listener> {
   opts = defu(opts, {
     port: process.env.PORT || 3000,
     hostname: process.env.HOST || '',
@@ -79,21 +80,23 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
     host: opts.hostname
   })
 
-  let server: http.Server | https.Server
+  let server: Server | HTTPServer
 
   let addr: { proto: 'http' | 'https', addr: string, port: number } | null
   const getURL = (host?: string, baseURL?: string) => `${addr!.proto}://${host || addr!.addr}:${addr!.port}${baseURL || opts.baseURL}`
 
+  let https: Listener['https'] = false
   if (opts.https) {
     const { key, cert } = await resolveCert({ ...opts.https as any })
-    server = https.createServer({ key, cert }, handle)
+    https = { key, cert }
+    server = createHTTPSServer({ key, cert }, handle)
     addShutdown(server)
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, opts.hostname)
     const _addr = server.address() as AddressInfo
     addr = { proto: 'https', addr: formatAddress(_addr), port: _addr.port }
   } else {
-    server = http.createServer(handle)
+    server = createServer(handle)
     addShutdown(server)
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, opts.hostname)
@@ -152,6 +155,7 @@ export async function listen (handle: http.RequestListener, opts: Partial<Listen
 
   return <Listener>{
     url: getURL(),
+    https,
     server,
     open: _open,
     showURL,
