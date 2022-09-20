@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.3](https://github.com/unjs/listhen/compare/v0.3.2...v0.3.3) (2022-09-20)
+
+
+### Bug Fixes
+
+* narrow down listener.https type ([c8279e2](https://github.com/unjs/listhen/commit/c8279e230865236781e428ece49c01fe523f90b7))
+
 ### [0.3.2](https://github.com/unjs/listhen/compare/v0.3.1...v0.3.2) (2022-09-20)
 
 
