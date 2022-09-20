@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.4](https://github.com/unjs/listhen/compare/v0.3.3...v0.3.4) (2022-09-20)
+
+
+### Bug Fixes
+
+* add custom hostname to alternative domains ([d7ffa58](https://github.com/unjs/listhen/commit/d7ffa582fc931e4753557e3082a11e657ce6ab37))
+* fix type for `https` only for listener instead of options ([59a2c76](https://github.com/unjs/listhen/commit/59a2c7654089c5157b95f85269acba51025fbb43))
+
 ### [0.3.3](https://github.com/unjs/listhen/compare/v0.3.2...v0.3.3) (2022-09-20)
 
 
