@@ -29,7 +29,7 @@ export interface ListenOptions {
   showURL: boolean
   baseURL: string
   open: boolean
-  https: false | HTTPSOptions
+  https: boolean | HTTPSOptions
   clipboard: boolean
   isTest: Boolean
   isProd: Boolean
@@ -46,7 +46,7 @@ export interface Listener {
   url: string,
   address: { },
   server: Server | HTTPServer,
-  https: boolean | Certificate,
+  https: false | Certificate,
   close: () => Promise<void>,
   open: () => Promise<void>,
   showURL: (options?: Pick<ListenOptions, 'baseURL'>) => void
