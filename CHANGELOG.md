@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.2](https://github.com/unjs/listhen/compare/v0.3.1...v0.3.2) (2022-09-20)
+
+
+### Features
+
+* expose resolve https options ([84023f4](https://github.com/unjs/listhen/commit/84023f471635fd76696f62a66b2d22534c4194aa))
+
+
+### Bug Fixes
+
+* display provided hostname ([ee1df6d](https://github.com/unjs/listhen/commit/ee1df6d622f172a351e897db7597f1c62a47a8cd))
+
 ### [0.3.1](https://github.com/unjs/listhen/compare/v0.3.0...v0.3.1) (2022-09-15)
 
 
