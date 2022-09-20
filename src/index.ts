@@ -29,7 +29,7 @@ export interface ListenOptions {
   showURL: boolean
   baseURL: string
   open: boolean
-  https: boolean | HTTPSOptions
+  https: false | HTTPSOptions
   clipboard: boolean
   isTest: Boolean
   isProd: Boolean
