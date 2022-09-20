@@ -83,7 +83,7 @@ export async function listen (handle: RequestListener, opts: Partial<ListenOptio
   let server: Server | HTTPServer
 
   let addr: { proto: 'http' | 'https', addr: string, port: number } | null
-  const getURL = (host?: string, baseURL?: string) => `${addr!.proto}://${host || addr!.addr}:${addr!.port}${baseURL || opts.baseURL}`
+  const getURL = (host?: string, baseURL?: string) => `${addr!.proto}://${host || opts.hostname || addr!.addr}:${addr!.port}${baseURL || opts.baseURL}`
 
   let https: Listener['https'] = false
   if (opts.https) {
