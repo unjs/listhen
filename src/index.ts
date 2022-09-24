@@ -43,12 +43,12 @@ export interface ShowURLOptions {
 }
 
 export interface Listener {
-  url: string,
-  address: { },
-  server: Server | HTTPServer,
-  https: false | Certificate,
-  close: () => Promise<void>,
-  open: () => Promise<void>,
+  url: string
+  address: any
+  server: Server | HTTPServer
+  https: false | Certificate
+  close: () => Promise<void>
+  open: () => Promise<void>
   showURL: (options?: Pick<ListenOptions, 'baseURL'>) => void
 }
 
@@ -83,7 +83,12 @@ export async function listen (handle: RequestListener, opts: Partial<ListenOptio
   let server: Server | HTTPServer
 
   let addr: { proto: 'http' | 'https', addr: string, port: number } | null
-  const getURL = (host?: string, baseURL?: string) => `${addr!.proto}://${host || opts.hostname || addr!.addr}:${addr!.port}${baseURL || opts.baseURL}`
+  const getURL = (host?: string, baseURL?: string) => {
+    const anyV4 = addr?.addr === '0.0.0.0'
+    const anyV6 = addr?.addr === '[::]'
+
+    return `${addr!.proto}://${host || opts.hostname || (anyV4 || anyV6 ? 'localhost' : addr!.addr)}:${addr!.port}${baseURL || opts.baseURL}`
+  }
 
   let https: Listener['https'] = false
   if (opts.https) {
@@ -115,7 +120,7 @@ export async function listen (handle: RequestListener, opts: Partial<ListenOptio
 
   if (opts.clipboard) {
     const clipboardy = await import('clipboardy').then(r => r.default || r)
-    await clipboardy.write(getURL('localhost')).catch(() => { opts.clipboard = false })
+    await clipboardy.write(getURL()).catch(() => { opts.clipboard = false })
   }
 
   const showURL = (options?: ShowURLOptions) => {
@@ -143,7 +148,7 @@ export async function listen (handle: RequestListener, opts: Partial<ListenOptio
   }
 
   const _open = async () => {
-    await open(getURL('localhost')).catch(() => { })
+    await open(getURL()).catch(() => {})
   }
   if (opts.open) {
     await _open()
