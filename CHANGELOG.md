@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.5](https://github.com/unjs/listhen/compare/v0.3.4...v0.3.5) (2022-11-02)
+
+
+### Bug Fixes
+
+* respect hostname when opening url ([#40](https://github.com/unjs/listhen/issues/40)) ([d1e985d](https://github.com/unjs/listhen/commit/d1e985dc6c28f30283593811a285ce7796bbcc88))
+
 ### [0.3.4](https://github.com/unjs/listhen/compare/v0.3.3...v0.3.4) (2022-09-20)
 
 
