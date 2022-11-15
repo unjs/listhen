@@ -1,8 +1,8 @@
-import { listen } from '../../src'
+import { listen } from "../../src";
 
-listen((_req, res) => {
-  res.end('works!')
+listen((_request, response) => {
+  response.end("works!");
 }, {
-  open: process.argv.some(arg => arg === '-o' || arg === '--open'),
-  https: process.argv.includes('--https')
-})
+  open: process.argv.some(argument => argument === "-o" || argument === "--open"),
+  https: process.argv.includes("--https")
+});

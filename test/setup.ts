@@ -1,1 +1,1 @@
-process.env.NO_COLOR = '1'
+process.env.NO_COLOR = "1";

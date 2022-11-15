@@ -1,8 +1,8 @@
 // Rewrite from https://github.com/Subash/mkcert 1.5.1 (MIT)
 
-import { promisify } from 'node:util'
-import forge from 'node-forge'
-import ipRegex from 'ip-regex'
+import { promisify } from "node:util";
+import forge from "node-forge";
+import ipRegex from "ip-regex";
 
 export interface Certificate {
   key: string
@@ -19,39 +19,39 @@ export interface SSLCertOptions {
   caCert: string
 }
 
-export async function generateSSLCert (opts: SSLCertOptions): Promise<Certificate> {
+export async function generateSSLCert (options: SSLCertOptions): Promise<Certificate> {
   // Certificate Attributes (https://git.io/fptna)
   const attributes = [
     // Use the first address as common name if no common name is provided
-    { name: 'commonName', value: opts.commonName || opts.domains[0] }
-  ]
+    { name: "commonName", value: options.commonName || options.domains[0] }
+  ];
 
   // Required certificate extensions for a tls certificate
   const extensions = [
-    { name: 'basicConstraints', cA: false, critical: true },
-    { name: 'keyUsage', digitalSignature: true, keyEncipherment: true, critical: true },
-    { name: 'extKeyUsage', serverAuth: true, clientAuth: true },
+    { name: "basicConstraints", cA: false, critical: true },
+    { name: "keyUsage", digitalSignature: true, keyEncipherment: true, critical: true },
+    { name: "extKeyUsage", serverAuth: true, clientAuth: true },
     {
-      name: 'subjectAltName',
-      altNames: opts.domains.map((domain) => {
+      name: "subjectAltName",
+      altNames: options.domains.map((domain) => {
         // Available Types: https://git.io/fptng
-        const types = { domain: 2, ip: 7 }
-        const isIp = ipRegex({ exact: true }).test(domain)
-        if (isIp) { return { type: types.ip, ip: domain } }
-        return { type: types.domain, value: domain }
+        const types = { domain: 2, ip: 7 };
+        const isIp = ipRegex({ exact: true }).test(domain);
+        if (isIp) { return { type: types.ip, ip: domain }; }
+        return { type: types.domain, value: domain };
       })
     }
-  ]
+  ];
 
-  const ca = forge.pki.certificateFromPem(opts.caCert)
+  const ca = forge.pki.certificateFromPem(options.caCert);
 
   return await generateCert({
     subject: attributes,
     issuer: ca.subject.attributes,
     extensions,
-    validityDays: opts.validityDays,
-    signWith: opts.caKey
-  })
+    validityDays: options.validityDays,
+    signWith: options.caKey
+  });
 }
 
 // CA
@@ -65,28 +65,28 @@ export interface CAOptions {
   validityDays?: number
 }
 
-export async function generateCA (opts: CAOptions = {}): Promise<Certificate> {
+export async function generateCA (options: CAOptions = {}): Promise<Certificate> {
   // Certificate Attributes: https://git.io/fptna
   const attributes = [
-    opts.commonName && { name: 'commonName', value: opts.commonName },
-    opts.countryCode && { name: 'countryName', value: opts.countryCode },
-    opts.state && { name: 'stateOrProvinceName', value: opts.state },
-    opts.locality && { name: 'localityName', value: opts.locality },
-    opts.organization && { name: 'organizationName', value: opts.organization }
-  ].filter(Boolean) as {name: string, value: string }[]
+    options.commonName && { name: "commonName", value: options.commonName },
+    options.countryCode && { name: "countryName", value: options.countryCode },
+    options.state && { name: "stateOrProvinceName", value: options.state },
+    options.locality && { name: "localityName", value: options.locality },
+    options.organization && { name: "organizationName", value: options.organization }
+  ].filter(Boolean) as {name: string, value: string }[];
 
   // Required certificate extensions for a certificate authority
   const extensions = [
-    { name: 'basicConstraints', cA: true, critical: true },
-    { name: 'keyUsage', keyCertSign: true, critical: true }
-  ]
+    { name: "basicConstraints", cA: true, critical: true },
+    { name: "keyUsage", keyCertSign: true, critical: true }
+  ];
 
   return await generateCert({
     subject: attributes,
     issuer: attributes,
     extensions,
-    validityDays: opts.validityDays || 365
-  })
+    validityDays: options.validityDays || 365
+  });
 }
 
 // Cert
@@ -99,28 +99,28 @@ interface CertOptions {
   signWith?: string
 }
 
-export async function generateCert (opts: CertOptions): Promise<Certificate> {
+export async function generateCert (options: CertOptions): Promise<Certificate> {
   // Create serial from and integer between 50000 and 99999
-  const serial = Math.floor((Math.random() * 95000) + 50000).toString()
-  const generateKeyPair = promisify(forge.pki.rsa.generateKeyPair.bind(forge.pki.rsa))
-  const keyPair = await generateKeyPair({ bits: 2048, workers: 4 })
-  const cert = forge.pki.createCertificate()
+  const serial = Math.floor((Math.random() * 95_000) + 50_000).toString();
+  const generateKeyPair = promisify(forge.pki.rsa.generateKeyPair.bind(forge.pki.rsa));
+  const keyPair = await generateKeyPair({ bits: 2048, workers: 4 });
+  const cert = forge.pki.createCertificate();
 
-  cert.publicKey = keyPair.publicKey
-  cert.serialNumber = Buffer.from(serial).toString('hex') // serial number must be hex encoded
-  cert.validity.notBefore = new Date()
-  cert.validity.notAfter = new Date()
-  cert.validity.notAfter.setDate(cert.validity.notAfter.getDate() + opts.validityDays)
-  cert.setSubject(opts.subject)
-  cert.setIssuer(opts.issuer)
-  cert.setExtensions(opts.extensions)
+  cert.publicKey = keyPair.publicKey;
+  cert.serialNumber = Buffer.from(serial).toString("hex"); // serial number must be hex encoded
+  cert.validity.notBefore = new Date();
+  cert.validity.notAfter = new Date();
+  cert.validity.notAfter.setDate(cert.validity.notAfter.getDate() + options.validityDays);
+  cert.setSubject(options.subject);
+  cert.setIssuer(options.issuer);
+  cert.setExtensions(options.extensions);
 
   // Sign the certificate with it's own private key if no separate signing key is provided
-  const signWith = opts.signWith ? forge.pki.privateKeyFromPem(opts.signWith) : keyPair.privateKey
-  cert.sign(signWith, forge.md.sha256.create())
+  const signWith = options.signWith ? forge.pki.privateKeyFromPem(options.signWith) : keyPair.privateKey;
+  cert.sign(signWith, forge.md.sha256.create());
 
   return {
     key: forge.pki.privateKeyToPem(keyPair.privateKey),
     cert: forge.pki.certificateToPem(cert)
-  }
+  };
 }
