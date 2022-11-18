@@ -66,4 +66,19 @@ describe("listhen", () => {
     // @ts-ignore
     process.emit("exit");
   });
+
+  test("pass hostname to get-port-please", async () => {
+    listener = await listen(handle, { hostname: "127.0.0.1" });
+    expect(listener.url.startsWith("http://127.0.0.1")).toBe(true);
+  });
+
+  test("pass port to get-port-please", async () => {
+    listener = await listen(handle, { port: 40_000 });
+    expect(listener.url.endsWith(":40000/")).toBe(true);
+  });
+
+  test("pass extended options to get-port-please", async () => {
+    listener = await listen(handle, { port: { portRange: [50_000, 59_999] } });
+    expect(listener.url).toMatch(/:5\d{4}\/$/);
+  });
 });

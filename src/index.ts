@@ -77,7 +77,8 @@ export async function listen (handle: RequestListener, options_: Partial<ListenO
   const port = await getPort({
     port: Number(options_.port),
     verbose: !options_.isTest,
-    host: options_.hostname
+    host: options_.hostname,
+    ...(typeof options_.port === "object" && options_.port)
   });
 
   let server: Server | HTTPServer;
