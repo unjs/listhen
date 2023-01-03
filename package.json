@@ -29,7 +29,7 @@
     "clipboardy": "^3.0.0",
     "colorette": "^2.0.19",
     "defu": "^6.1.1",
-    "get-port-please": "^2.6.1",
+    "get-port-please": "^3.0.1",
     "http-shutdown": "^1.2.2",
     "ip-regex": "^5.0.0",
     "node-forge": "^1.3.1",
