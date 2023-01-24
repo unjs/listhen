@@ -31,9 +31,9 @@ export interface ListenOptions {
   open: boolean
   https: boolean | HTTPSOptions
   clipboard: boolean
-  isTest: Boolean
-  isProd: Boolean
-  autoClose: Boolean
+  isTest: boolean
+  isProd: boolean
+  autoClose: boolean
   autoCloseSignals: string[]
 }
 
@@ -172,7 +172,7 @@ export async function listen (handle: RequestListener, options_: Partial<ListenO
 async function resolveCert (options: HTTPSOptions, host?: string): Promise<Certificate> {
   // Use cert if provided
   if (options.key && options.cert) {
-    const isInline = (s: string = "") => s.startsWith("--");
+    const isInline = (s = "") => s.startsWith("--");
     const r = (s: string) => isInline(s) ? s : fs.readFile(s, "utf8");
     return {
       key: await r(options.key),
@@ -192,7 +192,7 @@ async function resolveCert (options: HTTPSOptions, host?: string): Promise<Certi
   return cert;
 }
 
-function getNetworkInterfaces (v4Only: boolean = true): string[] {
+function getNetworkInterfaces (v4Only = true): string[] {
   const addrs = new Set<string>();
   for (const details of Object.values(networkInterfaces())) {
     if (details) {

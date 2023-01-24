@@ -78,7 +78,7 @@ describe("listhen", () => {
   });
 
   test("pass extended options to get-port-please", async () => {
-    listener = await listen(handle, { port: { port: 5000, portRange: [50_000, 59_999] } });
+    listener = await listen(handle, { port: { port: 50_000, portRange: [50_000, 59_999] } });
     expect(listener.url).toMatch(/:5\d{4}\/$/);
   });
 });
