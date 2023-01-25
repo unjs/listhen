@@ -7,7 +7,7 @@ import { listen, Listener } from "../src";
 // eslint-disable-next-line no-console
 // console.log = fn()
 
-function handle (request: IncomingMessage, response: ServerResponse) {
+function handle(request: IncomingMessage, response: ServerResponse) {
   response.end(request.url);
 }
 
@@ -30,7 +30,7 @@ describe("listhen", () => {
     listener = await listen(handle, {
       isTest: false,
       autoClose: false,
-      baseURL: "/foo/bar"
+      baseURL: "/foo/bar",
     });
     expect(listener.url.startsWith("http://")).toBe(true);
     expect(listener.url.endsWith("/foo/bar")).toBe(true);
@@ -49,8 +49,8 @@ describe("listhen", () => {
         // eslint-disable-next-line unicorn/prefer-module
         key: resolve(__dirname, "fixture/cert/key.pem"),
         // eslint-disable-next-line unicorn/prefer-module
-        cert: resolve(__dirname, "fixture/cert/cert.pem")
-      }
+        cert: resolve(__dirname, "fixture/cert/cert.pem"),
+      },
     });
     expect(listener.url.startsWith("https://")).toBe(true);
   });
@@ -78,7 +78,9 @@ describe("listhen", () => {
   });
 
   test("pass extended options to get-port-please", async () => {
-    listener = await listen(handle, { port: { port: 50_000, portRange: [50_000, 59_999] } });
+    listener = await listen(handle, {
+      port: { port: 50_000, portRange: [50_000, 59_999] },
+    });
     expect(listener.url).toMatch(/:5\d{4}\/$/);
   });
 });

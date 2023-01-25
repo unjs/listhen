@@ -5,7 +5,15 @@
  */
 // @ts-nocheck
 import childProcess from "node:child_process";
-import { promises as fs, readFileSync, constants as fsConstants, statSync, writeFileSync, existsSync, chmodSync } from "node:fs";
+import {
+  promises as fs,
+  readFileSync,
+  constants as fsConstants,
+  statSync,
+  writeFileSync,
+  existsSync,
+  chmodSync,
+} from "node:fs";
 import os from "node:os";
 import { join } from "node:path";
 
@@ -42,8 +50,12 @@ const getWslDrivesMountPoint = (() => {
       return defaultMountPoint;
     }
 
-    const configContent = await fs.readFile(configFilePath, { encoding: "utf8" });
-    const configMountPoint = /(?<!#.*)root\s*=\s*(?<mountPoint>.*)/g.exec(configContent);
+    const configContent = await fs.readFile(configFilePath, {
+      encoding: "utf8",
+    });
+    const configMountPoint = /(?<!#.*)root\s*=\s*(?<mountPoint>.*)/g.exec(
+      configContent
+    );
 
     if (!configMountPoint) {
       return defaultMountPoint;
@@ -76,14 +88,16 @@ const baseOpen = async (options) => {
     background: false,
     newInstance: false,
     allowNonzeroExitCode: false,
-    ...options
+    ...options,
   };
 
   if (Array.isArray(options.app)) {
-    return pTryEach(options.app, singleApp => baseOpen({
-      ...options,
-      app: singleApp
-    }));
+    return pTryEach(options.app, (singleApp) =>
+      baseOpen({
+        ...options,
+        app: singleApp,
+      })
+    );
   }
 
   // eslint-disable-next-line prefer-const
@@ -91,13 +105,15 @@ const baseOpen = async (options) => {
   appArguments = [...appArguments];
 
   if (Array.isArray(app)) {
-    return pTryEach(app, appName => baseOpen({
-      ...options,
-      app: {
-        name: appName,
-        arguments: appArguments
-      }
-    }));
+    return pTryEach(app, (appName) =>
+      baseOpen({
+        ...options,
+        app: {
+          name: appName,
+          arguments: appArguments,
+        },
+      })
+    );
   }
 
   let command;
@@ -159,25 +175,29 @@ const baseOpen = async (options) => {
     }
 
     if (appArguments.length > 0) {
-      appArguments = appArguments.map(argument => `"\`"${argument}\`""`);
+      appArguments = appArguments.map((argument) => `"\`"${argument}\`""`);
       encodedArguments.push(appArguments.join(","));
     }
 
     // Using Base64-encoded command, accepted by PowerShell, to allow special characters.
-    options.target = Buffer.from(encodedArguments.join(" "), "utf16le").toString("base64");
+    options.target = Buffer.from(
+      encodedArguments.join(" "),
+      "utf16le"
+    ).toString("base64");
   } else {
     if (app) {
       command = app;
     } else {
       command = "xdg-open";
-      const useSystemXdgOpen = process.versions.electron || platform === "android";
+      const useSystemXdgOpen =
+        process.versions.electron || platform === "android";
       if (!useSystemXdgOpen) {
         command = join(os.tmpdir(), "xdg-open");
         if (!existsSync(command)) {
           try {
             writeFileSync(
               join(os.tmpdir(), "xdg-open"),
-              await import("./xdg-open").then(r => r.xdgOpenScript()),
+              await import("./xdg-open").then((r) => r.xdgOpenScript()),
               "utf8"
             );
             chmodSync(command, 0o755 /* rwx r-x r-x */);
@@ -208,7 +228,11 @@ const baseOpen = async (options) => {
     cliArguments.push("--args", ...appArguments);
   }
 
-  const subprocess = childProcess.spawn(command, cliArguments, childProcessOptions);
+  const subprocess = childProcess.spawn(
+    command,
+    cliArguments,
+    childProcessOptions
+  );
 
   if (options.wait) {
     return new Promise((resolve, reject) => {
@@ -237,7 +261,7 @@ export const open = (target, options = {}) => {
 
   return baseOpen({
     ...options,
-    target
+    target,
   });
 };
 
@@ -247,7 +271,11 @@ const openApp = (name, options) => {
   }
 
   const { arguments: appArguments = [] } = options || {};
-  if (appArguments !== undefined && appArguments !== null && !Array.isArray(appArguments)) {
+  if (
+    appArguments !== undefined &&
+    appArguments !== null &&
+    !Array.isArray(appArguments)
+  ) {
     throw new TypeError("Expected `appArguments` as Array type");
   }
 
@@ -255,12 +283,12 @@ const openApp = (name, options) => {
     ...options,
     app: {
       name,
-      arguments: appArguments
-    }
+      arguments: appArguments,
+    },
   });
 };
 
-function detectArchBinary (binary) {
+function detectArchBinary(binary) {
   if (typeof binary === "string" || Array.isArray(binary)) {
     return binary;
   }
@@ -274,7 +302,7 @@ function detectArchBinary (binary) {
   return archBinary;
 }
 
-function detectPlatformBinary ({ [platform]: platformBinary }, { wsl }) {
+function detectPlatformBinary({ [platform]: platformBinary }, { wsl }) {
   if (wsl && isWsl()) {
     return detectArchBinary(wsl);
   }
@@ -288,56 +316,79 @@ function detectPlatformBinary ({ [platform]: platformBinary }, { wsl }) {
 
 const apps = {};
 
-defineLazyProperty(apps, "chrome", () => detectPlatformBinary({
-  darwin: "google chrome",
-  win32: "chrome",
-  linux: ["google-chrome", "google-chrome-stable", "chromium"]
-}, {
-  wsl: {
-    ia32: "/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe",
-    x64: ["/mnt/c/Program Files/Google/Chrome/Application/chrome.exe", "/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe"]
-  }
-}));
+defineLazyProperty(apps, "chrome", () =>
+  detectPlatformBinary(
+    {
+      darwin: "google chrome",
+      win32: "chrome",
+      linux: ["google-chrome", "google-chrome-stable", "chromium"],
+    },
+    {
+      wsl: {
+        ia32: "/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+        x64: [
+          "/mnt/c/Program Files/Google/Chrome/Application/chrome.exe",
+          "/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+        ],
+      },
+    }
+  )
+);
 
-defineLazyProperty(apps, "firefox", () => detectPlatformBinary({
-  darwin: "firefox",
-  win32: "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
-  linux: "firefox"
-}, {
-  wsl: "/mnt/c/Program Files/Mozilla Firefox/firefox.exe"
-}));
+defineLazyProperty(apps, "firefox", () =>
+  detectPlatformBinary(
+    {
+      darwin: "firefox",
+      win32: "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
+      linux: "firefox",
+    },
+    {
+      wsl: "/mnt/c/Program Files/Mozilla Firefox/firefox.exe",
+    }
+  )
+);
 
-defineLazyProperty(apps, "edge", () => detectPlatformBinary({
-  darwin: "microsoft edge",
-  win32: "msedge",
-  linux: ["microsoft-edge", "microsoft-edge-dev"]
-}, {
-  wsl: "/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
-}));
+defineLazyProperty(apps, "edge", () =>
+  detectPlatformBinary(
+    {
+      darwin: "microsoft edge",
+      win32: "msedge",
+      linux: ["microsoft-edge", "microsoft-edge-dev"],
+    },
+    {
+      wsl: "/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+    }
+  )
+);
 
 open.apps = apps;
 open.openApp = openApp;
 
 // npm: define-lazy-prop
-function defineLazyProperty (object, propertyName, valueGetter) {
-  const define = value => Object.defineProperty(object, propertyName, { value, enumerable: true, writable: true });
+function defineLazyProperty(object, propertyName, valueGetter) {
+  const define = (value) =>
+    Object.defineProperty(object, propertyName, {
+      value,
+      enumerable: true,
+      writable: true,
+    });
   Object.defineProperty(object, propertyName, {
     configurable: true,
     enumerable: true,
-    get () {
+    get() {
       const result = valueGetter();
       define(result);
       return result;
     },
-    set (value) {
+    set(value) {
       define(value);
-    }
+    },
   });
   return object;
 }
 
 // npm: is-wsl
-function _isWsl () {
+function _isWsl() {
   if (process.platform !== "linux") {
     return false;
   }
@@ -348,7 +399,9 @@ function _isWsl () {
     return true;
   }
   try {
-    return readFileSync("/proc/version", "utf8").toLowerCase().includes("microsoft")
+    return readFileSync("/proc/version", "utf8")
+      .toLowerCase()
+      .includes("microsoft")
       ? !isDocker()
       : false;
   } catch {
@@ -356,7 +409,7 @@ function _isWsl () {
   }
 }
 let isWSLCached;
-function isWsl () {
+function isWsl() {
   if (isWSLCached === undefined) {
     isWSLCached = _isWsl();
   }
@@ -364,7 +417,7 @@ function isWsl () {
 }
 
 // npm: is-docker
-function hasDockerEnvironment () {
+function hasDockerEnvironment() {
   try {
     statSync("/.dockerenv");
     return true;
@@ -372,7 +425,7 @@ function hasDockerEnvironment () {
     return false;
   }
 }
-function hasDockerCGroup () {
+function hasDockerCGroup() {
   try {
     return readFileSync("/proc/self/cgroup", "utf8").includes("docker");
   } catch {
@@ -380,7 +433,7 @@ function hasDockerCGroup () {
   }
 }
 let isDockerCached;
-function isDocker () {
+function isDocker() {
   // TODO: Use `??=` when targeting Node.js 16.
   if (isDockerCached === undefined) {
     isDockerCached = hasDockerEnvironment() || hasDockerCGroup();

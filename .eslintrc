@@ -1,9 +1,7 @@
 {
-  "extends": [
-    "eslint-config-unjs"
-  ],
+  "extends": ["eslint-config-unjs"],
   "rules": {
     "unicorn/consistent-destructuring": 0,
-
+    "@typescript-eslint/no-non-null-assertion": 0
   }
 }
