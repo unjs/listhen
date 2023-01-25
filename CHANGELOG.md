@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.0.2
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.0.1...v1.0.2)
+
+
+### 🏡 Chore
+
+  - Upgrade deps ([#55](https://github.com/unjs/listhen/pull/55))
+  - Update deps ([18d7542](https://github.com/unjs/listhen/commit/18d7542))
+  - Switch to changelogen for release ([7c1bf04](https://github.com/unjs/listhen/commit/7c1bf04))
+
+### 🎨 Styles
+
+  - Format with prettier ([bb2aa4d](https://github.com/unjs/listhen/commit/bb2aa4d))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pooya@pi0.io>
+- Farnabaz <farnabaz@gmail.com>
+
 ### [1.0.1](https://github.com/unjs/listhen/compare/v1.0.0...v1.0.1) (2022-11-28)
 
 
