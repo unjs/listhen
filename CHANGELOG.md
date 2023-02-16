@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.0.3
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.0.2...v1.0.3)
+
+
+### 🏡 Chore
+
+  - Update ufo and other dependencies ([d3db211](https://github.com/unjs/listhen/commit/d3db211))
+
+### ❤️  Contributors
+
+- Pooya Parsa <pooya@pi0.io>
+
 ## v1.0.2
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.0.1...v1.0.2)
