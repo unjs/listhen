@@ -154,10 +154,3 @@ MIT. Made with 💖
 [license-href]: https://github.com/unjs/listhen/blob/main/LICENSE
 [jsdocs-src]: https://img.shields.io/badge/jsDocs.io-reference-18181B?style=flat&colorA=18181B&colorB=F0DB4F
 [jsdocs-href]: https://www.jsdocs.io/package/listhen
-
-
-[github-actions-src]: https://img.shields.io/github/workflow/status/unjs/listhen/ci/main?style=flat-square
-[github-actions-href]: https://github.com/unjs/listhen/actions?query=workflow%3Aci
-
-[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/listhen/main?style=flat-square
-[codecov-href]: https://codecov.io/gh/unjs/listhen
