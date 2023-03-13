@@ -83,4 +83,16 @@ describe("listhen", () => {
     });
     expect(listener.url).toMatch(/:5\d{4}\/$/);
   });
+
+  test("should listen to the next port in range (3000 -> 31000)", async () => {
+    listener = await listen(handle, {
+      port: { port: 3000 },
+    });
+    expect(listener.url).toMatch(/:3000\/$/);
+    const listener2 = await listen(handle, {
+      port: { port: 3000 },
+    });
+    expect(listener2.url).toMatch(/:3001\/$/);
+    await listener2.close();
+  });
 });
