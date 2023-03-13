@@ -84,7 +84,7 @@ export async function listen(
     port: Number(options_.port),
     verbose: !options_.isTest,
     host: options_.hostname,
-    portRange: [3000, 3100],
+    alternativePortRange: [3000, 3100],
     ...(typeof options_.port === "object" && options_.port),
   });
 
