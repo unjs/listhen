@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.0.4
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.0.3...v1.0.4)
+
+
+### 🩹 Fixes
+
+  - Add default port range ([#63](https://github.com/unjs/listhen/pull/63))
+
+### 📖 Documentation
+
+  - Update badges and content ([b7cf9ad](https://github.com/unjs/listhen/commit/b7cf9ad))
+
+### 🏡 Chore
+
+  - Remove extra badges ([767c9ed](https://github.com/unjs/listhen/commit/767c9ed))
+
+### ❤️  Contributors
+
+- Sébastien Chopin ([@Atinux](http://github.com/Atinux))
+
 ## v1.0.3
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.0.2...v1.0.3)
