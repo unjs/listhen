@@ -1,44 +1,33 @@
-![listhen](https://user-images.githubusercontent.com/904724/101662837-46845280-3a4a-11eb-9e9a-d5399e8af753.png)
-
 # 👂 listhen
 
-> Elegant http listener
+An elegant HTTP listener.
 
 [![npm version][npm-version-src]][npm-version-href]
 [![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![Github Actions][github-actions-src]][github-actions-href]
 [![Codecov][codecov-src]][codecov-href]
+[![License][license-src]][license-href]
+[![JSDocs][jsdocs-src]][jsdocs-href]
 
-✔️ Promisified interface for listening and closing server
+## Features 
 
-✔️ Works with express/connect or plain http handle function
-
-✔️ Support HTTP and HTTPS
-
-✔️ Automatically assign a port or fallback to human friendly alternative (with [get-port-please](https://github.com/unjs/get-port-please))
-
-✔️ Automatically generate listening URL and show on console
-
-✔️ Automatically copy URL to clipboard
-
-✔️ Automatically open in browser (opt-in)
-
-✔️ Automatically generate self-signed certificate
-
-✔️ Automatically detect test and production environments
-
-✔️ Automatically close on exit signal
-
-✔️ Gracefully shutdown server with [http-shutdown](https://github.com/thedillonb/http-shutdown)
+- Promisified interface for listening and closing server
+- Work with express/connect or plain http handle function
+- Support HTTP and HTTPS
+- Assign a port or fallback to human friendly alternative (with [get-port-please](https://github.com/unjs/get-port-please))
+- Generate listening URL and show on console
+- Copy URL to clipboard (dev only by default)
+- Open URL in browser (opt-in)
+- Generate self-signed certificate
+- Detect test and production environments
+- Close on exit signal
+- Gracefully shutdown server with [http-shutdown](https://github.com/thedillonb/http-shutdown)
 
 ## Install
 
-Install using npm or yarn:
+Install using npm:
 
 ```bash
 npm i listhen
-# or
-yarn add listhen
 ```
 
 Import into your Node.js project:
@@ -155,11 +144,17 @@ Automatically close when an exit signal is received on process.
 MIT. Made with 💖
 
 <!-- Badges -->
-[npm-version-src]: https://img.shields.io/npm/v/listhen?style=flat-square
+[npm-version-src]: https://img.shields.io/npm/v/listhen?style=flat&colorA=18181B&colorB=F0DB4F
 [npm-version-href]: https://npmjs.com/package/listhen
-
-[npm-downloads-src]: https://img.shields.io/npm/dm/listhen?style=flat-square
+[npm-downloads-src]: https://img.shields.io/npm/dm/listhen?style=flat&colorA=18181B&colorB=F0DB4F
 [npm-downloads-href]: https://npmjs.com/package/listhen
+[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/listhen/main?style=flat&colorA=18181B&colorB=F0DB4F
+[codecov-href]: https://codecov.io/gh/unjs/listhen
+[license-src]: https://img.shields.io/github/license/unjs/listhen.svg?style=flat&colorA=18181B&colorB=F0DB4F
+[license-href]: https://github.com/unjs/listhen/blob/main/LICENSE
+[jsdocs-src]: https://img.shields.io/badge/jsDocs.io-reference-18181B?style=flat&colorA=18181B&colorB=F0DB4F
+[jsdocs-href]: https://www.jsdocs.io/package/listhen
+
 
 [github-actions-src]: https://img.shields.io/github/workflow/status/unjs/listhen/ci/main?style=flat-square
 [github-actions-href]: https://github.com/unjs/listhen/actions?query=workflow%3Aci
