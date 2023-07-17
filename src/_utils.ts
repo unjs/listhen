@@ -1,6 +1,6 @@
 import { promises as fs } from "node:fs";
 import { networkInterfaces } from "node:os";
-import { cyan, underline, bold } from "colorette";
+import { colors } from "consola/utils";
 import type { Certificate, HTTPSOptions } from "./types";
 
 export async function resolveCert(
@@ -60,7 +60,9 @@ export function formatAddress(addr: {
 }
 
 export function formatURL(url: string) {
-  return cyan(
-    underline(decodeURI(url).replace(/:(\d+)\//g, `:${bold("$1")}/`)),
+  return colors.cyan(
+    colors.underline(
+      decodeURI(url).replace(/:(\d+)\//g, `:${colors.bold("$1")}/`),
+    ),
   );
 }

@@ -9,7 +9,7 @@ import type { AddressInfo } from "node:net";
 import { getPort } from "get-port-please";
 import addShutdown from "http-shutdown";
 import { defu } from "defu";
-import { gray } from "colorette";
+import { colors } from "consola/utils";
 import { open } from "./lib/open";
 import type { ListenOptions, Listener, ShowURLOptions } from "./types";
 import {
@@ -103,7 +103,7 @@ export async function listen(
   }
 
   const showURL = (options?: ShowURLOptions) => {
-    const add = options_.clipboard ? gray("(copied to clipboard)") : "";
+    const add = options_.clipboard ? colors.gray("(copied to clipboard)") : "";
     const lines = [];
     const baseURL = options?.baseURL || options_.baseURL || "";
     const name = options?.name ? ` (${options.name})` : "";

@@ -8,9 +8,6 @@ dependencies:
   clipboardy:
     specifier: ^3.0.0
     version: 3.0.0
-  colorette:
-    specifier: ^2.0.20
-    version: 2.0.20
   consola:
     specifier: ^3.2.3
     version: 3.2.3
@@ -1528,6 +1525,7 @@ packages:
 
   /colorette@2.0.20:
     resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
+    dev: true
 
   /commondir@1.0.1:
     resolution: {integrity: sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg==}

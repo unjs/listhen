@@ -27,7 +27,6 @@
   },
   "dependencies": {
     "clipboardy": "^3.0.0",
-    "colorette": "^2.0.20",
     "consola": "^3.2.3",
     "defu": "^6.1.2",
     "get-port-please": "^3.0.1",
