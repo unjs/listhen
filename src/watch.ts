@@ -1,9 +1,8 @@
-import type { ListenOptions } from "node:net";
 import type { RequestListener } from "node:http";
 import { resolve } from "node:path";
 import { watch } from "node:fs";
 import { fileURLToPath } from "mlly";
-import type { Listener, WatchOptions } from "./types";
+import type { Listener, ListenOptions, WatchOptions } from "./types";
 import { listen } from "./listen";
 
 export async function listenAndWatch(
