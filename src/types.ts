@@ -1,6 +1,7 @@
 import type { Server } from "node:http";
 import type { Server as HTTPServer } from "node:https";
 import type { GetPortInput } from "get-port-please";
+import type { ConsolaInstance } from "consola";
 
 export interface Certificate {
   key: string;
@@ -32,6 +33,7 @@ export interface ListenOptions {
 export interface WatchOptions {
   cwd: string;
   entry: string;
+  logger: ConsolaInstance;
 }
 
 export interface ShowURLOptions {
