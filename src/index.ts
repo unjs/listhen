@@ -4,9 +4,11 @@ import {
   createServer as createHTTPSServer,
 } from "node:https";
 import { promisify } from "node:util";
-import { promises as fs } from "node:fs";
+import { resolve } from "node:path";
+import { promises as fs, watch } from "node:fs";
 import { networkInterfaces } from "node:os";
 import type { AddressInfo } from "node:net";
+import { fileURLToPath } from "mlly";
 import { cyan, gray, underline, bold } from "colorette";
 import { getPort, GetPortInput } from "get-port-please";
 import addShutdown from "http-shutdown";
@@ -38,6 +40,11 @@ export interface ListenOptions {
   isProd: boolean;
   autoClose: boolean;
   autoCloseSignals: string[];
+}
+
+export interface WatchOptions {
+  cwd: string;
+  entry: string;
 }
 
 export interface ShowURLOptions {
@@ -189,6 +196,47 @@ export async function listen(
     showURL,
     close,
   };
+}
+
+export async function listenAndWatch(
+  input: string,
+  options: Partial<ListenOptions & WatchOptions> = {},
+): Promise<Listener> {
+  const cwd = resolve(options.cwd ? fileURLToPath(options.cwd) : ".");
+
+  const jiti = await import("jiti").then((r) => r.default || r);
+  const _jitiRequire = jiti(cwd, {
+    esmResolve: true,
+    requireCache: false,
+    interopDefault: true,
+  });
+
+  const entry = _jitiRequire.resolve(input);
+
+  let handle: RequestListener;
+
+  const resolveHandle = () => {
+    const imported = _jitiRequire(entry);
+    handle = imported.default || imported;
+  };
+
+  resolveHandle();
+
+  const watcher = await watch(entry, () => {
+    resolveHandle();
+  });
+
+  const listenter = await listen((...args) => {
+    return handle(...args);
+  }, options);
+
+  const _close = listenter.close;
+  listenter.close = async () => {
+    watcher.close();
+    await _close();
+  };
+
+  return listenter;
 }
 
 async function resolveCert(
