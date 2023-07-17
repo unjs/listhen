@@ -1,3 +1,5 @@
+import type { Server } from "node:http";
+import type { Server as HTTPServer } from "node:https";
 import type { GetPortInput } from "get-port-please";
 
 export interface Certificate {

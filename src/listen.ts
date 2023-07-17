@@ -1,8 +1,6 @@
 import { createServer } from "node:http";
-import {
-  Server as HTTPServer,
-  createServer as createHTTPSServer,
-} from "node:https";
+import type { Server as HTTPServer } from "node:https";
+import { createServer as createHTTPSServer } from "node:https";
 import { promisify } from "node:util";
 import type { RequestListener, Server } from "node:http";
 import type { AddressInfo } from "node:net";
