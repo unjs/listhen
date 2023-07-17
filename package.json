@@ -18,6 +18,10 @@
   },
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "listen": "./dist/cli.cjs",
+    "listhen": "./dist/cli.cjs"
+  },
   "files": [
     "dist",
     "lib"
