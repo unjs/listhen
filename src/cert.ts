@@ -20,7 +20,7 @@ export interface SSLCertOptions {
 }
 
 export async function generateSSLCert(
-  options: SSLCertOptions
+  options: SSLCertOptions,
 ): Promise<Certificate> {
   // Certificate Attributes (https://git.io/fptna)
   const attributes = [
@@ -75,7 +75,7 @@ export interface CAOptions {
 }
 
 export async function generateCA(
-  options: CAOptions = {}
+  options: CAOptions = {},
 ): Promise<Certificate> {
   // Certificate Attributes: https://git.io/fptna
   const attributes = [
@@ -117,7 +117,7 @@ export async function generateCert(options: CertOptions): Promise<Certificate> {
   // Create serial from and integer between 50000 and 99999
   const serial = Math.floor(Math.random() * 95_000 + 50_000).toString();
   const generateKeyPair = promisify(
-    forge.pki.rsa.generateKeyPair.bind(forge.pki.rsa)
+    forge.pki.rsa.generateKeyPair.bind(forge.pki.rsa),
   );
   const keyPair = await generateKeyPair({ bits: 2048, workers: 4 });
   const cert = forge.pki.createCertificate();
@@ -127,7 +127,7 @@ export async function generateCert(options: CertOptions): Promise<Certificate> {
   cert.validity.notBefore = new Date();
   cert.validity.notAfter = new Date();
   cert.validity.notAfter.setDate(
-    cert.validity.notAfter.getDate() + options.validityDays
+    cert.validity.notAfter.getDate() + options.validityDays,
   );
   cert.setSubject(options.subject);
   cert.setIssuer(options.issuer);

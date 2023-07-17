@@ -6,8 +6,8 @@ listen(
   },
   {
     open: process.argv.some(
-      (argument) => argument === "-o" || argument === "--open"
+      (argument) => argument === "-o" || argument === "--open",
     ),
     https: process.argv.includes("--https"),
-  }
+  },
 );

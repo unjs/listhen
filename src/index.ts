@@ -57,7 +57,7 @@ export interface Listener {
 
 export async function listen(
   handle: RequestListener,
-  options_: Partial<ListenOptions> = {}
+  options_: Partial<ListenOptions> = {},
 ): Promise<Listener> {
   options_ = defu(options_, {
     port: process.env.PORT || 3000,
@@ -104,7 +104,7 @@ export async function listen(
   if (options_.https) {
     const { key, cert } = await resolveCert(
       { ...(options_.https as any) },
-      options_.hostname
+      options_.hostname,
     );
     https = { key, cert };
     server = createHTTPSServer({ key, cert }, handle);
@@ -148,7 +148,9 @@ export async function listen(
     const anyV6 = addr?.addr === "[::]";
     if (anyV4 || anyV6) {
       lines.push(
-        `  > Local${name}:    ${formatURL(getURL("localhost", baseURL))} ${add}`
+        `  > Local${name}:    ${formatURL(
+          getURL("localhost", baseURL),
+        )} ${add}`,
       );
       for (const addr of getNetworkInterfaces(anyV4)) {
         lines.push(`  > Network${name}:  ${formatURL(getURL(addr, baseURL))}`);
@@ -156,8 +158,8 @@ export async function listen(
     } else {
       lines.push(
         `  > Listening${name}:    ${formatURL(
-          getURL(undefined, baseURL)
-        )} ${add}`
+          getURL(undefined, baseURL),
+        )} ${add}`,
       );
     }
     // eslint-disable-next-line no-console
@@ -191,7 +193,7 @@ export async function listen(
 
 async function resolveCert(
   options: HTTPSOptions,
-  host?: string
+  host?: string,
 ): Promise<Certificate> {
   // Use cert if provided
   if (options.key && options.cert) {
@@ -244,6 +246,6 @@ function formatAddress(addr: { family: string | number; address: string }) {
 
 function formatURL(url: string) {
   return cyan(
-    underline(decodeURI(url).replace(/:(\d+)\//g, `:${bold("$1")}/`))
+    underline(decodeURI(url).replace(/:(\d+)\//g, `:${bold("$1")}/`)),
   );
 }

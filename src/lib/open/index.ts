@@ -54,7 +54,7 @@ const getWslDrivesMountPoint = (() => {
       encoding: "utf8",
     });
     const configMountPoint = /(?<!#.*)root\s*=\s*(?<mountPoint>.*)/g.exec(
-      configContent
+      configContent,
     );
 
     if (!configMountPoint) {
@@ -96,7 +96,7 @@ const baseOpen = async (options) => {
       baseOpen({
         ...options,
         app: singleApp,
-      })
+      }),
     );
   }
 
@@ -112,7 +112,7 @@ const baseOpen = async (options) => {
           name: appName,
           arguments: appArguments,
         },
-      })
+      }),
     );
   }
 
@@ -150,7 +150,7 @@ const baseOpen = async (options) => {
       "-NonInteractive",
       "–ExecutionPolicy",
       "Bypass",
-      "-EncodedCommand"
+      "-EncodedCommand",
     );
 
     if (!isWsl()) {
@@ -182,7 +182,7 @@ const baseOpen = async (options) => {
     // Using Base64-encoded command, accepted by PowerShell, to allow special characters.
     options.target = Buffer.from(
       encodedArguments.join(" "),
-      "utf16le"
+      "utf16le",
     ).toString("base64");
   } else {
     if (app) {
@@ -198,7 +198,7 @@ const baseOpen = async (options) => {
             writeFileSync(
               join(os.tmpdir(), "xdg-open"),
               await import("./xdg-open").then((r) => r.xdgOpenScript()),
-              "utf8"
+              "utf8",
             );
             chmodSync(command, 0o755 /* rwx r-x r-x */);
           } catch {
@@ -231,7 +231,7 @@ const baseOpen = async (options) => {
   const subprocess = childProcess.spawn(
     command,
     cliArguments,
-    childProcessOptions
+    childProcessOptions,
   );
 
   if (options.wait) {
@@ -331,8 +331,8 @@ defineLazyProperty(apps, "chrome", () =>
           "/mnt/c/Program Files (x86)/Google/Chrome/Application/chrome.exe",
         ],
       },
-    }
-  )
+    },
+  ),
 );
 
 defineLazyProperty(apps, "firefox", () =>
@@ -344,8 +344,8 @@ defineLazyProperty(apps, "firefox", () =>
     },
     {
       wsl: "/mnt/c/Program Files/Mozilla Firefox/firefox.exe",
-    }
-  )
+    },
+  ),
 );
 
 defineLazyProperty(apps, "edge", () =>
@@ -357,8 +357,8 @@ defineLazyProperty(apps, "edge", () =>
     },
     {
       wsl: "/mnt/c/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
-    }
-  )
+    },
+  ),
 );
 
 open.apps = apps;
