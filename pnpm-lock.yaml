@@ -20,9 +20,6 @@ dependencies:
   http-shutdown:
     specifier: ^1.2.2
     version: 1.2.2
-  ip-regex:
-    specifier: ^5.0.0
-    version: 5.0.0
   jiti:
     specifier: ^1.19.1
     version: 1.19.1
@@ -58,6 +55,9 @@ devDependencies:
   eslint-config-unjs:
     specifier: ^0.2.1
     version: 0.2.1(eslint@8.45.0)(typescript@5.1.6)
+  ip-regex:
+    specifier: ^5.0.0
+    version: 5.0.0
   prettier:
     specifier: ^3.0.0
     version: 3.0.0
@@ -2627,7 +2627,7 @@ packages:
   /ip-regex@5.0.0:
     resolution: {integrity: sha512-fOCG6lhoKKakwv+C6KdsOnGvgXnmgfmp0myi3bcNwj3qfwPAxRKWEuFhvEFF7ceYIz6+1jRZ+yguLFAmUNPEfw==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
-    dev: false
+    dev: true
 
   /is-array-buffer@3.0.1:
     resolution: {integrity: sha512-ASfLknmY8Xa2XtB4wmbz13Wu202baeA18cJBCeCy0wXUHZF0IPyVEXqKEcd+t2fNSLLL1vC6k7lxZEojNbISXQ==}
