@@ -24,7 +24,8 @@
   },
   "files": [
     "dist",
-    "lib"
+    "lib",
+    "bin"
   ],
   "scripts": {
     "build": "unbuild",
