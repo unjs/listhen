@@ -25,7 +25,7 @@ An elegant HTTP listener.
 
 ## Quick Usage (CLI)
 
-You can directly use Listhen CLI to watch and listen on an entrypoint:
+You can run your applications in localhost with typescript support and watch mode using `listhen` CLI:
 
 Create `app.ts`:
 
@@ -35,15 +35,24 @@ export default (req, res) => {
 };
 ```
 
-You can now run your app in localhost with typescript support and watch mode using `listhen` CLI:
+Use npx to invoke `listhen` command:
 
 ```sh
 npx listhen -w ./app.ts
 ```
 
-## Install
+```
+  > Local:    http://localhost:3000/
+  > Network:  http://10.0.0.150:3000/
+  > Network:  http://[2a02:a45a:8ce9:10:187d:7c2e:6d3b:88d]:3000/
+  > Network:  http://[2a02:a45a:8ce9:10:e140:85f4:f6c2:e608]:3000/
 
-Install:
+ℹ Watching `app.ts` for changes.
+```
+
+## Usage (API)
+
+Install package:
 
 ```bash
 # pnpm
@@ -57,16 +66,14 @@ yarn add listhen
 
 ```
 
-## Usage (API)
-
 Import into your Node.js project:
 
 ```js
 // CommonJS
-const { listen } = require("listhen");
+const { listen, listenAndWatch } = require("listhen");
 
 // ESM
-import { listen } from "listhen";
+import { listen, listenAndWatch } from "listhen";
 ```
 
 ```ts
@@ -74,22 +81,8 @@ const handler = (req, res) => {
   res.end("Hi!")
 }
 
-// { url, getURL, server, close }
+// listener: { url, getURL, server, close, ... }
 const listener = await listen(handle, options?)
-```
-
-**With express/connect:**
-
-```ts
-import express from 'express'
-
-const app = express()
-
-app.use('/', ((_req, res) => {
-  res.end('hi')
-})
-
-listen(app)
 ```
 
 ## Options
