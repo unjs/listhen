@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.1.0
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.0.4...v1.1.0)
+
+### 🚀 Enhancements
+
+- Support basic `listenAndWatch` ([#74](https://github.com/unjs/listhen/pull/74))
+- `listhen` cli ([#75](https://github.com/unjs/listhen/pull/75))
+
+### 💅 Refactors
+
+- Split code ([c6fd01e](https://github.com/unjs/listhen/commit/c6fd01e))
+- Use `consola/utils` for color utils ([f7a4f3b](https://github.com/unjs/listhen/commit/f7a4f3b))
+
+### 📦 Build
+
+- Remove non existing `cjs` dist from `exports` ([#69](https://github.com/unjs/listhen/pull/69))
+- Move `types` field to the first ([5abd82c](https://github.com/unjs/listhen/commit/5abd82c))
+- Fix cjs compatibility ([65d667c](https://github.com/unjs/listhen/commit/65d667c))
+
+### 🏡 Chore
+
+- Update dependencies ([92e94fb](https://github.com/unjs/listhen/commit/92e94fb))
+- Format code ([5590480](https://github.com/unjs/listhen/commit/5590480))
+- Add autofix ci ([c2e6b85](https://github.com/unjs/listhen/commit/c2e6b85))
+- Add missing type import ([448d3c9](https://github.com/unjs/listhen/commit/448d3c9))
+- Fix type import ([174e9fe](https://github.com/unjs/listhen/commit/174e9fe))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe <daniel@roe.dev>
+
 ## v1.0.4
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.0.3...v1.0.4)
