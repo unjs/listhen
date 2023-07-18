@@ -1,41 +1,36 @@
 import type { RequestListener } from "node:http";
-import { resolve } from "node:path";
 import { watch } from "node:fs";
-import { fileURLToPath } from "mlly";
+import { consola } from "consola";
 import type { Listener, ListenOptions, WatchOptions } from "./types";
 import { listen } from "./listen";
+import { createImporter } from "./_utils";
 
 export async function listenAndWatch(
   input: string,
   options: Partial<ListenOptions & WatchOptions> = {},
 ): Promise<Listener> {
-  const cwd = resolve(options.cwd ? fileURLToPath(options.cwd) : ".");
-
-  const jiti = await import("jiti").then((r) => r.default || r);
-  const _jitiRequire = jiti(cwd, {
-    esmResolve: true,
-    requireCache: false,
-    interopDefault: true,
-  });
-
-  const entry = _jitiRequire.resolve(input);
+  const logger = options.logger || consola.withTag("listhen");
 
   let handle: RequestListener;
 
-  const resolveHandle = () => {
-    const imported = _jitiRequire(entry);
-    handle = imported.default || imported;
+  const importer = await createImporter(input);
+
+  const resolveHandle = async () => {
+    handle = await importer.import();
   };
 
   resolveHandle();
 
-  const watcher = await watch(entry, () => {
+  const watcher = await watch(importer.entry, () => {
+    logger.info(`\`${importer.relativeEntry}\` changed, Reloading...`);
     resolveHandle();
   });
 
   const listenter = await listen((...args) => {
     return handle(...args);
   }, options);
+
+  logger.info(`Watching \`${importer.relativeEntry}\` for changes.`);
 
   const _close = listenter.close;
   listenter.close = async () => {

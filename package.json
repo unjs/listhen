@@ -1,7 +1,7 @@
 {
   "name": "listhen",
   "version": "1.0.4",
-  "description": "",
+  "description": "👂 Elegant HTTP Listener",
   "repository": "unjs/listhen",
   "license": "MIT",
   "exports": {
@@ -9,10 +9,19 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
+    },
+    "./cli": {
+      "types": "./dist/cli.d.ts",
+      "import": "./dist/cli.mjs",
+      "require": "./dist/cli.cjs"
     }
   },
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "listen": "./dist/cli.cjs",
+    "listhen": "./dist/cli.cjs"
+  },
   "files": [
     "dist",
     "lib"
@@ -27,6 +36,7 @@
     "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {
+    "citty": "^0.1.2",
     "clipboardy": "^3.0.0",
     "consola": "^3.2.3",
     "defu": "^6.1.2",

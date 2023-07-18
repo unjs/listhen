@@ -1,6 +1,8 @@
 import { promises as fs } from "node:fs";
 import { networkInterfaces } from "node:os";
+import { relative, resolve } from "node:path";
 import { colors } from "consola/utils";
+import { fileURLToPath } from "mlly";
 import type { Certificate, HTTPSOptions } from "./types";
 
 export async function resolveCert(
@@ -65,4 +67,28 @@ export function formatURL(url: string) {
       decodeURI(url).replace(/:(\d+)\//g, `:${colors.bold("$1")}/`),
     ),
   );
+}
+
+export async function createImporter(input: string, _cwd?: string) {
+  const cwd = resolve(_cwd ? fileURLToPath(_cwd) : ".");
+
+  const jiti = await import("jiti").then((r) => r.default || r);
+  const _jitiRequire = jiti(cwd, {
+    esmResolve: true,
+    requireCache: false,
+    interopDefault: true,
+  });
+
+  const entry = _jitiRequire.resolve(input);
+
+  const _import = () => {
+    const r = _jitiRequire(input);
+    return Promise.resolve(r.default || r);
+  };
+
+  return {
+    entry,
+    relativeEntry: relative(cwd, entry),
+    import: _import,
+  };
 }
