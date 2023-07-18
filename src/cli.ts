@@ -58,6 +58,7 @@ export const main = defineCommand({
     watch: {
       type: "boolean",
       description: "Watch for changes",
+      alias: "w",
       default: false,
     },
   },

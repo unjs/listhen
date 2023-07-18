@@ -30,7 +30,7 @@ export async function listenAndWatch(
     return handle(...args);
   }, options);
 
-  logger.info(`Watching \`${importer.relativeEntry}\` for changes!`);
+  logger.info(`Watching \`${importer.relativeEntry}\` for changes.`);
 
   const _close = listenter.close;
   listenter.close = async () => {

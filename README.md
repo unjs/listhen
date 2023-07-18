@@ -8,12 +8,13 @@ An elegant HTTP listener.
 [![License][license-src]][license-href]
 [![JSDocs][jsdocs-src]][jsdocs-href]
 
-## Features 
+## Features
 
+- Built-in CLI To run your applications with watch mode and typescript support (with [unjs/jiti](https://github.com/unjs/jiti))
 - Promisified interface for listening and closing server
 - Work with express/connect or plain http handle function
 - Support HTTP and HTTPS
-- Assign a port or fallback to human friendly alternative (with [get-port-please](https://github.com/unjs/get-port-please))
+- Assign a port or fallback to human friendly alternative (with [unjs/get-port-please](https://github.com/unjs/get-port-please))
 - Generate listening URL and show on console
 - Copy URL to clipboard (dev only by default)
 - Open URL in browser (opt-in)
@@ -22,44 +23,66 @@ An elegant HTTP listener.
 - Close on exit signal
 - Gracefully shutdown server with [http-shutdown](https://github.com/thedillonb/http-shutdown)
 
+## Quick Usage (CLI)
+
+You can directly use Listhen CLI to watch and listen on an entrypoint:
+
+Create `app.ts`:
+
+```ts
+export default (req, res) => {
+  res.end("Hello World!");
+};
+```
+
+You can now run your app in localhost with typescript support and watch mode using `listhen` CLI:
+
+```sh
+npx listhen -w ./app.ts
+```
+
 ## Install
 
-Install using npm:
+Install:
 
 ```bash
+# pnpm
+pnpm i listhen
+
+# npm
 npm i listhen
+
+# yarn
+yarn add listhen
+
 ```
+
+## Usage (API)
 
 Import into your Node.js project:
 
 ```js
 // CommonJS
-const { listen } = require('listhen')
+const { listen } = require("listhen");
 
 // ESM
-import { listen } from 'listhen'
+import { listen } from "listhen";
 ```
 
-## Usage
-
-**Function signature:**
-
 ```ts
-const { url, getURL, server, close } = await listen(handle, options?)
-```
+const handler = (req, res) => {
+  res.end("Hi!")
+}
 
-**Plain handle function:**
-
-```ts
-listen((_req, res) => {
-  res.end('hi')
-})
+// { url, getURL, server, close }
+const listener = await listen(handle, options?)
 ```
 
 **With express/connect:**
 
 ```ts
-const express = require('express')
+import express from 'express'
+
 const app = express()
 
 app.use('/', ((_req, res) => {
@@ -144,6 +167,7 @@ Automatically close when an exit signal is received on process.
 MIT. Made with 💖
 
 <!-- Badges -->
+
 [npm-version-src]: https://img.shields.io/npm/v/listhen?style=flat&colorA=18181B&colorB=F0DB4F
 [npm-version-href]: https://npmjs.com/package/listhen
 [npm-downloads-src]: https://img.shields.io/npm/dm/listhen?style=flat&colorA=18181B&colorB=F0DB4F
