@@ -19,8 +19,8 @@
   "main": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "bin": {
-    "listen": "./dist/cli.cjs",
-    "listhen": "./dist/cli.cjs"
+    "listen": "./bin/listhen.mjs",
+    "listhen": "./bin/listhen.mjs"
   },
   "files": [
     "dist",
@@ -59,7 +59,7 @@
     "ip-regex": "^5.0.0",
     "prettier": "^3.0.0",
     "typescript": "^5.1.6",
-    "unbuild": "^1.2.1",
+    "unbuild": "^2.0.0-rc.0",
     "vitest": "^0.33.0"
   },
   "packageManager": "pnpm@8.6.8"
