@@ -62,7 +62,7 @@ devDependencies:
     specifier: ^0.2.1
     version: 0.2.1(eslint@8.46.0)(typescript@5.1.6)
   h3:
-    specifier: ^1.8.0-rc.2
+    specifier: 1.8.0-rc.2
     version: 1.8.0-rc.2
   ip-regex:
     specifier: ^5.0.0

@@ -1,10 +1,11 @@
 import { resolve } from "node:path";
 import { defineCommand, runMain as _runMain } from "citty";
+import { dirname, extname } from "pathe";
 import { name, description, version } from "../package.json";
 import { listen } from "./listen";
-import { listenAndWatch } from "./watch";
-import type { ListenOptions, WatchOptions } from "./types";
-import { createImporter } from "./_utils";
+import { listenAndWatch } from "./server";
+import type { ListenOptions } from "./types";
+import { createDevServer } from "./server/_dev";
 
 export const main = defineCommand({
   meta: {
@@ -63,8 +64,12 @@ export const main = defineCommand({
     },
   },
   async run({ args }) {
-    const cwd = resolve(args.cwd || ".");
-    process.chdir(cwd);
+    const cwd = resolve(
+      process.cwd(),
+      args.cwd ||
+        (extname(args.entry) ? dirname(args.entry) : args.entry) ||
+        ".",
+    );
 
     const opts: Partial<ListenOptions & WatchOptions> = {
       ...args,
@@ -81,9 +86,11 @@ export const main = defineCommand({
     if (args.watch) {
       await listenAndWatch(args.entry, opts);
     } else {
-      const importer = await createImporter(args.entry);
-      const handler = await importer.import();
-      await listen(handler, opts);
+      const devServer = await createDevServer({
+        cwd,
+        entry: args.entry,
+      });
+      await listen(devServer.nodeListener, opts);
     }
   },
 });
