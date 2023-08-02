@@ -1,8 +1,7 @@
 import type { Server } from "node:http";
 import type { Server as HTTPServer } from "node:https";
 import type { GetPortInput } from "get-port-please";
-import type { ConsolaInstance } from "consola";
-import forge from "node-forge";
+import type nodeForge from "node-forge";
 
 export interface Certificate {
   key: string;
@@ -12,8 +11,8 @@ export interface Certificate {
 
 export interface CertificateOptions {
   validityDays: number;
-  subject: forge.pki.CertificateField[];
-  issuer: forge.pki.CertificateField[];
+  subject: nodeForge.pki.CertificateField[];
+  issuer: nodeForge.pki.CertificateField[];
   extensions: any[];
 }
 
@@ -64,13 +63,6 @@ export interface ListenOptions {
   isProd: boolean;
   autoClose: boolean;
   autoCloseSignals: string[];
-}
-
-export interface WatchOptions {
-  cwd: string;
-  entry: string;
-  logger: ConsolaInstance;
-  ignore: string[];
 }
 
 export interface ShowURLOptions {
