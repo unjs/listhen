@@ -32,7 +32,8 @@
     "dev": "vitest",
     "lint": "eslint --ext .ts . && prettier -c src test",
     "lint:fix": "eslint --fix --ext .ts . && prettier -w src test",
-    "play": "jiti test/fixture/app",
+    "listhen": "node ./scripts/listhen.mjs",
+    "play": "node ./scripts/listhen.mjs -w ./playground",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "test": "pnpm lint && vitest run --coverage"
   },
@@ -56,6 +57,7 @@
     "changelogen": "^0.5.4",
     "eslint": "^8.46.0",
     "eslint-config-unjs": "^0.2.1",
+    "h3": "^1.8.0-rc.2",
     "ip-regex": "^5.0.0",
     "prettier": "^3.0.0",
     "typescript": "^5.1.6",
