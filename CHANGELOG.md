@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.2.0
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.1.2...v1.2.0)
+
+### 🚀 Enhancements
+
+- Improve watcher experience ([#82](https://github.com/unjs/listhen/pull/82))
+- Dev server with serve static support ([#83](https://github.com/unjs/listhen/pull/83))
+- **https:** Support using encrypted private key and pkcs12 (pfx) keystore ([#80](https://github.com/unjs/listhen/pull/80))
+
+### 🩹 Fixes
+
+- **watcher:** Resolve relative paths without leading dot ([c8388f1](https://github.com/unjs/listhen/commit/c8388f1))
+
+### 🏡 Chore
+
+- Update dependencies ([1a7a974](https://github.com/unjs/listhen/commit/1a7a974))
+- Update playground ([028b5c9](https://github.com/unjs/listhen/commit/028b5c9))
+- Update lockfile ([cd9f66a](https://github.com/unjs/listhen/commit/cd9f66a))
+- Update usage to include h3 ([ede3999](https://github.com/unjs/listhen/commit/ede3999))
+
+### 🤖 CI
+
+- Use conventional commit for autofix action ([#79](https://github.com/unjs/listhen/pull/79))
+
+### ❤️  Contributors
+
+- Mastercuber <e4d33vb85@mozmail.com>
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Daniel Roe <daniel@roe.dev>
+
 ## v1.1.2
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.1.1...v1.1.2)
