@@ -80,20 +80,24 @@ describe("listhen", () => {
       expect(listener.url.startsWith("https://")).toBe(true);
     });
 
-    test("listen (https - custom - with wrong private key passphrase)", () => {
-      expect(() =>
-        listen(handle, {
-          https: {
-            // eslint-disable-next-line unicorn/prefer-module
-            key: resolve(__dirname, ".tmp/certs", "encrypted-key.pem"),
-            // eslint-disable-next-line unicorn/prefer-module
-            cert: resolve(__dirname, ".tmp/certs", "cert.pem"),
-            passphrase: "wrong-pw",
-          },
-          hostname: "localhost",
-        }),
-      ).rejects.toThrowError("error:1C800064:Provider routines::bad decrypt");
-    });
+    const nodeMajor = Number(process.version.slice(1).split(".")[0]);
+    test.skipIf(nodeMajor < 18)(
+      "listen (https - custom - with wrong private key passphrase)",
+      () => {
+        expect(() =>
+          listen(handle, {
+            https: {
+              // eslint-disable-next-line unicorn/prefer-module
+              key: resolve(__dirname, ".tmp/certs", "encrypted-key.pem"),
+              // eslint-disable-next-line unicorn/prefer-module
+              cert: resolve(__dirname, ".tmp/certs", "cert.pem"),
+              passphrase: "wrong-pw",
+            },
+            hostname: "localhost",
+          }),
+        ).rejects.toThrowError("error:1C800064:Provider routines::bad decrypt");
+      },
+    );
 
     test("listen (https - PCKS#12/pfx/p12 - with store passphrase)", async () => {
       const listener = await listen(handle, {
