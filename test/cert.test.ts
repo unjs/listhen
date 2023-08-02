@@ -331,8 +331,8 @@ describe("Certification Tests", () => {
     describe("resolveCert", () => {
       test("Resolves to certificate and key", async () => {
         const c = await _private.resolveCert({
-          key: resolve("test", "fixture", "cert", "key.pem"),
-          cert: resolve("test", "fixture", "cert", "cert.pem"),
+          key: resolve("test", "cert", "key.pem"),
+          cert: resolve("test", "cert", "cert.pem"),
         });
         expect(c.key).toBeTruthy();
         expect(c.key).toContain("-----BEGIN RSA PRIVATE KEY-----");
@@ -344,8 +344,8 @@ describe("Certification Tests", () => {
 
       test("Resolves to certificate and encrypted key", async () => {
         const c = await _private.resolveCert({
-          key: resolve("test", "fixture", "cert", "encrypted-key.pem"),
-          cert: resolve("test", "fixture", "cert", "cert.pem"),
+          key: resolve("test", "cert", "encrypted-key.pem"),
+          cert: resolve("test", "cert", "cert.pem"),
         });
         expect(c.key).toBeTruthy();
         expect(c.key).toContain("-----BEGIN ENCRYPTED PRIVATE KEY-----");
@@ -389,7 +389,7 @@ describe("Certification Tests", () => {
 
         expect(
           _private.resolveCert({
-            key: resolve("test", "fixture", "cert", "key.pem"),
+            key: resolve("test", "cert", "key.pem"),
             cert: "non-existing.pem",
           }),
         ).rejects.toThrowError("ENOENT: no such file or directory");
@@ -397,7 +397,7 @@ describe("Certification Tests", () => {
         expect(
           _private.resolveCert({
             key: "non-existing.pem",
-            cert: resolve("test", "fixture", "cert", "cert.pem"),
+            cert: resolve("test", "cert", "cert.pem"),
           }),
         ).rejects.toThrowError("ENOENT: no such file or directory");
       });
@@ -406,11 +406,11 @@ describe("Certification Tests", () => {
     describe("resolvePfx", () => {
       test("Resolves certificate and key from store (without store passphrase)", async () => {
         const certs = await _private.resolveCert({
-          cert: resolve("test", "fixture", "cert", "cert.pem"),
-          key: resolve("test", "fixture", "cert", "key.pem"),
+          cert: resolve("test", "cert", "cert.pem"),
+          key: resolve("test", "cert", "key.pem"),
         });
         const pfx = await _private.resolvePfx({
-          pfx: resolve("test", "fixture", "cert", "keystore2.p12"),
+          pfx: resolve("test", "cert", "keystore2.p12"),
         });
         expect(pfx).toBeTruthy();
         expect(pfx.safeContents.length).toEqual(2);
@@ -425,11 +425,11 @@ describe("Certification Tests", () => {
       });
       test("Resolves certificate and key from store (with store passphrase)", async () => {
         const certs = await _private.resolveCert({
-          cert: resolve("test", "fixture", "cert", "cert.pem"),
-          key: resolve("test", "fixture", "cert", "key.pem"),
+          cert: resolve("test", "cert", "cert.pem"),
+          key: resolve("test", "cert", "key.pem"),
         });
         const pfx = await _private.resolvePfx({
-          pfx: resolve("test", "fixture", "cert", "keystore.p12"),
+          pfx: resolve("test", "cert", "keystore.p12"),
           passphrase: "store-pw",
         });
         expect(pfx).toBeTruthy();
@@ -447,7 +447,7 @@ describe("Certification Tests", () => {
       test("Throws error on wrong store password", () => {
         expect(
           _private.resolvePfx({
-            pfx: resolve("test", "fixture", "cert", "keystore.p12"),
+            pfx: resolve("test", "cert", "keystore.p12"),
             passphrase: "wrong-pw",
           }),
         ).rejects.toThrowError(
@@ -456,7 +456,7 @@ describe("Certification Tests", () => {
 
         expect(
           _private.resolvePfx({
-            pfx: resolve("test", "fixture", "cert", "keystore.p12"),
+            pfx: resolve("test", "cert", "keystore.p12"),
             passphrase: "",
           }),
         ).rejects.toThrowError(
@@ -467,23 +467,13 @@ describe("Certification Tests", () => {
       test("Throws error on non existing store", () => {
         expect(
           _private.resolvePfx({
-            pfx: resolve(
-              "test",
-              "fixture",
-              "cert",
-              "non-existing-keystore.p12",
-            ),
+            pfx: resolve("test", "cert", "non-existing-keystore.p12"),
           }),
         ).rejects.toThrowError("ENOENT: no such file or directory");
 
         expect(
           _private.resolvePfx({
-            pfx: resolve(
-              "test",
-              "fixture",
-              "cert",
-              "non-existing-keystore.p12",
-            ),
+            pfx: resolve("test", "cert", "non-existing-keystore.p12"),
             passphrase: "wrong-pw",
           }),
         ).rejects.toThrowError("ENOENT: no such file or directory");

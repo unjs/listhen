@@ -10,31 +10,17 @@ export default async function generateCert() {
   });
 
   const decryptedKey = forge.pki.decryptRsaPrivateKey(certs.cert.key, pw);
-  mkdirSync(resolve("test", "fixture", "cert"));
+  mkdirSync(resolve("test", "cert"));
+  writeFileSync(resolve("test", "cert", "cert.pem"), certs.cert.cert);
+  writeFileSync(resolve("test", "cert", "encrypted-key.pem"), certs.cert.key);
   writeFileSync(
-    resolve("test", "fixture", "cert", "cert.pem"),
-    certs.cert.cert,
-  );
-  writeFileSync(
-    resolve("test", "fixture", "cert", "encrypted-key.pem"),
-    certs.cert.key,
-  );
-  writeFileSync(
-    resolve("test", "fixture", "cert", "key.pem"),
+    resolve("test", "cert", "key.pem"),
     forge.pki.privateKeyToPem(decryptedKey),
   );
   const pfx = convertToPFX(certs.cert.cert, certs.cert.key, "store-pw");
   const pfx2 = convertToPFX(certs.cert.cert, certs.cert.key, "");
-  writeFileSync(
-    resolve("test", "fixture", "cert", "keystore.p12"),
-    pfx,
-    "binary",
-  );
-  writeFileSync(
-    resolve("test", "fixture", "cert", "keystore2.p12"),
-    pfx2,
-    "binary",
-  );
+  writeFileSync(resolve("test", "cert", "keystore.p12"), pfx, "binary");
+  writeFileSync(resolve("test", "cert", "keystore2.p12"), pfx2, "binary");
 }
 
 function convertToPFX(
