@@ -7,4 +7,4 @@ dist
 types
 .conf*
 .idea/
-test/cert
+.tmp

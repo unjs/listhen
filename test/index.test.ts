@@ -57,9 +57,9 @@ describe("listhen", () => {
       listener = await listen(handle, {
         https: {
           // eslint-disable-next-line unicorn/prefer-module
-          key: resolve(__dirname, "cert", "key.pem"),
+          key: resolve(__dirname, ".tmp/certs", "key.pem"),
           // eslint-disable-next-line unicorn/prefer-module
-          cert: resolve(__dirname, "cert", "cert.pem"),
+          cert: resolve(__dirname, ".tmp/certs", "cert.pem"),
         },
         hostname: "localhost",
       });
@@ -70,9 +70,9 @@ describe("listhen", () => {
       listener = await listen(handle, {
         https: {
           // eslint-disable-next-line unicorn/prefer-module
-          key: resolve(__dirname, "cert", "encrypted-key.pem"),
+          key: resolve(__dirname, ".tmp/certs", "encrypted-key.pem"),
           // eslint-disable-next-line unicorn/prefer-module
-          cert: resolve(__dirname, "cert", "cert.pem"),
+          cert: resolve(__dirname, ".tmp/certs", "cert.pem"),
           passphrase: "cert-pw",
         },
         hostname: "localhost",
@@ -85,9 +85,9 @@ describe("listhen", () => {
         listen(handle, {
           https: {
             // eslint-disable-next-line unicorn/prefer-module
-            key: resolve(__dirname, "cert", "encrypted-key.pem"),
+            key: resolve(__dirname, ".tmp/certs", "encrypted-key.pem"),
             // eslint-disable-next-line unicorn/prefer-module
-            cert: resolve(__dirname, "cert", "cert.pem"),
+            cert: resolve(__dirname, ".tmp/certs", "cert.pem"),
             passphrase: "wrong-pw",
           },
           hostname: "localhost",
@@ -99,7 +99,7 @@ describe("listhen", () => {
       const listener = await listen(handle, {
         https: {
           // eslint-disable-next-line unicorn/prefer-module
-          pfx: resolve(__dirname, "cert", "keystore.p12"),
+          pfx: resolve(__dirname, ".tmp/certs/keystore.p12"),
           passphrase: "store-pw",
         },
         hostname: "localhost",
@@ -112,7 +112,7 @@ describe("listhen", () => {
         listen(handle, {
           https: {
             // eslint-disable-next-line unicorn/prefer-module
-            pfx: resolve(__dirname, "cert", "keystore.p12"),
+            pfx: resolve(__dirname, ".tmp/certs/keystore.p12"),
           },
           hostname: "localhost",
         }),
@@ -126,7 +126,7 @@ describe("listhen", () => {
         listen(handle, {
           https: {
             // eslint-disable-next-line unicorn/prefer-module
-            pfx: resolve(__dirname, "cert", "keystore.p12"),
+            pfx: resolve(__dirname, ".tmp/certs/keystore.p12"),
             passphrase: "wrong-pw",
           },
           hostname: "localhost",
