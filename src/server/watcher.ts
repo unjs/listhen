@@ -1,6 +1,4 @@
-import { extname } from "node:path";
 import { consola } from "consola";
-import { dirname } from "pathe";
 import type { AsyncSubscription } from "@parcel/watcher";
 import type { ConsolaInstance } from "consola";
 import type { Listener, ListenOptions } from "../types";
@@ -11,6 +9,7 @@ export interface WatchOptions {
   cwd?: string;
   logger?: ConsolaInstance;
   ignore?: string[];
+  publicDirs?: string[];
 }
 
 export async function listenAndWatch(
@@ -47,12 +46,8 @@ export async function listenAndWatch(
     (r) => r.default || r,
   );
 
-  const resolvedEntry = devServer.resolver.resolve(entry);
-  const entryDir = extname(resolvedEntry)
-    ? dirname(resolvedEntry)
-    : resolvedEntry;
   watcher = await subscribe(
-    entryDir,
+    devServer.cwd,
     (_error, events) => {
       if (events.length === 0) {
         return;
@@ -73,7 +68,9 @@ export async function listenAndWatch(
   );
 
   logger.log(
-    `👀 Watching ${devServer.resolver.formateRelative(entryDir)} for changes`,
+    `👀 Watching ${devServer.resolver.formateRelative(
+      devServer.cwd,
+    )} for changes`,
   );
 
   return listenter;

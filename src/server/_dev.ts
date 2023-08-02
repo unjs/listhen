@@ -1,14 +1,14 @@
 import { existsSync, statSync } from "node:fs";
 import { readFile, stat } from "node:fs/promises";
 import { consola } from "consola";
-import { join, resolve } from "pathe";
+import { dirname, extname, join, resolve } from "pathe";
 import type { ConsolaInstance } from "consola";
 import { createResolver } from "./_resolver";
 
 export interface DevServerOptions {
-  cwd?: string;
   entry: string;
-  serveStatic?: string[];
+  cwd?: string;
+  staticDirs?: string[];
   logger?: ConsolaInstance;
 }
 
@@ -24,19 +24,25 @@ export async function createDevServer(options: DevServerOptions) {
     toNodeListener,
   } = await import("h3");
 
-  const cwd = resolve(process.cwd(), options.cwd || ".");
-
   // Initialize resolver
   const resolver = await createResolver();
+
+  // Guess cwd
+  let cwd: string = options.cwd || "";
+  if (!cwd) {
+    const resolvedEntry = resolver.resolve(options.entry);
+    cwd = extname(resolvedEntry) ? dirname(resolvedEntry) : resolvedEntry;
+  }
 
   // Create app instance
   const app = createApp();
 
   // Register static asset handlers
-  const staticDirs = (options.serveStatic || ["public"])
+  const staticDirs = (options.staticDirs || ["public"])
     .filter(Boolean)
     .map((d) => resolve(cwd, d))
     .filter((d) => existsSync(d) && statSync(d).isDirectory());
+
   for (const dir of staticDirs) {
     logger.log(`📁 Serving static files from ${resolver.formateRelative(dir)}`);
     app.use(
@@ -103,6 +109,7 @@ export async function createDevServer(options: DevServerOptions) {
   await loadHandle(false);
 
   return {
+    cwd,
     resolver,
     nodeListener: toNodeListener(app),
     reload: () => loadHandle(true),

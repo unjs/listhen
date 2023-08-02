@@ -5,7 +5,7 @@ import { name, description, version } from "../package.json";
 import { listen } from "./listen";
 import { listenAndWatch } from "./server";
 import type { ListenOptions } from "./types";
-import { createDevServer } from "./server/_dev";
+import { DevServerOptions, createDevServer } from "./server/_dev";
 
 export const main = defineCommand({
   meta: {
@@ -64,7 +64,7 @@ export const main = defineCommand({
     },
   },
   async run({ args }) {
-    const opts: Partial<ListenOptions & WatchOptions> = {
+    const opts: Partial<ListenOptions & WatchOptions & DevServerOptions> = {
       ...args,
       port: args.port,
       hostname: args.host,
