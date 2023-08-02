@@ -1,4 +1,5 @@
 import { resolve } from "node:path";
+import { WatchOptions } from "node:fs";
 import { defineCommand, runMain as _runMain } from "citty";
 import { dirname, extname } from "pathe";
 import { name, description, version } from "../package.json";
@@ -73,7 +74,6 @@ export const main = defineCommand({
 
     const opts: Partial<ListenOptions & WatchOptions> = {
       ...args,
-      cwd,
       port: args.port,
       hostname: args.host,
       clipboard: args.clipboard,
