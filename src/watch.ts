@@ -74,22 +74,28 @@ export async function listenAndWatch(
   );
 
   const entryDir = dirname(importer.entry);
-  watcher = await subscribe(entryDir, (_error, events) => {
-    if (events.length === 0) {
-      return;
-    }
-    resolveHandle().then(() => {
-      const eventsString = events
-        .map((e) => `${importer.formateRelative(e.path)} ${e.type}d`)
-        .join(", ");
-      logger.log(`${eventsString}. Reloading server...`);
-      if (error) {
-        logger.error(error);
-      } else {
-        logger.log(`🔃 Server Reloaded in ${loadTime}ms.`);
+  watcher = await subscribe(
+    entryDir,
+    (_error, events) => {
+      if (events.length === 0) {
+        return;
       }
-    });
-  });
+      resolveHandle().then(() => {
+        const eventsString = events
+          .map((e) => `${importer.formateRelative(e.path)} ${e.type}d`)
+          .join(", ");
+        logger.log(`${eventsString}. Reloading server...`);
+        if (error) {
+          logger.error(error);
+        } else {
+          logger.log(`🔃 Server Reloaded in ${loadTime}ms.`);
+        }
+      });
+    },
+    {
+      ignore: ["**/.git/**", "**/node_modules/**", "**/dist/**"],
+    },
+  );
 
   logger.log(`👀 Watching ${importer.formateRelative(entryDir)} for changes.`);
 
