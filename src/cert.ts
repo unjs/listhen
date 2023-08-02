@@ -15,7 +15,44 @@ import type {
   HTTPSOptions,
 } from "./types";
 
-export async function generateCertificates(
+export async function resolveCertificate(
+  options: HTTPSOptions,
+): Promise<Certificate> {
+  let https: Certificate;
+  if (typeof options === "object" && options.key && options.cert) {
+    // Resolve actual certificate and cert
+    https = await resolveCert(options);
+    if (options.passphrase) {
+      https.passphrase = options.passphrase;
+    }
+  } else if (typeof options === "object" && options.pfx) {
+    // Resolve certificate and key from PKCS#12 (PFX) store
+    const pfx = await resolvePfx(options);
+    if (
+      !pfx.safeContents ||
+      pfx.safeContents.length < 2 ||
+      pfx.safeContents[0].safeBags.length === 0 ||
+      pfx.safeContents[1].safeBags.length === 0
+    ) {
+      throw new Error("keystore not containing a cert AND a key");
+    }
+    // Maybe the order of the cert/key differs sometimes. Tests should show this
+    const _cert = pfx.safeContents[0].safeBags[0].cert;
+    const _key = pfx.safeContents[1].safeBags[0].key;
+
+    https = {
+      key: forge.pki.privateKeyToPem(_key!),
+      cert: forge.pki.certificateToPem(_cert!),
+    };
+  } else {
+    const { cert } = await generateCertificates(options);
+    https = cert;
+  }
+
+  return https;
+}
+
+async function generateCertificates(
   options: TLSCertOptions,
 ): Promise<{ cert: Certificate; ca: Certificate }> {
   const defaults = {
@@ -47,7 +84,7 @@ export async function generateCertificates(
   return { ca, cert };
 }
 
-export async function resolveCert(options: HTTPSOptions): Promise<Certificate> {
+async function resolveCert(options: HTTPSOptions): Promise<Certificate> {
   // Use cert if provided
   if (options && options.key && options.cert) {
     const isInline = (s = "") => s.startsWith("--");
@@ -61,7 +98,7 @@ export async function resolveCert(options: HTTPSOptions): Promise<Certificate> {
   throw new Error("Certificate or Private Key not present");
 }
 
-export async function resolvePfx(
+async function resolvePfx(
   options: HTTPSOptions,
 ): Promise<forge.pkcs12.Pkcs12Pfx> {
   if (options && options.pfx) {
@@ -295,4 +332,7 @@ export const _private = {
   createCertificateInfo,
   signCertificate,
   createCertificateFromKeyPair,
+  resolveCert,
+  resolvePfx,
+  generateCertificates,
 };

@@ -1,11 +1,11 @@
 import { writeFileSync, mkdirSync } from "node:fs";
 import forge from "node-forge";
 import { resolve } from "pathe";
-import { generateCertificates } from "../src/cert";
+import { _private } from "../src/cert";
 
 export default async function generateCert() {
   const pw = "cert-pw";
-  const certs = await generateCertificates({
+  const certs = await _private.generateCertificates({
     passphrase: pw,
   });
 

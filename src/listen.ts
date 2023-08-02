@@ -8,7 +8,6 @@ import { getPort } from "get-port-please";
 import addShutdown from "http-shutdown";
 import { defu } from "defu";
 import { colors } from "consola/utils";
-import forge from "node-forge";
 import { open } from "./lib/open";
 import type {
   ListenOptions,
@@ -17,7 +16,7 @@ import type {
   HTTPSOptions,
 } from "./types";
 import { formatAddress, formatURL, getNetworkInterfaces } from "./_utils";
-import { resolvePfx, resolveCert, generateCertificates } from "./cert";
+import { resolveCertificate } from "./cert";
 
 export async function listen(
   handle: RequestListener,
@@ -68,43 +67,7 @@ export async function listen(
   const httpsOptions = options_.https as HTTPSOptions;
 
   if (httpsOptions) {
-    if (
-      typeof httpsOptions === "object" &&
-      httpsOptions.key &&
-      httpsOptions.cert
-    ) {
-      // Resolve actual certificate and cert
-      https = await resolveCert(httpsOptions);
-      if (httpsOptions.passphrase) {
-        https.passphrase = httpsOptions.passphrase;
-      }
-    } else if (typeof httpsOptions === "object" && httpsOptions.pfx) {
-      // Resolve certificate and key from PKCS#12 (PFX) store
-      const pfx = await resolvePfx(httpsOptions);
-      if (
-        !pfx.safeContents ||
-        pfx.safeContents.length < 2 ||
-        pfx.safeContents[0].safeBags.length === 0 ||
-        pfx.safeContents[1].safeBags.length === 0
-      ) {
-        throw new Error("keystore not containing a cert AND a key");
-      }
-      const _cert = pfx.safeContents[0].safeBags[0].cert;
-      const _key = pfx.safeContents[1].safeBags[0].key;
-
-      https = {
-        key: forge.pki.privateKeyToPem(_key!),
-        cert: forge.pki.certificateToPem(_cert!),
-      };
-    } else {
-      const { cert } = await generateCertificates(httpsOptions);
-      https = {
-        key: cert.key,
-        cert: cert.cert,
-        passphrase: cert.passphrase,
-      };
-    }
-
+    https = await resolveCertificate(httpsOptions);
     server = createHTTPSServer(https, handle);
     addShutdown(server);
     // @ts-ignore
