@@ -28,10 +28,13 @@ export async function listenAndWatch(
 
   const entryDir = dirname(importer.entry);
   const watcher = await subscribe(entryDir, (_error, events) => {
+    if (events.length === 0) {
+      return;
+    }
     logger.log(
-      `🔃 ${events
+      `🔃 Reloading server... (${events
         .map((e) => `\`./${importer.relative(e.path)}\` ${e.type}d`)
-        .join(", ")}. Reloading server...`,
+        .join(", ")})`,
     );
     resolveHandle();
   });
