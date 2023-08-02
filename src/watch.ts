@@ -1,6 +1,6 @@
 import type { RequestListener } from "node:http";
-import { watch } from "node:fs";
 import { consola } from "consola";
+import { dirname } from "pathe";
 import type { Listener, ListenOptions, WatchOptions } from "./types";
 import { listen } from "./listen";
 import { createImporter } from "./_utils";
@@ -21,8 +21,18 @@ export async function listenAndWatch(
 
   resolveHandle();
 
-  const watcher = await watch(importer.entry, () => {
-    logger.info(`\`${importer.relativeEntry}\` changed, Reloading...`);
+  // https://github.com/parcel-bundler/watcher
+  const { subscribe } = await import("@parcel/watcher").then(
+    (r) => r.default || r,
+  );
+
+  const entryDir = dirname(importer.entry);
+  const watcher = await subscribe(entryDir, (_error, events) => {
+    logger.log(
+      `🔃 ${events
+        .map((e) => `\`./${importer.relative(e.path)}\` ${e.type}d`)
+        .join(", ")}. Reloading server...`,
+    );
     resolveHandle();
   });
 
@@ -30,11 +40,13 @@ export async function listenAndWatch(
     return handle(...args);
   }, options);
 
-  logger.info(`Watching \`${importer.relativeEntry}\` for changes.`);
+  logger.log(`👀 Watching \`./${importer.relative(entryDir)}\` for changes.`);
 
   const _close = listenter.close;
   listenter.close = async () => {
-    watcher.close();
+    await watcher.unsubscribe().catch((error) => {
+      logger.error(error);
+    });
     await _close();
   };
 
