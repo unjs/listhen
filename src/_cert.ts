@@ -6,7 +6,7 @@ import type nodeForge from "node-forge";
 import forge from "node-forge";
 import ipRegex from "ip-regex";
 import { defu } from "defu";
-import type { Certificate, SigningOptions, HTTPSOptions } from "./types";
+import type { Certificate, HTTPSOptions } from "./types";
 
 export interface CertificateOptions {
   validityDays: number;
@@ -24,6 +24,12 @@ export interface CommonCertificateOptions {
   organizationalUnit?: string;
   emailAddress?: string;
   domains?: string[];
+}
+
+export interface SigningOptions {
+  signingKey?: string;
+  signingKeyCert?: string;
+  signingKeyPassphrase?: string;
 }
 
 export interface TLSCertOptions

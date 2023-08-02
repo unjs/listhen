@@ -2,7 +2,7 @@ import { describe, afterEach, test, expect } from "vitest";
 import forge from "node-forge";
 import { resolve } from "pathe";
 import { Listener } from "../src";
-import { TLSCertOptions, _private } from "../src/cert";
+import { TLSCertOptions, _private } from "../src/_cert";
 
 // eslint-disable-next-line no-console
 // console.log = fn()

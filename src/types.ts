@@ -17,12 +17,6 @@ export interface HTTPSOptions {
   domains?: string[];
 }
 
-export interface SigningOptions {
-  signingKey?: string;
-  signingKeyCert?: string;
-  signingKeyPassphrase?: string;
-}
-
 export interface ListenOptions {
   name: string;
   port?: GetPortInput;

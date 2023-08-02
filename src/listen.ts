@@ -16,7 +16,7 @@ import type {
   HTTPSOptions,
 } from "./types";
 import { formatAddress, formatURL, getNetworkInterfaces } from "./_utils";
-import { resolveCertificate } from "./cert";
+import { resolveCertificate } from "./_cert";
 
 export async function listen(
   handle: RequestListener,
