@@ -10,7 +10,7 @@ An elegant HTTP listener.
 
 ## Features
 
-- Built-in CLI To run your applications with watch mode and typescript support (with [unjs/jiti](https://github.com/unjs/jiti))
+- Built-in CLI To run your applications with watch mode and typescript support (with [unjs/jiti](https://github.com/unjs/jiti)) and serve static files
 - Promisified interface for listening and closing server
 - Work with express/connect or plain http handle function
 - Support HTTP and HTTPS
@@ -27,7 +27,7 @@ An elegant HTTP listener.
 
 You can run your applications in localhost with typescript support and watch mode using `listhen` CLI:
 
-Create `app.ts`:
+Create `index.ts`:
 
 ```ts
 export default (req, res) => {
@@ -35,10 +35,20 @@ export default (req, res) => {
 };
 ```
 
+Using [unjs/h3](https://github.com/unjs/h3):
+
+```ts
+import { createApp, eventHandler } from "h3";
+
+export const app = createApp();
+
+app.use("/", () => "Hello world!");
+```
+
 Use npx to invoke `listhen` command:
 
 ```sh
-npx listhen -w ./app.ts
+npx listhen -w ./index.ts
 ```
 
 ## Usage (API)
