@@ -26,11 +26,20 @@ export async function createDevServer(options: DevServerOptions) {
 
   // Initialize resolver
   const resolver = await createResolver();
+  const resolveEntry = () => {
+    for (const suffix of ["", "/src", "/server"]) {
+      const resolved = resolver.tryResolve(options.entry + suffix);
+      if (resolved) {
+        return resolved;
+      }
+    }
+  };
 
   // Guess cwd
   let cwd: string = options.cwd || "";
   if (!cwd) {
-    const resolvedEntry = resolver.resolve(options.entry);
+    const resolvedEntry =
+      resolveEntry() || resolve(process.cwd(), options.entry);
     cwd = extname(resolvedEntry) ? dirname(resolvedEntry) : resolvedEntry;
   }
 
@@ -83,10 +92,23 @@ export async function createDevServer(options: DevServerOptions) {
 
   // Handler loader
   let loadTime = 0;
-  const loadHandle = async (reload: boolean) => {
+  const loadHandle = async (initial: boolean) => {
     const start = Date.now();
     try {
-      const _handler = await resolver.import(options.entry);
+      const _entry = resolveEntry();
+      if (!_entry) {
+        const message = `Cannot find a server entry in ${options.entry}`;
+        logger.warn(message);
+        error = new Error(message);
+        (error as Error).stack = "";
+        return;
+      }
+      if (initial) {
+        logger.log(
+          `🚀 Loading server entry ${resolver.formateRelative(_entry)}`,
+        );
+      }
+      const _handler = await resolver.import(_entry);
       dynamicHandler.set(fromNodeMiddleware(_handler));
       error = undefined;
     } catch (_error) {
@@ -97,22 +119,16 @@ export async function createDevServer(options: DevServerOptions) {
       logger.error(error);
     } else {
       logger.success(
-        ` Server ${reload ? "reloaded" : "initialized"} in ${loadTime}ms`,
+        ` Server ${initial ? "initialized" : "reloaded"} in ${loadTime}ms`,
       );
     }
   };
-  logger.log(
-    `🚀 Loading server entry ${resolver.formateRelative(
-      resolver.resolve(options.entry),
-    )}`,
-  );
-  await loadHandle(false);
 
   return {
     cwd,
     resolver,
     nodeListener: toNodeListener(app),
-    reload: () => loadHandle(true),
+    reload: (initial: boolean) => loadHandle(initial),
   };
 }
 

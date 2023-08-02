@@ -85,6 +85,7 @@ export const main = defineCommand({
     } else {
       const devServer = await createDevServer({ entry });
       await listen(devServer.nodeListener, opts);
+      await devServer.reload(true);
     }
   },
 });

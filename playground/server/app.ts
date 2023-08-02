@@ -4,5 +4,5 @@ export const app = createApp();
 
 app.use(
   "/",
-  eventHandler(() => ({ hello: "world!!" })),
+  eventHandler(() => ({ hello: "world!" })),
 );

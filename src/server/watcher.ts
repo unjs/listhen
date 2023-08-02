@@ -1,3 +1,4 @@
+import { extname } from "node:path";
 import { consola } from "consola";
 import type { AsyncSubscription } from "@parcel/watcher";
 import type { ConsolaInstance } from "consola";
@@ -29,6 +30,9 @@ export async function listenAndWatch(
   // Initialize listener
   const listenter = await listen(devServer.nodeListener, options);
 
+  // Load dev server handler first time
+  await devServer.reload(true);
+
   // Hook close event to stop watcher too
   const _close = listenter.close;
   listenter.close = async () => {
@@ -46,13 +50,15 @@ export async function listenAndWatch(
     (r) => r.default || r,
   );
 
+  const jsExts = new Set([".js", ".mjs", ".cjs", ".ts", ".mts", ".cts"]);
   watcher = await subscribe(
     devServer.cwd,
     (_error, events) => {
-      if (events.length === 0) {
+      const filteredEvents = events.filter((e) => jsExts.has(extname(e.path)));
+      if (filteredEvents.length === 0) {
         return;
       }
-      const eventsString = events
+      const eventsString = filteredEvents
         .map((e) => `${devServer.resolver.formateRelative(e.path)} ${e.type}d`)
         .join(", ");
       logger.start(` Reloading server (${eventsString})`);
