@@ -1,6 +1,6 @@
 import { extname } from "node:path";
 import { consola } from "consola";
-import type { AsyncSubscription } from "@parcel/watcher";
+import type { AsyncSubscription } from "@parcel/watcher-wasm";
 import type { ConsolaInstance } from "consola";
 import type { Listener, ListenOptions } from "../types";
 import { listen } from "../listen";
