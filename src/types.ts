@@ -34,6 +34,7 @@ export interface WatchOptions {
   cwd: string;
   entry: string;
   logger: ConsolaInstance;
+  ignore: string[];
 }
 
 export interface ShowURLOptions {

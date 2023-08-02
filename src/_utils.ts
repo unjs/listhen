@@ -84,7 +84,7 @@ export async function createImporter(input: string, _cwd?: string) {
     input = `./${input}`;
   }
 
-  const entry = _jitiRequire.resolve(resolve(cwd, input));
+  const entry = _jitiRequire.resolve(input);
 
   const _import = () => {
     const r = _jitiRequire(input);
@@ -92,8 +92,10 @@ export async function createImporter(input: string, _cwd?: string) {
   };
 
   return {
+    cwd,
+    relative: (path: string) => relative(cwd, path),
+    formateRelative: (path: string) => `\`./${relative(cwd, path)}\``,
     entry,
-    relativeEntry: relative(cwd, entry),
     import: _import,
   };
 }

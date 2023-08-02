@@ -38,6 +38,7 @@
     "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {
+    "@parcel/watcher": "^2.2.0",
     "citty": "^0.1.2",
     "clipboardy": "^3.0.0",
     "consola": "^3.2.3",
