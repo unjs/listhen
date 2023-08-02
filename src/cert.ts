@@ -2,18 +2,37 @@
 import { promisify } from "node:util";
 import { availableParallelism } from "node:os";
 import { promises as fs } from "node:fs";
-
+import type nodeForge from "node-forge";
 import forge from "node-forge";
 import ipRegex from "ip-regex";
 import { defu } from "defu";
-import type {
-  Certificate,
-  SigningOptions,
-  CommonCertificateOptions,
-  CertificateOptions,
-  TLSCertOptions,
-  HTTPSOptions,
-} from "./types";
+import type { Certificate, SigningOptions, HTTPSOptions } from "./types";
+
+export interface CertificateOptions {
+  validityDays: number;
+  subject: nodeForge.pki.CertificateField[];
+  issuer: nodeForge.pki.CertificateField[];
+  extensions: any[];
+}
+
+export interface CommonCertificateOptions {
+  commonName?: string;
+  countryCode?: string;
+  state?: string;
+  locality?: string;
+  organization?: string;
+  organizationalUnit?: string;
+  emailAddress?: string;
+  domains?: string[];
+}
+
+export interface TLSCertOptions
+  extends CommonCertificateOptions,
+    SigningOptions {
+  bits?: number;
+  validityDays?: number;
+  passphrase?: string;
+}
 
 export async function resolveCertificate(
   options: HTTPSOptions,

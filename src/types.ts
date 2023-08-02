@@ -1,37 +1,10 @@
 import type { Server } from "node:http";
 import type { Server as HTTPServer } from "node:https";
 import type { GetPortInput } from "get-port-please";
-import type nodeForge from "node-forge";
 
 export interface Certificate {
   key: string;
   cert: string;
-  passphrase?: string;
-}
-
-export interface CertificateOptions {
-  validityDays: number;
-  subject: nodeForge.pki.CertificateField[];
-  issuer: nodeForge.pki.CertificateField[];
-  extensions: any[];
-}
-
-export interface CommonCertificateOptions {
-  commonName?: string;
-  countryCode?: string;
-  state?: string;
-  locality?: string;
-  organization?: string;
-  organizationalUnit?: string;
-  emailAddress?: string;
-  domains?: string[];
-}
-
-export interface TLSCertOptions
-  extends CommonCertificateOptions,
-    SigningOptions {
-  bits?: number;
-  validityDays?: number;
   passphrase?: string;
 }
 
