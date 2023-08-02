@@ -6,13 +6,15 @@ import type { ConsolaInstance } from "consola";
 import { createResolver } from "./_resolver";
 
 export interface DevServerOptions {
-  entry: string;
   cwd?: string;
   staticDirs?: string[];
   logger?: ConsolaInstance;
 }
 
-export async function createDevServer(options: DevServerOptions) {
+export async function createDevServer(
+  entry: string,
+  options: DevServerOptions,
+) {
   const logger = options.logger || consola.withTag("listhen");
 
   const {
@@ -28,7 +30,7 @@ export async function createDevServer(options: DevServerOptions) {
   const resolver = await createResolver();
   const resolveEntry = () => {
     for (const suffix of ["", "/src", "/server"]) {
-      const resolved = resolver.tryResolve(options.entry + suffix);
+      const resolved = resolver.tryResolve(entry + suffix);
       if (resolved) {
         return resolved;
       }
@@ -38,8 +40,7 @@ export async function createDevServer(options: DevServerOptions) {
   // Guess cwd
   let cwd: string = options.cwd || "";
   if (!cwd) {
-    const resolvedEntry =
-      resolveEntry() || resolve(process.cwd(), options.entry);
+    const resolvedEntry = resolveEntry() || resolve(process.cwd(), entry);
     cwd = extname(resolvedEntry) ? dirname(resolvedEntry) : resolvedEntry;
   }
 
@@ -92,12 +93,12 @@ export async function createDevServer(options: DevServerOptions) {
 
   // Handler loader
   let loadTime = 0;
-  const loadHandle = async (initial: boolean) => {
+  const loadHandle = async (initial?: boolean) => {
     const start = Date.now();
     try {
       const _entry = resolveEntry();
       if (!_entry) {
-        const message = `Cannot find a server entry in ${options.entry}`;
+        const message = `Cannot find a server entry in ${entry}`;
         logger.warn(message);
         error = new Error(message);
         (error as Error).stack = "";
@@ -128,7 +129,7 @@ export async function createDevServer(options: DevServerOptions) {
     cwd,
     resolver,
     nodeListener: toNodeListener(app),
-    reload: (initial: boolean) => loadHandle(initial),
+    reload: (_initial?: boolean) => loadHandle(_initial),
   };
 }
 

@@ -5,7 +5,7 @@ import { name, description, version } from "../package.json";
 import { listen } from "./listen";
 import { listenAndWatch } from "./server";
 import type { ListenOptions } from "./types";
-import { DevServerOptions, createDevServer } from "./server/_dev";
+import { DevServerOptions, createDevServer } from "./server/dev";
 
 export const main = defineCommand({
   meta: {
@@ -83,7 +83,7 @@ export const main = defineCommand({
     if (args.watch) {
       await listenAndWatch(entry, opts);
     } else {
-      const devServer = await createDevServer({ entry });
+      const devServer = await createDevServer(entry, opts);
       await listen(devServer.nodeListener, opts);
       await devServer.reload(true);
     }

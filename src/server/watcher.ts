@@ -4,9 +4,9 @@ import type { AsyncSubscription } from "@parcel/watcher";
 import type { ConsolaInstance } from "consola";
 import type { Listener, ListenOptions } from "../types";
 import { listen } from "../listen";
-import { createDevServer } from "./_dev";
+import { createDevServer, DevServerOptions } from "./dev";
 
-export interface WatchOptions {
+export interface WatchOptions extends DevServerOptions {
   cwd?: string;
   logger?: ConsolaInstance;
   ignore?: string[];
@@ -21,9 +21,8 @@ export async function listenAndWatch(
   let watcher: AsyncSubscription; // eslint-disable-line prefer-const
 
   // Create dev server
-  const devServer = await createDevServer({
+  const devServer = await createDevServer(entry, {
     cwd: options.cwd,
-    entry,
     logger,
   });
 
