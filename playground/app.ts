@@ -1,6 +1,6 @@
 import { createApp, eventHandler } from "h3";
 
-export const app = createApp(;
+export const app = createApp();
 
 app.use(
   "/",
