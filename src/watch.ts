@@ -1,4 +1,4 @@
-import type { RequestListener, ServerResponse } from "node:http";
+import type { RequestListener } from "node:http";
 import { consola } from "consola";
 import { dirname } from "pathe";
 import type { AsyncSubscription } from "@parcel/watcher";
@@ -93,7 +93,11 @@ export async function listenAndWatch(
       });
     },
     {
-      ignore: ["**/.git/**", "**/node_modules/**", "**/dist/**"],
+      ignore: options.ignore || [
+        "**/.git/**",
+        "**/node_modules/**",
+        "**/dist/**",
+      ],
     },
   );
 
