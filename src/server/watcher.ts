@@ -44,39 +44,51 @@ export async function listenAndWatch(
   };
 
   // Start watcher
-  // https://github.com/parcel-bundler/watcher
-  const { subscribe } = await import("@parcel/watcher").then(
-    (r) => r.default || r,
-  );
+  // https://github.com/parcel-bundler/watcher#wasm
+  try {
+    const { default: init, subscribe } = await import("@parcel/watcher-wasm");
 
-  const jsExts = new Set([".js", ".mjs", ".cjs", ".ts", ".mts", ".cts"]);
-  watcher = await subscribe(
-    devServer.cwd,
-    (_error, events) => {
-      const filteredEvents = events.filter((e) => jsExts.has(extname(e.path)));
-      if (filteredEvents.length === 0) {
-        return;
-      }
-      const eventsString = filteredEvents
-        .map((e) => `${devServer.resolver.formateRelative(e.path)} ${e.type}d`)
-        .join(", ");
-      logger.start(` Reloading server (${eventsString})`);
-      devServer.reload();
-    },
-    {
-      ignore: options.ignore || [
-        "**/.git/**",
-        "**/node_modules/**",
-        "**/dist/**",
-      ],
-    },
-  );
+    const jsExts = new Set([".js", ".mjs", ".cjs", ".ts", ".mts", ".cts"]);
 
-  logger.log(
-    `👀 Watching ${devServer.resolver.formateRelative(
+    // await (init as any)();
+
+    watcher = await subscribe(
       devServer.cwd,
-    )} for changes`,
-  );
+      (_error, events) => {
+        const filteredEvents = events.filter((e) =>
+          jsExts.has(extname(e.path)),
+        );
+        if (filteredEvents.length === 0) {
+          return;
+        }
+        const eventsString = filteredEvents
+          .map(
+            (e) => `${devServer.resolver.formateRelative(e.path)} ${e.type}d`,
+          )
+          .join(", ");
+        logger.start(` Reloading server (${eventsString})`);
+        devServer.reload();
+      },
+      {
+        ignore: options.ignore || [
+          "**/.git/**",
+          "**/node_modules/**",
+          "**/dist/**",
+        ],
+      },
+    );
+
+    logger.log(
+      `👀 Watching ${devServer.resolver.formateRelative(
+        devServer.cwd,
+      )} for changes`,
+    );
+  } catch (error) {
+    logger.error(error);
+    logger.warn(
+      "👀 Cannot start the watcher! Please report this issue to `https://github.com/unjs/listhen`",
+    );
+  }
 
   return listenter;
 }
