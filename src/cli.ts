@@ -1,7 +1,6 @@
-import { resolve } from "node:path";
 import { WatchOptions } from "node:fs";
 import { defineCommand, runMain as _runMain } from "citty";
-import { dirname, extname } from "pathe";
+import { isAbsolute } from "pathe";
 import { name, description, version } from "../package.json";
 import { listen } from "./listen";
 import { listenAndWatch } from "./server";
@@ -65,13 +64,6 @@ export const main = defineCommand({
     },
   },
   async run({ args }) {
-    const cwd = resolve(
-      process.cwd(),
-      args.cwd ||
-        (extname(args.entry) ? dirname(args.entry) : args.entry) ||
-        ".",
-    );
-
     const opts: Partial<ListenOptions & WatchOptions> = {
       ...args,
       port: args.port,
@@ -83,13 +75,15 @@ export const main = defineCommand({
       https: args.https, // TODO: Support custom cert
     };
 
+    const entry =
+      isAbsolute(args.entry) || args.entry.startsWith(".")
+        ? args.entry
+        : `./${args.entry}`;
+
     if (args.watch) {
-      await listenAndWatch(args.entry, opts);
+      await listenAndWatch(entry, opts);
     } else {
-      const devServer = await createDevServer({
-        cwd,
-        entry: args.entry,
-      });
+      const devServer = await createDevServer({ entry });
       await listen(devServer.nodeListener, opts);
     }
   },

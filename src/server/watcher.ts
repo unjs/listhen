@@ -1,3 +1,4 @@
+import { extname } from "node:path";
 import { consola } from "consola";
 import { dirname } from "pathe";
 import type { AsyncSubscription } from "@parcel/watcher";
@@ -40,20 +41,16 @@ export async function listenAndWatch(
     await _close();
   };
 
-  // Log about public dirs
-  for (const dir of devServer.staticDirs) {
-    logger.log(
-      `📁 Serving static files from ${devServer.resolver.formateRelative(dir)}`,
-    );
-  }
-
   // Start watcher
   // https://github.com/parcel-bundler/watcher
   const { subscribe } = await import("@parcel/watcher").then(
     (r) => r.default || r,
   );
 
-  const entryDir = dirname(entry);
+  const resolvedEntry = devServer.resolver.resolve(entry);
+  const entryDir = extname(resolvedEntry)
+    ? dirname(resolvedEntry)
+    : resolvedEntry;
   watcher = await subscribe(
     entryDir,
     (_error, events) => {

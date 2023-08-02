@@ -2,7 +2,6 @@ import { existsSync, statSync } from "node:fs";
 import { readFile, stat } from "node:fs/promises";
 import { consola } from "consola";
 import { join, resolve } from "pathe";
-import type { NodeMiddleware } from "h3";
 import type { ConsolaInstance } from "consola";
 import { createResolver } from "./_resolver";
 
@@ -28,7 +27,7 @@ export async function createDevServer(options: DevServerOptions) {
   const cwd = resolve(process.cwd(), options.cwd || ".");
 
   // Initialize resolver
-  const resolver = await createResolver(options.cwd);
+  const resolver = await createResolver();
 
   // Create app instance
   const app = createApp();
@@ -39,6 +38,7 @@ export async function createDevServer(options: DevServerOptions) {
     .map((d) => resolve(cwd, d))
     .filter((d) => existsSync(d) && statSync(d).isDirectory());
   for (const dir of staticDirs) {
+    logger.log(`📁 Serving static files from ${resolver.formateRelative(dir)}`);
     app.use(
       eventHandler(async (event) => {
         await serveStatic(event, {
@@ -61,9 +61,6 @@ export async function createDevServer(options: DevServerOptions) {
 
   // Error handler
   let error: unknown;
-  const setError = (err: unknown) => {
-    error = err;
-  };
   app.use(
     eventHandler(() => {
       if (error) {
@@ -76,9 +73,6 @@ export async function createDevServer(options: DevServerOptions) {
   const dynamicHandler = dynamicEventHandler(() => {
     return `<!DOCTYPE html><html lang="en-US"><meta http-equiv="refresh" content="1"></head><body><p>Server is loading...</p>`;
   });
-  const setHandler = (middleware: NodeMiddleware) => {
-    dynamicHandler.set(fromNodeMiddleware(middleware));
-  };
   app.use(dynamicHandler);
 
   // Handler loader
@@ -102,17 +96,15 @@ export async function createDevServer(options: DevServerOptions) {
     }
   };
   logger.log(
-    `🚀 Loading server entry ${resolver.formateRelative(options.entry)}`,
+    `🚀 Loading server entry ${resolver.formateRelative(
+      resolver.resolve(options.entry),
+    )}`,
   );
   await loadHandle(false);
 
   return {
-    app,
-    staticDirs,
-    nodeListener: toNodeListener(app),
-    setError,
-    setHandler,
     resolver,
+    nodeListener: toNodeListener(app),
     reload: () => loadHandle(true),
   };
 }

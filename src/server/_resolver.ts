@@ -17,6 +17,7 @@ export async function createResolver() {
   return {
     relative: (path: string) => relative(process.cwd(), path),
     formateRelative: (path: string) => `\`./${relative(process.cwd(), path)}\``,
+    resolve: (id: string) => _jitiRequire.resolve(id),
     import: _import,
   };
 }
