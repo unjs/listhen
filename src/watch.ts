@@ -1,5 +1,6 @@
 import type { RequestListener } from "node:http";
 import { consola } from "consola";
+import { colors } from "consola/utils";
 import { dirname } from "pathe";
 import type { AsyncSubscription } from "@parcel/watcher";
 import type { Listener, ListenOptions, WatchOptions } from "./types";
@@ -56,14 +57,18 @@ export async function listenAndWatch(
   };
 
   // Resolve handle once
-  logger.info(
-    `Loading server entry ${importer.formateRelative(importer.entry)}`,
+  logger.log(
+    colors.gray(
+      `🚀 Loading server entry ${importer.formateRelative(importer.entry)}`,
+    ),
   );
   resolveHandle().then(() => {
     if (error) {
       logger.error(error);
     } else {
-      logger.log(`🚀 Server initialized in ${loadTime}ms.`);
+      logger.log(
+        colors.gray(`✅ Server initialized in ${colors.bold(loadTime)}ms.`),
+      );
     }
   });
 
@@ -82,13 +87,18 @@ export async function listenAndWatch(
       }
       resolveHandle().then(() => {
         const eventsString = events
-          .map((e) => `${importer.formateRelative(e.path)} ${e.type}d`)
+          .map(
+            (e) =>
+              `${colors.cyan(`./${importer.relative(e.path)}`)} ${e.type}d`,
+          )
           .join(", ");
-        logger.log(`${eventsString}. Reloading server...`);
+        logger.log(colors.gray(`🔃 Reloading server... (${eventsString})`));
         if (error) {
           logger.error(error);
         } else {
-          logger.log(`🔃 Server Reloaded in ${loadTime}ms.`);
+          logger.log(
+            colors.gray(`✅ Server reloaded in ${colors.bold(loadTime)}ms.`),
+          );
         }
       });
     },
@@ -101,7 +111,13 @@ export async function listenAndWatch(
     },
   );
 
-  logger.log(`👀 Watching ${importer.formateRelative(entryDir)} for changes.`);
+  logger.log(
+    colors.gray(
+      `👀 Watching ${colors.cyan(
+        "./" + importer.relative(entryDir),
+      )} for changes.`,
+    ),
+  );
 
   return listenter;
 }
