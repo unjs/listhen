@@ -1,6 +1,6 @@
 // Rewrite from https://github.com/Subash/mkcert 1.5.1 (MIT)
 import { promisify } from "node:util";
-import { availableParallelism, cpus } from "node:os";
+import nodeOS from "node:os";
 import { promises as fs } from "node:fs";
 import type nodeForge from "node-forge";
 import forge from "node-forge";
@@ -294,7 +294,9 @@ async function generateKeyPair(bits = 2048): Promise<forge.pki.KeyPair> {
   );
   return await _generateKeyPair({
     bits,
-    workers: availableParallelism ? availableParallelism() : cpus().length,
+    workers: nodeOS.availableParallelism
+      ? nodeOS.availableParallelism()
+      : nodeOS.cpus().length,
   });
 }
 
