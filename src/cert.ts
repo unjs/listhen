@@ -1,32 +1,108 @@
 // Rewrite from https://github.com/Subash/mkcert 1.5.1 (MIT)
-
 import { promisify } from "node:util";
+import { availableParallelism } from "node:os";
+import { promises as fs } from "node:fs";
+
 import forge from "node-forge";
 import ipRegex from "ip-regex";
+import { defu } from "defu";
+import type {
+  Certificate,
+  SigningOptions,
+  CommonCertificateOptions,
+  CertificateOptions,
+  TLSCertOptions,
+  HTTPSOptions,
+} from "./types";
 
-export interface Certificate {
-  key: string;
-  cert: string;
+export async function generateCertificates(
+  options: TLSCertOptions,
+): Promise<{ cert: Certificate; ca: Certificate }> {
+  const defaults = {
+    commonName: "localhost",
+    countryCode: "US",
+    state: "Michigan",
+    locality: "Berkley",
+    organization: "Testing Corp",
+    organizationalUnit: "IT department",
+    domains: ["localhost", "127.0.0.1", "::1"],
+    validityDays: 1,
+    bits: 2048,
+  };
+  const caOptions = defu(options, defaults);
+  caOptions.passphrase = options.signingKeyPassphrase;
+  const ca = await generateCACert(caOptions);
+
+  const domains = Array.isArray(options.domains)
+    ? options.domains
+    : ["localhost", "127.0.0.1", "::1"];
+
+  const certOptions = defu(options, defaults);
+  const cert = await generateTLSCert({
+    ...certOptions,
+    signingKeyCert: ca.cert,
+    signingKey: ca.key,
+    domains,
+  });
+  return { ca, cert };
 }
 
-// SSL Cert
+export async function resolveCert(options: HTTPSOptions): Promise<Certificate> {
+  // Use cert if provided
+  if (options && options.key && options.cert) {
+    const isInline = (s = "") => s.startsWith("--");
+    const r = (s: string) => (isInline(s) ? s : fs.readFile(s, "utf8"));
+    return {
+      key: await r(options.key),
+      cert: await r(options.cert),
+    };
+  }
 
-export interface SSLCertOptions {
-  commonName?: string;
-  domains: string[];
-  validityDays: number;
-  caKey: string;
-  caCert: string;
+  throw new Error("Certificate or Private Key not present");
 }
 
-export async function generateSSLCert(
-  options: SSLCertOptions,
-): Promise<Certificate> {
-  // Certificate Attributes (https://git.io/fptna)
-  const attributes = [
-    // Use the first address as common name if no common name is provided
-    { name: "commonName", value: options.commonName || options.domains[0] },
+export async function resolvePfx(
+  options: HTTPSOptions,
+): Promise<forge.pkcs12.Pkcs12Pfx> {
+  if (options && options.pfx) {
+    const pfx = await fs.readFile(options.pfx, "binary");
+
+    const p12Asn1 = forge.asn1.fromDer(pfx);
+
+    if (options.passphrase) {
+      return forge.pkcs12.pkcs12FromAsn1(p12Asn1, options.passphrase);
+    }
+    return forge.pkcs12.pkcs12FromAsn1(p12Asn1, "");
+  }
+  throw new Error("Error resolving the pfx store");
+}
+
+function createAttributes(options: CommonCertificateOptions) {
+  // Certificate Attributes: https://git.io/fptna
+  const commonName = options.commonName || "localhost.local";
+  const countryCode = options.countryCode || "US";
+  const state = options.state || "Michigan";
+  const locality = options.locality || "Berkley";
+  const organization = options.organization || "Testing Corp";
+  const organizationalUnit = options.organizationalUnit || "IT department";
+  const emailAddress = options.emailAddress || "security@localhost.local";
+  return [
+    { name: "commonName", value: commonName },
+    { name: "countryName", value: countryCode },
+    { name: "stateOrProvinceName", value: state },
+    { name: "localityName", value: locality },
+    { name: "organizationName", value: organization },
+    { name: "organizationalUnitName", value: organizationalUnit },
+    { name: "emailAddress", value: emailAddress },
   ];
+}
+
+function createCertificateInfo(options: CommonCertificateOptions) {
+  if (!options.domains || (options.domains && options.domains.length === 0)) {
+    options.domains = ["localhost.local"];
+  }
+  options.commonName = options.commonName || options.domains[0];
+  const attributes = createAttributes(options);
 
   // Required certificate extensions for a tls certificate
   const extensions = [
@@ -51,78 +127,91 @@ export async function generateSSLCert(
       }),
     },
   ];
-
-  const ca = forge.pki.certificateFromPem(options.caCert);
-
-  return await generateCert({
-    subject: attributes,
-    issuer: ca.subject.attributes,
-    extensions,
-    validityDays: options.validityDays,
-    signWith: options.caKey,
-  });
+  return { attributes, extensions };
 }
 
-// CA
-
-export interface CAOptions {
-  commonName?: string;
-  organization?: string;
-  countryCode?: string;
-  state?: string;
-  locality?: string;
-  validityDays?: number;
-}
-
-export async function generateCA(
-  options: CAOptions = {},
-): Promise<Certificate> {
-  // Certificate Attributes: https://git.io/fptna
-  const attributes = [
-    options.commonName && { name: "commonName", value: options.commonName },
-    options.countryCode && { name: "countryName", value: options.countryCode },
-    options.state && { name: "stateOrProvinceName", value: options.state },
-    options.locality && { name: "localityName", value: options.locality },
-    options.organization && {
-      name: "organizationName",
-      value: options.organization,
-    },
-  ].filter(Boolean) as { name: string; value: string }[];
+function createCaInfo(options: TLSCertOptions) {
+  const attributes = createAttributes(options);
 
   // Required certificate extensions for a certificate authority
   const extensions = [
     { name: "basicConstraints", cA: true, critical: true },
     { name: "keyUsage", keyCertSign: true, critical: true },
   ];
+  return { attributes, extensions };
+}
+
+async function generateTLSCert(options: TLSCertOptions): Promise<Certificate> {
+  // Certificate Attributes (https://git.io/fptna)
+  const { attributes, extensions } = createCertificateInfo(options);
+
+  const ca = forge.pki.certificateFromPem(options.signingKeyCert!);
 
   return await generateCert({
+    bits: options.bits,
     subject: attributes,
-    issuer: attributes,
+    issuer: ca.subject.attributes,
     extensions,
-    validityDays: options.validityDays || 365,
+    validityDays: options.validityDays || 1,
+    signingKey: options.signingKey,
+    signingKeyPassphrase: options.signingKeyPassphrase,
+    passphrase: options.passphrase,
   });
 }
 
-// Cert
+async function generateCACert(
+  options: TLSCertOptions = {},
+): Promise<Certificate> {
+  const { attributes, extensions } = createCaInfo(options);
 
-interface CertOptions {
-  subject: forge.pki.CertificateField[];
-  issuer: forge.pki.CertificateField[];
-  extensions: any[];
-  validityDays: number;
-  signWith?: string;
+  return await generateCert({
+    ...options,
+    bits: options.bits || 2048,
+    subject: attributes,
+    issuer: attributes,
+    extensions,
+    validityDays: options.validityDays || 1,
+  });
 }
 
-export async function generateCert(options: CertOptions): Promise<Certificate> {
+function signCertificate(options: SigningOptions, cert: forge.pki.Certificate) {
+  if (options.signingKey) {
+    if (isValidPassphrase(options.signingKeyPassphrase)) {
+      // Sign with provided encrypted ca private key
+      const encryptedPrivateKey = forge.pki.encryptedPrivateKeyFromPem(
+        options.signingKey,
+      );
+      const decryptedPrivateKey = forge.pki.decryptPrivateKeyInfo(
+        encryptedPrivateKey,
+        options.signingKeyPassphrase!,
+      );
+      cert.sign(
+        forge.pki.privateKeyFromAsn1(decryptedPrivateKey),
+        forge.md.sha256.create(),
+      );
+    } else {
+      // Sign with provided unencrypted ca private key
+      cert.sign(
+        forge.pki.privateKeyFromPem(options.signingKey),
+        forge.md.sha256.create(),
+      );
+    }
+  } else {
+    // Self-sign the certificate with it's own private key if no separate signing key is provided
+    cert.sign(cert.privateKey, forge.md.sha256.create());
+  }
+}
+
+function createCertificateFromKeyPair(
+  keyPair: forge.pki.KeyPair,
+  options: CertificateOptions,
+) {
   // Create serial from and integer between 50000 and 99999
   const serial = Math.floor(Math.random() * 95_000 + 50_000).toString();
-  const generateKeyPair = promisify(
-    forge.pki.rsa.generateKeyPair.bind(forge.pki.rsa),
-  );
-  const keyPair = await generateKeyPair({ bits: 2048, workers: 4 });
   const cert = forge.pki.createCertificate();
 
   cert.publicKey = keyPair.publicKey;
+  cert.privateKey = keyPair.privateKey;
   cert.serialNumber = Buffer.from(serial).toString("hex"); // serial number must be hex encoded
   cert.validity.notBefore = new Date();
   cert.validity.notAfter = new Date();
@@ -132,15 +221,78 @@ export async function generateCert(options: CertOptions): Promise<Certificate> {
   cert.setSubject(options.subject);
   cert.setIssuer(options.issuer);
   cert.setExtensions(options.extensions);
-
-  // Sign the certificate with it's own private key if no separate signing key is provided
-  const signWith = options.signWith
-    ? forge.pki.privateKeyFromPem(options.signWith)
-    : keyPair.privateKey;
-  cert.sign(signWith, forge.md.sha256.create());
-
-  return {
-    key: forge.pki.privateKeyToPem(keyPair.privateKey),
-    cert: forge.pki.certificateToPem(cert),
-  };
+  return cert;
 }
+
+async function generateKeyPair(bits = 2048): Promise<forge.pki.KeyPair> {
+  const _generateKeyPair = promisify(
+    forge.pki.rsa.generateKeyPair.bind(forge.pki.rsa),
+  );
+  return await _generateKeyPair({
+    bits,
+    workers: availableParallelism(),
+  });
+}
+
+function isValidPassphrase(passphrase: string | undefined) {
+  return typeof passphrase === "string" && passphrase.length < 2000;
+}
+
+async function generateCert(
+  options: TLSCertOptions & CertificateOptions,
+): Promise<Certificate> {
+  const keyPair = await generateKeyPair(options.bits);
+  const cert = createCertificateFromKeyPair(keyPair, options);
+
+  if (isValidPassphrase(options.passphrase)) {
+    // encrypt private key with given passphrase
+    const asn1PrivateKey = forge.pki.privateKeyToAsn1(keyPair.privateKey);
+    const privateKeyInfo = forge.pki.wrapRsaPrivateKey(asn1PrivateKey);
+    const encryptedPrivateKeyInfo = forge.pki.encryptPrivateKeyInfo(
+      privateKeyInfo,
+      options.passphrase!,
+      {
+        algorithm: "aes256",
+      },
+    );
+
+    signCertificate(
+      {
+        signingKey: options.signingKey,
+        signingKeyPassphrase: options.signingKeyPassphrase,
+      },
+      cert,
+    );
+
+    return {
+      key: forge.pki.encryptedPrivateKeyToPem(encryptedPrivateKeyInfo),
+      cert: forge.pki.certificateToPem(cert),
+      passphrase: options.passphrase,
+    };
+  } else {
+    signCertificate(
+      {
+        signingKey: options.signingKey,
+        signingKeyPassphrase: options.signingKeyPassphrase,
+      },
+      cert,
+    );
+
+    return {
+      key: forge.pki.privateKeyToPem(keyPair.privateKey),
+      cert: forge.pki.certificateToPem(cert),
+    };
+  }
+}
+
+// for testing, to reduce the exported members to the needed ones
+export const _private = {
+  generateCert,
+  generateKeyPair,
+  generateCACert,
+  generateTLSCert,
+  createCaInfo,
+  createCertificateInfo,
+  signCertificate,
+  createCertificateFromKeyPair,
+};

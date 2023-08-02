@@ -1,38 +1,8 @@
-import { promises as fs } from "node:fs";
 import { networkInterfaces } from "node:os";
 import { relative, resolve } from "node:path";
 import { colors } from "consola/utils";
 import { fileURLToPath } from "mlly";
 import { isAbsolute } from "pathe";
-import type { Certificate, HTTPSOptions } from "./types";
-
-export async function resolveCert(
-  options: HTTPSOptions,
-  host?: string,
-): Promise<Certificate> {
-  // Use cert if provided
-  if (options.key && options.cert) {
-    const isInline = (s = "") => s.startsWith("--");
-    const r = (s: string) => (isInline(s) ? s : fs.readFile(s, "utf8"));
-    return {
-      key: await r(options.key),
-      cert: await r(options.cert),
-    };
-  }
-
-  // Use auto generated cert
-  const { generateCA, generateSSLCert } = await import("./cert");
-  const ca = await generateCA();
-  const cert = await generateSSLCert({
-    caCert: ca.cert,
-    caKey: ca.key,
-    domains:
-      options.domains ||
-      (["localhost", "127.0.0.1", "::1", host].filter(Boolean) as string[]),
-    validityDays: options.validityDays || 1,
-  });
-  return cert;
-}
 
 export function getNetworkInterfaces(v4Only = true): string[] {
   const addrs = new Set<string>();

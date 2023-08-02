@@ -20,7 +20,17 @@ describe("listhen", () => {
       listener = undefined;
     }
   });
-
+  test("should listen to the next port in range (3000 -> 31000)", async () => {
+    listener = await listen(handle, {
+      port: { port: 3000 },
+    });
+    expect(listener.url).toMatch(/:3000\/$/);
+    const listener2 = await listen(handle, {
+      port: { port: 3000 },
+    });
+    expect(listener2.url).toMatch(/:3001\/$/);
+    await listener2.close();
+  });
   test("listen (no args)", async () => {
     listener = await listen(handle);
     expect(listener.url.startsWith("http://")).toBe(true);
@@ -38,61 +48,126 @@ describe("listhen", () => {
     // expect(console.log).toHaveBeenCalledWith(expect.stringMatching('\n  > Local:    http://localhost:3000/foo/bar'))
   });
 
-  test("listen (https - selfsigned)", async () => {
-    listener = await listen(handle, { https: true });
-    expect(listener.url.startsWith("https://")).toBe(true);
-  });
-
-  test("listen (https - custom)", async () => {
-    listener = await listen(handle, {
-      https: {
-        // eslint-disable-next-line unicorn/prefer-module
-        key: resolve(__dirname, "fixture/cert/key.pem"),
-        // eslint-disable-next-line unicorn/prefer-module
-        cert: resolve(__dirname, "fixture/cert/cert.pem"),
-      },
+  describe("https", () => {
+    test("listen (https - selfsigned)", async () => {
+      listener = await listen(handle, { https: true, hostname: "localhost" });
+      expect(listener.url.startsWith("https://")).toBe(true);
     });
-    expect(listener.url.startsWith("https://")).toBe(true);
-  });
 
-  test("double close", async () => {
-    listener = await listen(handle, { isTest: false });
-    await listener.close();
-    await listener.close();
-  });
-
-  test("autoClose", async () => {
-    /* not passing close */ await listen(handle);
-    // @ts-ignore
-    process.emit("exit");
-  });
-
-  test("pass hostname to get-port-please", async () => {
-    listener = await listen(handle, { hostname: "127.0.0.1" });
-    expect(listener.url.startsWith("http://127.0.0.1")).toBe(true);
-  });
-
-  test("pass port to get-port-please", async () => {
-    listener = await listen(handle, { port: 40_000 });
-    expect(listener.url.endsWith(":40000/")).toBe(true);
-  });
-
-  test("pass extended options to get-port-please", async () => {
-    listener = await listen(handle, {
-      port: { port: 50_000, portRange: [50_000, 59_999] },
+    test("listen (https - custom)", async () => {
+      listener = await listen(handle, {
+        https: {
+          // eslint-disable-next-line unicorn/prefer-module
+          key: resolve(__dirname, "fixture", "cert", "key.pem"),
+          // eslint-disable-next-line unicorn/prefer-module
+          cert: resolve(__dirname, "fixture", "cert", "cert.pem"),
+        },
+        hostname: "localhost",
+      });
+      expect(listener.url.startsWith("https://")).toBe(true);
     });
-    expect(listener.url).toMatch(/:5\d{4}\/$/);
+
+    test("listen (https - custom - with private key passphrase)", async () => {
+      listener = await listen(handle, {
+        https: {
+          // eslint-disable-next-line unicorn/prefer-module
+          key: resolve(__dirname, "fixture", "cert", "encrypted-key.pem"),
+          // eslint-disable-next-line unicorn/prefer-module
+          cert: resolve(__dirname, "fixture", "cert", "cert.pem"),
+          passphrase: "cert-pw",
+        },
+        hostname: "localhost",
+      });
+      expect(listener.url.startsWith("https://")).toBe(true);
+    });
+
+    test("listen (https - custom - with wrong private key passphrase)", () => {
+      expect(() =>
+        listen(handle, {
+          https: {
+            // eslint-disable-next-line unicorn/prefer-module
+            key: resolve(__dirname, "fixture/cert/encrypted-key.pem"),
+            // eslint-disable-next-line unicorn/prefer-module
+            cert: resolve(__dirname, "fixture/cert/cert.pem"),
+            passphrase: "wrong-pw",
+          },
+          hostname: "localhost",
+        }),
+      ).rejects.toThrowError("error:1C800064:Provider routines::bad decrypt");
+    });
+
+    test("listen (https - PCKS#12/pfx/p12 - with store passphrase)", async () => {
+      const listener = await listen(handle, {
+        https: {
+          // eslint-disable-next-line unicorn/prefer-module
+          pfx: resolve(__dirname, "fixture/cert/keystore.p12"),
+          passphrase: "store-pw",
+        },
+        hostname: "localhost",
+      });
+      expect(listener.url.startsWith("https://")).toBe(true);
+    });
+
+    test("listen (https - PCKS#12/pfx/p12 - without store passphrase)", () => {
+      expect(() =>
+        listen(handle, {
+          https: {
+            // eslint-disable-next-line unicorn/prefer-module
+            pfx: resolve(__dirname, "fixture/cert/keystore.p12"),
+          },
+          hostname: "localhost",
+        }),
+      ).rejects.toThrowError(
+        "PKCS#12 MAC could not be verified. Invalid password?",
+      );
+    });
+
+    test("listen (https - PCKS#12/pfx/p12 - with wrong store passphrase)", () => {
+      expect(() =>
+        listen(handle, {
+          https: {
+            // eslint-disable-next-line unicorn/prefer-module
+            pfx: resolve(__dirname, "fixture/cert/keystore.p12"),
+            passphrase: "wrong-pw",
+          },
+          hostname: "localhost",
+        }),
+      ).rejects.toThrowError(
+        "PKCS#12 MAC could not be verified. Invalid password?",
+      );
+    });
   });
 
-  test("should listen to the next port in range (3000 -> 31000)", async () => {
-    listener = await listen(handle, {
-      port: { port: 3000 },
+  describe("close", () => {
+    test("double close", async () => {
+      listener = await listen(handle, { isTest: false });
+      await listener.close();
+      await listener.close();
     });
-    expect(listener.url).toMatch(/:3000\/$/);
-    const listener2 = await listen(handle, {
-      port: { port: 3000 },
+
+    test("autoClose", async () => {
+      /* not passing close */ await listen(handle);
+      // @ts-ignore
+      process.emit("exit");
     });
-    expect(listener2.url).toMatch(/:3001\/$/);
-    await listener2.close();
+  });
+
+  describe("port", () => {
+    test("pass hostname to get-port-please", async () => {
+      listener = await listen(handle, { hostname: "127.0.0.1" });
+      expect(listener.url.startsWith("http://127.0.0.1")).toBe(true);
+    });
+
+    test("pass port to get-port-please", async () => {
+      listener = await listen(handle, { port: 40_000 });
+      expect(listener.url.endsWith(":40000/")).toBe(true);
+    });
+
+    test("pass extended options to get-port-please", async () => {
+      listener = await listen(handle, {
+        port: { port: 50_000, portRange: [50_000, 59_999] },
+      });
+      expect(listener.url).toMatch(/:5\d{4}\/$/);
+    });
   });
 });
