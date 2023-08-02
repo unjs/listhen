@@ -50,7 +50,7 @@ export async function listenAndWatch(
 
     const jsExts = new Set([".js", ".mjs", ".cjs", ".ts", ".mts", ".cts"]);
 
-    // await (init as any)();
+    await (init as any)();
 
     watcher = await subscribe(
       devServer.cwd,
