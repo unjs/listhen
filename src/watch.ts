@@ -50,6 +50,17 @@ export async function listenAndWatch(
       handle = await importer.import();
       error = undefined;
     } catch (_error) {
+      try {
+        const cwd = process.cwd();
+        const InternalStackRe =
+          /jiti|node:internal|citty|listhen|listenAndWatch/;
+        (_error as Error).stack = (_error as Error)
+          .stack!.split("\n")
+          .slice(1)
+          .map((l) => l.replace(cwd, "."))
+          .filter((l) => !InternalStackRe.test(l))
+          .join("\n");
+      } catch {}
       error = _error;
     }
     loadTime = Date.now() - start;
@@ -106,7 +117,7 @@ export async function listenAndWatch(
   return listenter;
 }
 
-function errorTemplate(message: string, stack?: string) {
+function errorTemplate(message: string, stack = "") {
   return `<!DOCTYPE html>
   <html>
   <head>
@@ -114,7 +125,49 @@ function errorTemplate(message: string, stack?: string) {
   <meta charset="utf-8">
   <meta content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" name=viewport>
   <style>
-  .error-page{padding: 1rem;background:#f7f8fb;color:#47494e;text-align:center;display:flex;justify-content:center;align-items:center;flex-direction:column;font-family:sans-serif;font-weight:100!important;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased;position:absolute;top:0;left:0;right:0;bottom:0}.error-page .error{max-width:450px}.error-page .title{font-size:24px;font-size:1.5rem;margin-top:15px;color:#47494e;margin-bottom:8px}.error-page .description{color:#7f828b;line-height:21px;margin-bottom:10px;text-align:left;}.error-page a{color:#7f828b!important;text-decoration:none}
+  .error-page {
+    padding: 1rem;
+    background: #222;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-family: sans-serif;
+    font-weight: 100 !important;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  .error-page .error {
+    max-width: 450px;
+  }
+
+  .error-page .title {
+    font-size: 1rem;
+    margin-top: 15px;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+
+  .error-page .description {
+    color: #ccc;
+    line-height: 1.2;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+
+  .error-page a {
+    color: #ccc !important;
+    text-decoration: none;
+  }
   </style>
   </head>
   <body>
