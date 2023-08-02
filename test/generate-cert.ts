@@ -1,4 +1,4 @@
-import { writeFileSync } from "node:fs";
+import { writeFileSync, mkdirSync } from "node:fs";
 import forge from "node-forge";
 import { resolve } from "pathe";
 import { generateCertificates } from "../src/cert";
@@ -10,6 +10,7 @@ export default async function generateCert() {
   });
 
   const decryptedKey = forge.pki.decryptRsaPrivateKey(certs.cert.key, pw);
+  mkdirSync(resolve("test", "fixture", "cert"));
   writeFileSync(
     resolve("test", "fixture", "cert", "cert.pem"),
     certs.cert.cert,

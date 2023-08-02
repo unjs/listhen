@@ -1,4 +1,3 @@
-import "./setup";
 import { describe, afterEach, test, expect } from "vitest";
 import forge from "node-forge";
 import { resolve } from "pathe";
@@ -9,6 +8,7 @@ import {
   generateCertificates,
   _private,
 } from "../src/cert";
+
 // eslint-disable-next-line no-console
 // console.log = fn()
 

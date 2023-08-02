@@ -1,4 +1,3 @@
-import "./setup";
 import { resolve } from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { describe, afterEach, test, expect } from "vitest";
