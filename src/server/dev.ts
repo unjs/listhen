@@ -1,7 +1,7 @@
 import { existsSync, statSync } from "node:fs";
 import { readFile, stat } from "node:fs/promises";
 import { consola } from "consola";
-import { dirname, extname, join, resolve } from "pathe";
+import { dirname, join, resolve } from "pathe";
 import type { ConsolaInstance } from "consola";
 import { createResolver } from "./_resolver";
 
@@ -29,7 +29,7 @@ export async function createDevServer(
   // Initialize resolver
   const resolver = await createResolver();
   const resolveEntry = () => {
-    for (const suffix of ["", "/src", "/server"]) {
+    for (const suffix of ["", "/server/src", "/server", "/src"]) {
       const resolved = resolver.tryResolve(entry + suffix);
       if (resolved) {
         return resolved;
@@ -41,7 +41,9 @@ export async function createDevServer(
   let cwd: string = options.cwd || "";
   if (!cwd) {
     const resolvedEntry = resolveEntry() || resolve(process.cwd(), entry);
-    cwd = extname(resolvedEntry) ? dirname(resolvedEntry) : resolvedEntry;
+    cwd = statSync(resolvedEntry, { throwIfNoEntry: false })?.isDirectory()
+      ? resolvedEntry
+      : dirname(resolvedEntry);
   }
 
   // Create app instance
@@ -54,7 +56,6 @@ export async function createDevServer(
     .filter((d) => existsSync(d) && statSync(d).isDirectory());
 
   for (const dir of staticDirs) {
-    logger.log(`📁 Serving static files from ${resolver.formateRelative(dir)}`);
     app.use(
       eventHandler(async (event) => {
         await serveStatic(event, {
@@ -94,6 +95,13 @@ export async function createDevServer(
   // Handler loader
   let loadTime = 0;
   const loadHandle = async (initial?: boolean) => {
+    if (initial) {
+      for (const dir of staticDirs) {
+        logger.log(
+          `📁 Serving static files from ${resolver.formateRelative(dir)}`,
+        );
+      }
+    }
     const start = Date.now();
     try {
       const _entry = resolveEntry();
@@ -109,7 +117,12 @@ export async function createDevServer(
           `🚀 Loading server entry ${resolver.formateRelative(_entry)}`,
         );
       }
-      const _handler = await resolver.import(_entry);
+      let _handler = await resolver
+        .import(_entry)
+        .then((r) => r.handler || r.handle || r.app || r.default || r);
+      if (_handler.handler) {
+        _handler = _handler.handler; // h3 app
+      }
       dynamicHandler.set(fromNodeMiddleware(_handler));
       error = undefined;
     } catch (_error) {
@@ -136,6 +149,9 @@ export async function createDevServer(
 const InternalStackRe = /jiti|node:internal|citty|listhen|listenAndWatch/;
 
 function normalizeErrorStack(error: Error) {
+  if (process.env.DEBUG) {
+    return error;
+  }
   try {
     const cwd = process.cwd();
     (error as Error).stack = (error as Error)
