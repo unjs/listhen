@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.2.1
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.2.0...v1.2.1)
+
+### 🩹 Fixes
+
+- Avoid directly importing `availableParallelism` from os ([bdd8771](https://github.com/unjs/listhen/commit/bdd8771))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.2.0
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.1.2...v1.2.0)
