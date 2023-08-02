@@ -1,4 +1,8 @@
-import { toNodeListener } from "h3";
-import { app } from "./app";
+import { createApp, eventHandler } from "h3";
 
-export default toNodeListener(app);
+export const app = createApp();
+
+app.use(
+  "/",
+  eventHandler(() => ({ hello: "world!" })),
+);

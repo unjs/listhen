@@ -1,10 +1,11 @@
-import { resolve } from "node:path";
+import { WatchOptions } from "node:fs";
 import { defineCommand, runMain as _runMain } from "citty";
+import { isAbsolute } from "pathe";
 import { name, description, version } from "../package.json";
 import { listen } from "./listen";
-import { listenAndWatch } from "./watch";
-import type { ListenOptions, WatchOptions } from "./types";
-import { createImporter } from "./_utils";
+import { listenAndWatch } from "./server";
+import type { ListenOptions } from "./types";
+import { DevServerOptions, createDevServer } from "./server/dev";
 
 export const main = defineCommand({
   meta: {
@@ -63,12 +64,8 @@ export const main = defineCommand({
     },
   },
   async run({ args }) {
-    const cwd = resolve(args.cwd || ".");
-    process.chdir(cwd);
-
-    const opts: Partial<ListenOptions & WatchOptions> = {
+    const opts: Partial<ListenOptions & WatchOptions & DevServerOptions> = {
       ...args,
-      cwd,
       port: args.port,
       hostname: args.host,
       clipboard: args.clipboard,
@@ -78,12 +75,17 @@ export const main = defineCommand({
       https: args.https, // TODO: Support custom cert
     };
 
+    const entry =
+      isAbsolute(args.entry) || args.entry.startsWith(".")
+        ? args.entry
+        : `./${args.entry}`;
+
     if (args.watch) {
-      await listenAndWatch(args.entry, opts);
+      await listenAndWatch(entry, opts);
     } else {
-      const importer = await createImporter(args.entry);
-      const handler = await importer.import();
-      await listen(handler, opts);
+      const devServer = await createDevServer(entry, opts);
+      await listen(devServer.nodeListener, opts);
+      await devServer.reload(true);
     }
   },
 });
