@@ -116,22 +116,24 @@ async function resolvePfx(
 
 function createAttributes(options: CommonCertificateOptions) {
   // Certificate Attributes: https://git.io/fptna
-  const commonName = options.commonName || "localhost.local";
-  const countryCode = options.countryCode || "US";
-  const state = options.state || "Michigan";
-  const locality = options.locality || "Berkley";
-  const organization = options.organization || "Testing Corp";
-  const organizationalUnit = options.organizationalUnit || "IT department";
-  const emailAddress = options.emailAddress || "security@localhost.local";
   return [
-    { name: "commonName", value: commonName },
-    { name: "countryName", value: countryCode },
-    { name: "stateOrProvinceName", value: state },
-    { name: "localityName", value: locality },
-    { name: "organizationName", value: organization },
-    { name: "organizationalUnitName", value: organizationalUnit },
-    { name: "emailAddress", value: emailAddress },
-  ];
+    options.commonName && { name: "commonName", value: options.commonName },
+    options.countryCode && { name: "countryName", value: options.countryCode },
+    options.state && { name: "stateOrProvinceName", value: options.state },
+    options.locality && { name: "localityName", value: options.locality },
+    options.organization && {
+      name: "organizationName",
+      value: options.organization,
+    },
+    options.organizationalUnit && {
+      name: "organizationalUnitName",
+      value: options.organizationalUnit,
+    },
+    options.emailAddress && {
+      name: "emailAddress",
+      value: options.emailAddress,
+    },
+  ].filter(Boolean) as { name: string; value: string }[];
 }
 
 function createCertificateInfo(options: CommonCertificateOptions) {
