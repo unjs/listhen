@@ -3,6 +3,7 @@ import { networkInterfaces } from "node:os";
 import { relative, resolve } from "node:path";
 import { colors } from "consola/utils";
 import { fileURLToPath } from "mlly";
+import { isAbsolute } from "pathe";
 import type { Certificate, HTTPSOptions } from "./types";
 
 export async function resolveCert(
@@ -79,7 +80,11 @@ export async function createImporter(input: string, _cwd?: string) {
     interopDefault: true,
   });
 
-  const entry = _jitiRequire.resolve(input);
+  if (!isAbsolute(input) && !input.startsWith(".")) {
+    input = `./${input}`;
+  }
+
+  const entry = _jitiRequire.resolve(resolve(cwd, input));
 
   const _import = () => {
     const r = _jitiRequire(input);
