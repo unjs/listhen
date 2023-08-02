@@ -119,6 +119,10 @@ You can set https to an object for custom options. Possible options:
 #### User Provided Certificate
 
 Set `https: { cert, key }` where cert and key are path to the ssl certificates.
+With an encrypted private key you also need to set `passphrase` on the `https` object.
+
+To provide a certificate stored in a keystore set `https: { pfx }` with a path to the keystore.
+When the keystore is password protected also set `passphrase`.
 
 You can also provide inline cert and key instead of reading from filesystem. In this case, they should start with `--`.
 

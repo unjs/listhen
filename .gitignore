@@ -6,4 +6,5 @@ coverage
 dist
 types
 .conf*
-*.pem
+.idea/
+.tmp

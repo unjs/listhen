@@ -5,13 +5,16 @@ import type { GetPortInput } from "get-port-please";
 export interface Certificate {
   key: string;
   cert: string;
+  passphrase?: string;
 }
 
 export interface HTTPSOptions {
-  cert: string;
-  key: string;
-  domains?: string[];
+  cert?: string;
+  key?: string;
+  pfx?: string;
+  passphrase?: string;
   validityDays?: number;
+  domains?: string[];
 }
 
 export interface ListenOptions {

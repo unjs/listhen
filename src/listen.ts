@@ -9,13 +9,14 @@ import addShutdown from "http-shutdown";
 import { defu } from "defu";
 import { colors } from "consola/utils";
 import { open } from "./lib/open";
-import type { ListenOptions, Listener, ShowURLOptions } from "./types";
-import {
-  resolveCert,
-  formatAddress,
-  formatURL,
-  getNetworkInterfaces,
-} from "./_utils";
+import type {
+  ListenOptions,
+  Listener,
+  ShowURLOptions,
+  HTTPSOptions,
+} from "./types";
+import { formatAddress, formatURL, getNetworkInterfaces } from "./_utils";
+import { resolveCertificate } from "./_cert";
 
 export async function listen(
   handle: RequestListener,
@@ -63,13 +64,11 @@ export async function listen(
   };
 
   let https: Listener["https"] = false;
-  if (options_.https) {
-    const { key, cert } = await resolveCert(
-      { ...(options_.https as any) },
-      options_.hostname,
-    );
-    https = { key, cert };
-    server = createHTTPSServer({ key, cert }, handle);
+  const httpsOptions = options_.https as HTTPSOptions;
+
+  if (httpsOptions) {
+    https = await resolveCertificate(httpsOptions);
+    server = createHTTPSServer(https, handle);
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, options_.hostname);
