@@ -1,6 +1,7 @@
 import type { RequestListener } from "node:http";
 import { consola } from "consola";
 import { dirname } from "pathe";
+import type { AsyncSubscription } from "@parcel/watcher";
 import type { Listener, ListenOptions, WatchOptions } from "./types";
 import { listen } from "./listen";
 import { createImporter } from "./_utils";
@@ -10,48 +11,83 @@ export async function listenAndWatch(
   options: Partial<ListenOptions & WatchOptions> = {},
 ): Promise<Listener> {
   const logger = options.logger || consola.withTag("listhen");
+  let watcher: AsyncSubscription; // eslint-disable-line prefer-const
+  let handle: RequestListener | undefined;
+  let error: undefined | unknown;
 
-  let handle: RequestListener;
+  // Initialize listener
+  const listenter = await listen((req, res) => {
+    if (error) {
+      res.end((error as Error)?.stack || error.toString());
+    } else if (handle) {
+      return handle(req, res);
+    } else {
+      res.end("Please wait for the server to load.");
+    }
+  }, options);
 
-  const importer = await createImporter(input);
-
-  const resolveHandle = async () => {
-    handle = await importer.import();
+  // Hook close event to stop watcher too
+  const _close = listenter.close;
+  listenter.close = async () => {
+    if (watcher) {
+      await watcher.unsubscribe().catch((error) => {
+        logger.error(error);
+      });
+    }
+    await _close();
   };
 
-  resolveHandle();
+  // Initialize resolver
+  let loadTime = 0;
+  const importer = await createImporter(input);
+  const resolveHandle = async () => {
+    const start = Date.now();
+    try {
+      handle = await importer.import();
+      error = undefined;
+    } catch (_error) {
+      error = _error;
+    }
+    loadTime = Date.now() - start;
+  };
 
+  // Resolve handle once
+  logger.info(
+    `Loading server entry ${importer.formateRelative(importer.entry)}`,
+  );
+  resolveHandle().then(() => {
+    if (error) {
+      logger.error(error);
+    } else {
+      logger.log(`🚀 Server initialized in ${loadTime}ms.`);
+    }
+  });
+
+  // Start watcher
   // https://github.com/parcel-bundler/watcher
   const { subscribe } = await import("@parcel/watcher").then(
     (r) => r.default || r,
   );
 
   const entryDir = dirname(importer.entry);
-  const watcher = await subscribe(entryDir, (_error, events) => {
+  watcher = await subscribe(entryDir, (_error, events) => {
     if (events.length === 0) {
       return;
     }
-    logger.log(
-      `🔃 Reloading server... (${events
-        .map((e) => `\`./${importer.relative(e.path)}\` ${e.type}d`)
-        .join(", ")})`,
-    );
-    resolveHandle();
+    resolveHandle().then(() => {
+      const eventsString = events
+        .map((e) => `${importer.formateRelative(e.path)} ${e.type}d`)
+        .join(", ");
+      logger.log(`${eventsString}. Reloading server...`);
+      if (error) {
+        logger.error(error);
+      } else {
+        logger.log(`🔃 Server Reloaded in ${loadTime}ms.`);
+      }
+    });
   });
 
-  const listenter = await listen((...args) => {
-    return handle(...args);
-  }, options);
-
-  logger.log(`👀 Watching \`./${importer.relative(entryDir)}\` for changes.`);
-
-  const _close = listenter.close;
-  listenter.close = async () => {
-    await watcher.unsubscribe().catch((error) => {
-      logger.error(error);
-    });
-    await _close();
-  };
+  logger.log(`👀 Watching ${importer.formateRelative(entryDir)} for changes.`);
 
   return listenter;
 }

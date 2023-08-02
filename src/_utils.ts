@@ -94,6 +94,7 @@ export async function createImporter(input: string, _cwd?: string) {
   return {
     cwd,
     relative: (path: string) => relative(cwd, path),
+    formateRelative: (path: string) => `\`./${relative(cwd, path)}\``,
     entry,
     import: _import,
   };
