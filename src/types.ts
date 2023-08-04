@@ -32,9 +32,24 @@ export interface ListenOptions {
   autoCloseSignals: string[];
 }
 
-export interface ShowURLOptions {
+export interface ListenURL {
+  url: string;
+  type: "ipv4" | "ipv6" | "unknown";
+  public: boolean;
+}
+
+export interface GetURLOptions {
   baseURL: string;
   name?: string;
+}
+
+export interface ShowURLOptions extends GetURLOptions {
+  /**
+   * Print QR Code for public IPv4 address
+   *
+   * @default true
+   */
+  qrcode?: boolean;
 }
 
 export interface Listener {
@@ -45,4 +60,5 @@ export interface Listener {
   close: () => Promise<void>;
   open: () => Promise<void>;
   showURL: (options?: Pick<ListenOptions, "baseURL">) => void;
+  getURLs: (options?: GetURLOptions) => ListenURL[];
 }

@@ -44,6 +44,9 @@ dependencies:
   ufo:
     specifier: ^1.2.0
     version: 1.2.0
+  uqr:
+    specifier: ^0.0.1
+    version: 0.0.1
 
 devDependencies:
   '@types/node':
@@ -3859,6 +3862,10 @@ packages:
       escalade: 3.1.1
       picocolors: 1.0.0
     dev: true
+
+  /uqr@0.0.1:
+    resolution: {integrity: sha512-dgxyfuQGCpUlG00KVH6VvxaWW+yPr05HlwAJotxNpIw1QphIrZ+UXW1jYvRhXqAPoVZe1w7zb61X9hjCs0g3vg==}
+    dev: false
 
   /uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
