@@ -513,8 +513,8 @@ describe("Certification Tests", () => {
         extensions,
       });
       const caCert = forge.pki.certificateFromPem(ca.cert);
-      expect(() => cert.verify(caCert)).toThrowError(
-        /Encryption block is invalid.|Encrypted message is invalid./,
+      expect(() => caCert.verify(cert)).toThrowError(
+        /Could not compute certificate digest. Unknown signature OID./,
       );
 
       _private.signCertificate(
@@ -545,8 +545,8 @@ describe("Certification Tests", () => {
       });
 
       const caCert = forge.pki.certificateFromPem(ca.cert);
-      expect(() => cert.verify(caCert)).toThrowError(
-        /Encryption block is invalid.|Encrypted message is invalid./,
+      expect(() => caCert.verify(cert)).toThrowError(
+        /Could not compute certificate digest. Unknown signature OID./,
       );
 
       _private.signCertificate(
