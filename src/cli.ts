@@ -63,7 +63,7 @@ export const main = defineCommand({
       type: "string",
       description: "Path to TLS key used with HTTPS in PEM format",
     },
-    "kettps.pfx": {
+    "https.pfx": {
       type: "string",
       description:
         "Path to PKCS#12 (.p12/.pfx) keystore containing a TLS certificate and Key",
