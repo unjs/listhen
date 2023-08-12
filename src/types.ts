@@ -19,7 +19,7 @@ export interface HTTPSOptions {
 
 export interface ListenOptions {
   name: string;
-  port?: GetPortInput;
+  port: GetPortInput;
   hostname: string;
   showURL: boolean;
   baseURL: string;
@@ -29,7 +29,6 @@ export interface ListenOptions {
   isTest: boolean;
   isProd: boolean;
   autoClose: boolean;
-  autoCloseSignals: string[];
 }
 
 export interface ListenURL {
@@ -39,7 +38,7 @@ export interface ListenURL {
 }
 
 export interface GetURLOptions {
-  baseURL: string;
+  baseURL?: string;
   name?: string;
 }
 

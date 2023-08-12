@@ -23,9 +23,11 @@ import { resolveCertificate } from "./_cert";
 
 export async function listen(
   handle: RequestListener,
-  options_: Partial<ListenOptions> = {},
+  _options: Partial<ListenOptions> = {},
 ): Promise<Listener> {
-  options_ = defu(options_, {
+  const listhenOptions = defu<ListenOptions, ListenOptions[]>(_options, {
+    name: "",
+    https: false,
     port: process.env.PORT || 3000,
     hostname: process.env.HOST || "",
     showURL: true,
@@ -37,21 +39,21 @@ export async function listen(
     autoClose: true,
   });
 
-  if (options_.isTest) {
-    options_.showURL = false;
+  if (listhenOptions.isTest) {
+    listhenOptions.showURL = false;
   }
 
-  if (options_.isProd || options_.isTest) {
-    options_.open = false;
-    options_.clipboard = false;
+  if (listhenOptions.isProd || listhenOptions.isTest) {
+    listhenOptions.open = false;
+    listhenOptions.clipboard = false;
   }
 
   const port = await getPort({
-    port: Number(options_.port),
-    verbose: !options_.isTest,
-    host: options_.hostname,
+    port: Number(listhenOptions.port),
+    verbose: !listhenOptions.isTest,
+    host: listhenOptions.hostname,
     alternativePortRange: [3000, 3100],
-    ...(typeof options_.port === "object" && options_.port),
+    ...(typeof listhenOptions.port === "object" && listhenOptions.port),
   });
 
   let server: Server | HTTPServer;
@@ -62,26 +64,28 @@ export async function listen(
     const anyV6 = addr?.addr === "[::]";
 
     return `${addr!.proto}://${
-      host || options_.hostname || (anyV4 || anyV6 ? "localhost" : addr!.addr)
-    }:${addr!.port}${baseURL || options_.baseURL}`;
+      host ||
+      listhenOptions.hostname ||
+      (anyV4 || anyV6 ? "localhost" : addr!.addr)
+    }:${addr!.port}${baseURL || listhenOptions.baseURL}`;
   };
 
   let https: Listener["https"] = false;
-  const httpsOptions = options_.https as HTTPSOptions;
+  const httpsOptions = listhenOptions.https as HTTPSOptions;
 
   if (httpsOptions) {
     https = await resolveCertificate(httpsOptions);
     server = createHTTPSServer(https, handle);
     addShutdown(server);
     // @ts-ignore
-    await promisify(server.listen.bind(server))(port, options_.hostname);
+    await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
     const _addr = server.address() as AddressInfo;
     addr = { proto: "https", addr: formatAddress(_addr), port: _addr.port };
   } else {
     server = createServer(handle);
     addShutdown(server);
     // @ts-ignore
-    await promisify(server.listen.bind(server))(port, options_.hostname);
+    await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
     const _addr = server.address() as AddressInfo;
     addr = { proto: "http", addr: formatAddress(_addr), port: _addr.port };
   }
@@ -95,16 +99,16 @@ export async function listen(
     return promisify((server as any).shutdown)();
   };
 
-  if (options_.clipboard) {
+  if (listhenOptions.clipboard) {
     const clipboardy = await import("clipboardy").then((r) => r.default || r);
     await clipboardy.write(getURL()).catch(() => {
-      options_.clipboard = false;
+      listhenOptions.clipboard = false;
     });
   }
 
-  const getURLs = (options?: GetURLOptions) => {
+  const getURLs = (getURLOptions?: GetURLOptions) => {
     const urls: ListenURL[] = [];
-    const baseURL = options?.baseURL || options_.baseURL || "";
+    const baseURL = getURLOptions?.baseURL || listhenOptions.baseURL || "";
 
     const anyV4 = addr?.addr === "0.0.0.0";
     const anyV6 = addr?.addr === "[::]";
@@ -128,13 +132,18 @@ export async function listen(
     return urls;
   };
 
-  const showURL = (options?: ShowURLOptions) => {
-    const add = options_.clipboard ? colors.gray("(copied to clipboard)") : "";
+  const showURL = (showURLOptions: ShowURLOptions = {}) => {
+    const add = listhenOptions.clipboard
+      ? colors.gray("(copied to clipboard)")
+      : "";
     const lines = [];
-    const name = options?.name ? ` (${options.name})` : "";
-    const baseURL = options?.baseURL || options_.baseURL || "";
+    const name =
+      showURLOptions.name || listhenOptions.name
+        ? ` (${showURLOptions.name || listhenOptions.name})`
+        : "";
+    const baseURL = showURLOptions.baseURL || listhenOptions.baseURL || "";
 
-    const urls = getURLs(options);
+    const urls = getURLs(showURLOptions);
 
     if (urls.length > 0) {
       for (const url of urls) {
@@ -152,7 +161,7 @@ export async function listen(
     const firstPublicIPv4 = urls.find(
       (url) => url.public && url.type === "ipv4",
     );
-    if (firstPublicIPv4 && options?.qrcode !== false) {
+    if (firstPublicIPv4 && showURLOptions?.qrcode !== false) {
       const space = " ".repeat(15);
       lines.push(" ");
       lines.push(
@@ -167,18 +176,18 @@ export async function listen(
     console.log("\n" + lines.join("\n") + "\n");
   };
 
-  if (options_.showURL) {
+  if (listhenOptions.showURL) {
     showURL();
   }
 
   const _open = async () => {
     await open(getURL()).catch(() => {});
   };
-  if (options_.open) {
+  if (listhenOptions.open) {
     await _open();
   }
 
-  if (options_.autoClose) {
+  if (listhenOptions.autoClose) {
     process.on("exit", () => close());
   }
 
