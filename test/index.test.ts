@@ -2,6 +2,7 @@ import { resolve } from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { describe, afterEach, test, expect } from "vitest";
 import { listen, Listener } from "../src";
+import { parseHTTPSArgs } from "../src/cli";
 
 // eslint-disable-next-line no-console
 // console.log = fn()
@@ -19,6 +20,7 @@ describe("listhen", () => {
       listener = undefined;
     }
   });
+
   test("should listen to the next port in range (3000 -> 31000)", async () => {
     listener = await listen(handle, {
       port: { port: 3000 },
@@ -30,6 +32,7 @@ describe("listhen", () => {
     expect(listener2.url).toMatch(/:3001\/$/);
     await listener2.close();
   });
+
   test("listen (no args)", async () => {
     listener = await listen(handle);
     expect(listener.url.startsWith("http://")).toBe(true);
@@ -48,6 +51,120 @@ describe("listhen", () => {
   });
 
   describe("https", () => {
+    describe("parsing HTTPS CLI options", () => {
+      test("should prioritize given certificate and key over keystore and autogeneration", () => {
+        const allOptions = {
+          "https.cert": "cert.pem",
+          "https.key": "key.pem",
+          "https.pfx": "keystore.p12",
+          "https.passphrase": "store-pw",
+          "https.validityDays": 10,
+          "https.domains": "localhost, 127.0.0.1",
+        };
+        expect(parseHTTPSArgs(allOptions)).toEqual({
+          cert: "cert.pem",
+          key: "key.pem",
+          passphrase: "store-pw",
+        });
+      });
+
+      test("should prioritize given keystore over autogeneration", () => {
+        const optionsVariant = {
+          "https.domains": "localhost, 127.0.0.1",
+          "https.pfx": "keystore.p12",
+        };
+        expect(parseHTTPSArgs(optionsVariant)).toEqual({
+          pfx: "keystore.p12",
+        });
+      });
+
+      test("should prioritize given cert and key over autogeneration", () => {
+        const optionsVariant = {
+          "https.domains": "localhost, 127.0.0.1",
+          "https.validityDays": 10,
+          "https.cert": "cert.pem",
+          "https.key": "key.pem",
+        };
+        expect(parseHTTPSArgs(optionsVariant)).toEqual({
+          cert: "cert.pem",
+          key: "key.pem",
+        });
+      });
+
+      test("should parse keystore when cert or key is missing", () => {
+        // No key
+        const optionsVariant = {
+          "https.cert": "cert.pem",
+          "https.pfx": "keystore.p12",
+          "https.passphrase": "store-pw",
+        };
+        expect(parseHTTPSArgs(optionsVariant)).toEqual({
+          pfx: "keystore.p12",
+          passphrase: "store-pw",
+        });
+
+        // no cert
+        const optionsVariant2 = {
+          "https.key": "key.pem",
+          "https.pfx": "keystore.p12",
+          "https.passphrase": "store-pw",
+        };
+        expect(parseHTTPSArgs(optionsVariant2)).toEqual({
+          pfx: "keystore.p12",
+          passphrase: "store-pw",
+        });
+      });
+
+      test("should parse keystore", () => {
+        const optionsVariant = {
+          "https.pfx": "keystore.p12",
+        };
+        expect(parseHTTPSArgs(optionsVariant)).toEqual({
+          pfx: "keystore.p12",
+        });
+      });
+
+      test("should parse password protected keystore", () => {
+        const optionsVariant = {
+          "https.pfx": "keystore.p12",
+          "https.passphrase": "store-pw",
+        };
+        expect(parseHTTPSArgs(optionsVariant)).toEqual({
+          pfx: "keystore.p12",
+          passphrase: "store-pw",
+        });
+      });
+
+      test("should parse domains (autogeneration)", () => {
+        const optionsVariant = {
+          "https.domains": "localhost, 127.0.0.1",
+        };
+        expect(parseHTTPSArgs(optionsVariant)).toEqual({
+          domains: ["localhost", "127.0.0.1"],
+        });
+      });
+
+      test("should parse validity in days (autogeneration)", () => {
+        const optionsVariant = {
+          "https.validityDays": 10,
+        };
+        expect(parseHTTPSArgs(optionsVariant)).toEqual({
+          validityDays: 10,
+        });
+      });
+
+      test("should parse domains and validity in days (autogeneration)", () => {
+        const optionsVariant = {
+          "https.domains": "localhost, 127.0.0.1",
+          "https.validityDays": 10,
+        };
+        expect(parseHTTPSArgs(optionsVariant)).toEqual({
+          domains: ["localhost", "127.0.0.1"],
+          validityDays: 10,
+        });
+      });
+    });
+
     test("listen (https - selfsigned)", async () => {
       listener = await listen(handle, { https: true, hostname: "localhost" });
       expect(listener.url.startsWith("https://")).toBe(true);
