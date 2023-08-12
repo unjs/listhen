@@ -185,6 +185,9 @@ export async function listen(
 
     const urls = getURLs(showURLOptions);
 
+    const firstLocalUrl = urls.find((u) => u.type === "local");
+    const firstPublicUrl = urls.find((u) => u.type !== "local");
+
     const typeMap: Record<ListenURL["type"], [string, ColorName]> = {
       local: ["Local", "green"],
       tunnel: ["Tunnel", "yellow"],
@@ -196,26 +199,25 @@ export async function listen(
       const label = getColor(type[1])(
         `  ➜ ${(type[0] + ":").padEnd(8, " ")}${nameSuffix} `,
       );
-      const suffix = url.type === "local" ? copiedToClipboardMessage : "";
+      const suffix = url === firstLocalUrl ? copiedToClipboardMessage : "";
       lines.push(`${label} ${formatURL(url.url)} ${suffix}`);
     }
 
-    if (!listhenOptions.public) {
+    if (!firstPublicUrl) {
       lines.push(
         colors.gray(`  > Network: use ${colors.white("--host")} to expose`),
       );
     }
 
-    const firstPublic = urls.find((u) => u.type !== "local");
-    if (firstPublic && (showURLOptions.qr ?? listhenOptions.qr) !== false) {
+    if (firstPublicUrl && (showURLOptions.qr ?? listhenOptions.qr) !== false) {
       const space = " ".repeat(15);
       lines.push(" ");
       lines.push(
-        ...renderQRCode(String(firstPublic))
+        ...renderQRCode(firstPublicUrl.url)
           .split("\n")
           .map((line) => space + line),
       );
-      lines.push(space + formatURL(firstPublic.url));
+      lines.push(space + formatURL(firstPublicUrl.url));
     }
 
     // eslint-disable-next-line no-console
