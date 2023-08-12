@@ -8,12 +8,15 @@ import { getPort } from "get-port-please";
 import addShutdown from "http-shutdown";
 import { defu } from "defu";
 import { colors } from "consola/utils";
+import { renderUnicodeCompact as renderQRCode } from "uqr";
 import { open } from "./lib/open";
 import type {
   ListenOptions,
   Listener,
   ShowURLOptions,
   HTTPSOptions,
+  ListenURL,
+  GetURLOptions,
 } from "./types";
 import { formatAddress, formatURL, getNetworkInterfaces } from "./_utils";
 import { resolveCertificate } from "./_cert";
@@ -99,22 +102,44 @@ export async function listen(
     });
   }
 
-  const showURL = (options?: ShowURLOptions) => {
-    const add = options_.clipboard ? colors.gray("(copied to clipboard)") : "";
-    const lines = [];
+  const getURLs = (options?: GetURLOptions) => {
+    const urls: ListenURL[] = [];
     const baseURL = options?.baseURL || options_.baseURL || "";
-    const name = options?.name ? ` (${options.name})` : "";
 
     const anyV4 = addr?.addr === "0.0.0.0";
     const anyV6 = addr?.addr === "[::]";
+
     if (anyV4 || anyV6) {
-      lines.push(
-        `  > Local${name}:    ${formatURL(
-          getURL("localhost", baseURL),
-        )} ${add}`,
-      );
+      urls.push({
+        url: getURL("localhost", baseURL),
+        type: anyV4 ? "ipv4" : "ipv6",
+        public: false,
+      });
+
       for (const addr of getNetworkInterfaces(anyV4)) {
-        lines.push(`  > Network${name}:  ${formatURL(getURL(addr, baseURL))}`);
+        urls.push({
+          url: getURL(addr, baseURL),
+          type: addr.includes("[") ? "ipv6" : "ipv4",
+          public: true,
+        });
+      }
+    }
+
+    return urls;
+  };
+
+  const showURL = (options?: ShowURLOptions) => {
+    const add = options_.clipboard ? colors.gray("(copied to clipboard)") : "";
+    const lines = [];
+    const name = options?.name ? ` (${options.name})` : "";
+    const baseURL = options?.baseURL || options_.baseURL || "";
+
+    const urls = getURLs(options);
+
+    if (urls.length > 0) {
+      for (const url of urls) {
+        const label = url.public ? `Network${name}:  ` : `Local${name}:    `;
+        lines.push(`  > ${label} ${formatURL(url.url)} ${add}`);
       }
     } else {
       lines.push(
@@ -123,6 +148,21 @@ export async function listen(
         )} ${add}`,
       );
     }
+
+    const firstPublicIPv4 = urls.find(
+      (url) => url.public && url.type === "ipv4",
+    );
+    if (firstPublicIPv4 && options?.qrcode !== false) {
+      const space = " ".repeat(15);
+      lines.push(" ");
+      lines.push(
+        ...renderQRCode(firstPublicIPv4.url)
+          .split("\n")
+          .map((line) => space + line),
+      );
+      lines.push(space + formatURL(firstPublicIPv4.url));
+    }
+
     // eslint-disable-next-line no-console
     console.log("\n" + lines.join("\n") + "\n");
   };
@@ -148,6 +188,7 @@ export async function listen(
     server,
     open: _open,
     showURL,
+    getURLs,
     close,
   };
 }
