@@ -1,5 +1,7 @@
 import { networkInterfaces } from "node:os";
+import { relative } from "pathe";
 import { colors } from "consola/utils";
+import { ListenURL, ListenOptions } from "./types";
 
 export function getNetworkInterfaces(v4Only = true): string[] {
   const addrs = new Set<string>();
@@ -35,4 +37,46 @@ export function formatURL(url: string) {
       decodeURI(url).replace(/:(\d+)\//g, `:${colors.bold("$1")}/`),
     ),
   );
+}
+
+export function getPublicURL(
+  urls: ListenURL[],
+  listhenOptions: ListenOptions,
+): string | undefined {
+  if (listhenOptions.publicURL) {
+    return listhenOptions.publicURL;
+  }
+
+  return (
+    detectStackblitzURL(listhenOptions._entry) ||
+    urls.find((url) => url.public && url.type === "ipv4")?.url ||
+    urls.find((url) => url.public)?.url
+  );
+}
+
+function detectStackblitzURL(entry?: string) {
+  try {
+    if (process.env.SHELL !== "/bin/jsh") {
+      return;
+    }
+
+    const cwd = process.env.PWD || ("" as string);
+
+    // Editor
+    if (cwd.startsWith("/home/projects")) {
+      const projectId = cwd.split("/")[3];
+      const relativeEntry =
+        entry && relative(process.cwd(), entry).replace(/^\.\//, "");
+      const query = relativeEntry ? `?file=${relativeEntry}` : "";
+      return `https://stackblitz.com/edit/${projectId}${query}`;
+    }
+
+    // Codeflow
+    if (cwd.startsWith("/home")) {
+      const githubRepo = cwd.split("/").slice(2).join("/");
+      return `https://stackblitz.com/edit/~/github.com/${githubRepo}`;
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }

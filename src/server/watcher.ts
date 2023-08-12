@@ -27,7 +27,10 @@ export async function listenAndWatch(
   });
 
   // Initialize listener
-  const listenter = await listen(devServer.nodeListener, options);
+  const listenter = await listen(devServer.nodeListener, {
+    ...options,
+    _entry: devServer._entry,
+  });
 
   // Load dev server handler first time
   await devServer.reload(true);

@@ -102,7 +102,10 @@ export const main = defineCommand({
       await listenAndWatch(entry, opts);
     } else {
       const devServer = await createDevServer(entry, opts);
-      await listen(devServer.nodeListener, opts);
+      await listen(devServer.nodeListener, {
+        ...opts,
+        _entry: devServer._entry,
+      });
       await devServer.reload(true);
     }
   },
