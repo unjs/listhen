@@ -45,8 +45,8 @@ dependencies:
     specifier: ^1.2.0
     version: 1.2.0
   uqr:
-    specifier: ^0.0.1
-    version: 0.0.1
+    specifier: ^0.1.0
+    version: 0.1.0
 
 devDependencies:
   '@types/node':
@@ -3873,8 +3873,8 @@ packages:
       picocolors: 1.0.0
     dev: true
 
-  /uqr@0.0.1:
-    resolution: {integrity: sha512-dgxyfuQGCpUlG00KVH6VvxaWW+yPr05HlwAJotxNpIw1QphIrZ+UXW1jYvRhXqAPoVZe1w7zb61X9hjCs0g3vg==}
+  /uqr@0.1.0:
+    resolution: {integrity: sha512-jFCDB0ptDeUbNyU52pY2TMawACz0gBNo20Aw8R58s/4Avux/ZuqP8qZh3Q9XA4wU8ztWwEWsStI+tNNEEUHdyQ==}
     dev: false
 
   /uri-js@4.4.1:
