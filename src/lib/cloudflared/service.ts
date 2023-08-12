@@ -272,7 +272,7 @@ export function current(): {
         );
       }
     } catch (err) {
-      if (process.env.VERBOSE) {
+      if (process.env.DEBUG) {
         console.error("log parsing failed", err);
       }
     }

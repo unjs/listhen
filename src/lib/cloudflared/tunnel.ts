@@ -44,7 +44,7 @@ export function tunnel(options: Record<string, string | number | null> = {}): {
 
   const child = spawn(bin, args, { stdio: ["ignore", "pipe", "pipe"] });
 
-  if (process.env.VERBOSE) {
+  if (process.env.DEBUG) {
     child.stdout.pipe(process.stdout);
     child.stderr.pipe(process.stderr);
   }

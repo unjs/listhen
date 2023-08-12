@@ -80,7 +80,7 @@ export async function install_macos(
   }
 
   await download(resolve_base(version) + file, `${to}.tgz`);
-  process.env.VERBOSE && console.log(`Extracting to ${to}`);
+  process.env.DEBUG && console.log(`Extracting to ${to}`);
   execSync(`tar -xzf ${path.basename(`${to}.tgz`)}`, { cwd: path.dirname(to) });
   fs.unlinkSync(`${to}.tgz`);
   fs.renameSync(`${path.dirname(to)}/cloudflared`, to);
@@ -102,9 +102,9 @@ export async function install_windows(
 
 function download(url: string, to: string, redirect = 0): Promise<string> {
   if (redirect === 0) {
-    process.env.VERBOSE && console.log(`Downloading ${url} to ${to}`);
+    process.env.DEBUG && console.log(`Downloading ${url} to ${to}`);
   } else {
-    process.env.VERBOSE && console.log(`Redirecting to ${url}`);
+    process.env.DEBUG && console.log(`Redirecting to ${url}`);
   }
 
   return new Promise<string>((resolve, reject) => {
