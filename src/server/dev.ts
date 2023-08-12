@@ -153,6 +153,7 @@ export async function createDevServer(
     resolver,
     nodeListener: toNodeListener(app),
     reload: (_initial?: boolean) => loadHandle(_initial),
+    _entry: resolveEntry(),
   };
 }
 

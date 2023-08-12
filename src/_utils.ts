@@ -1,6 +1,7 @@
 import { networkInterfaces } from "node:os";
+import { relative } from "pathe";
 import { colors } from "consola/utils";
-import { ListenURL } from "./types";
+import { ListenURL, ListenOptions } from "./types";
 
 export function getNetworkInterfaces(v4Only = true): string[] {
   const addrs = new Set<string>();
@@ -38,7 +39,29 @@ export function formatURL(url: string) {
   );
 }
 
-export function getPublicURL(urls: ListenURL[]): string | undefined {
+export function getPublicURL(
+  urls: ListenURL[],
+  listhenOptions: ListenOptions,
+): string | undefined {
+  if (listhenOptions.publicURL) {
+    return listhenOptions.publicURL;
+  }
+
+  const isStackblitz = process.env.SHELL === "/bin/jsh";
+  if (isStackblitz) {
+    const projectId = process.env.INIT_CWD?.split("/").pop();
+    if (projectId) {
+      return `https://stackblitz.com/edit/${projectId}${
+        listhenOptions._entry
+          ? `?file=${relative(process.cwd(), listhenOptions._entry).replace(
+              /^\.\//,
+              "",
+            )}`
+          : ""
+      }`;
+    }
+  }
+
   return (
     urls.find((url) => url.public && url.type === "ipv4")?.url ||
     urls.find((url) => url.public)?.url

@@ -178,9 +178,7 @@ export async function listen(
 
     if ((showURLOptions.qr ?? listhenOptions.qr) !== false) {
       const publicURL =
-        showURLOptions.publicURL ||
-        listhenOptions.publicURL ||
-        getPublicURL(urls);
+        showURLOptions.publicURL || getPublicURL(urls, listhenOptions);
       if (publicURL) {
         const space = " ".repeat(15);
         lines.push(" ");

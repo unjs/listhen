@@ -29,6 +29,7 @@ export interface ListenOptions {
   isTest: boolean;
   isProd: boolean;
   autoClose: boolean;
+  _entry?: string;
   /**
    * Used as main public url to display
    * @default The first public IPV4 address listening to
