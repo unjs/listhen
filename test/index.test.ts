@@ -2,6 +2,7 @@ import { resolve } from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { describe, afterEach, test, expect } from "vitest";
 import { listen, Listener } from "../src";
+import { parseHTTPSArgs } from "../src/cli";
 
 // eslint-disable-next-line no-console
 // console.log = fn()
@@ -48,6 +49,25 @@ describe("listhen", () => {
   });
 
   describe("https", () => {
+    test("should parse HTTPS CLI Options", () => {
+      const options = {
+        "https.cert": "cert.pem",
+        "https.key": "key.pem",
+        "https.pfx": "keystore.p12",
+        "https.passphrase": "pw",
+        "https.domains": "localhost, 127.0.0.1",
+        "https.validityDays": 10,
+      };
+      expect(parseHTTPSArgs(options)).toEqual({
+        cert: "cert.pem",
+        key: "key.pem",
+        pfx: "keystore.p12",
+        passphrase: "pw",
+        domains: ["localhost", "127.0.0.1"],
+        validityDays: 10,
+      });
+    });
+
     test("listen (https - selfsigned)", async () => {
       listener = await listen(handle, { https: true, hostname: "localhost" });
       expect(listener.url.startsWith("https://")).toBe(true);
