@@ -119,8 +119,6 @@ export const main = defineCommand({
       https: args.https ? _parseHTTPSArgs(args) : false,
     };
 
-    console.log(opts);
-
     const entry =
       isAbsolute(args.entry) || args.entry.startsWith(".")
         ? args.entry
