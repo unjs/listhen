@@ -30,7 +30,7 @@ export async function listen(
   const _hostname = process.env.HOST ?? _options.hostname;
   const _public =
     _options.public ??
-    (process.argv.includes("--public") ? true : undefined) ??
+    (process.argv.includes("--host") ? true : undefined) ??
     (_hostname === "localhost" ? false : _isProd);
 
   const listhenOptions = defu<ListenOptions, ListenOptions[]>(_options, {
@@ -167,7 +167,7 @@ export async function listen(
 
     if (!listhenOptions.public) {
       lines.push(
-        colors.gray(`  > Network: use ${colors.white("--public")} to enable`),
+        colors.gray(`  > Network: use ${colors.white("--host")} to enable`),
       );
     }
 
