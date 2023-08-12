@@ -47,23 +47,35 @@ export function getPublicURL(
     return listhenOptions.publicURL;
   }
 
-  const isStackblitz = process.env.SHELL === "/bin/jsh";
-  if (isStackblitz) {
-    const projectId = process.env.INIT_CWD?.split("/").pop();
-    if (projectId) {
-      return `https://stackblitz.com/edit/${projectId}${
-        listhenOptions._entry
-          ? `?file=${relative(process.cwd(), listhenOptions._entry).replace(
-              /^\.\//,
-              "",
-            )}`
-          : ""
-      }`;
-    }
-  }
-
   return (
+    detectStackblitzURL(listhenOptions._entry) ||
     urls.find((url) => url.public && url.type === "ipv4")?.url ||
     urls.find((url) => url.public)?.url
   );
+}
+
+function detectStackblitzURL(entry?: string) {
+  if (process.env.SHELL !== "/bin/jsh" || !process.env.INIT_CWD) {
+    return;
+  }
+
+  const cwd = process.env.INIT_CWD;
+  let url: string;
+
+  if (cwd.startsWith("/home/projects")) {
+    // Editor
+    url = `/edit/${cwd.split("/")[3]}`;
+  } else if (cwd.startsWith("/home")) {
+    // Codeflow
+    url = "~/github.com/unjs/listhen";
+  } else {
+    return;
+  }
+
+  const relativeEntry =
+    entry && relative(process.cwd(), entry).replace(/^\.\//, "");
+
+  return `https://stackblitz.com/${url}${
+    relativeEntry ? `?file=${relativeEntry}` : ""
+  }`;
 }
