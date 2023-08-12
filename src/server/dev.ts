@@ -32,7 +32,7 @@ export async function createDevServer(
     eventHandler,
     dynamicEventHandler,
     toNodeListener,
-  } = await import(h3Entry);
+  } = (await import(h3Entry)) as typeof import("h3");
 
   // Initialize resolver
   const resolver = await createResolver();
