@@ -146,10 +146,15 @@ export const runMain = () => _runMain(main);
 export function parseHTTPSArgs(args: Record<string, any>): HTTPSOptions {
   const https: HTTPSOptions = {};
 
-  if (args["https.cert"] && args["https.key"]) {
+  if (args["https.cert"]) {
     https.cert = args["https.cert"];
+  }
+
+  if (args["https.key"]) {
     https.key = args["https.key"];
-  } else if (args["https.pfx"]) {
+  }
+
+  if (args["https.pfx"]) {
     https.pfx = args["https.pfx"];
   }
 
