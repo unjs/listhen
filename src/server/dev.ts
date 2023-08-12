@@ -128,6 +128,11 @@ export async function createDevServer(
       if (_handler.handler) {
         _handler = _handler.handler; // h3 app
       }
+      if (typeof _handler !== "function") {
+        throw new TypeError(
+          "Make sure your server entrypoint exports a compatible `handler`, `handle`, `app` or `default` function export.",
+        );
+      }
       dynamicHandler.set(fromNodeMiddleware(_handler));
       error = undefined;
     } catch (_error) {
