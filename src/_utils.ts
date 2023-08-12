@@ -68,7 +68,7 @@ function detectStackblitzURL(entry?: string) {
       url = `/edit/${cwd.split("/")[3]}`;
     } else if (cwd.startsWith("/home")) {
       // Codeflow
-      url = "~/github.com/unjs/listhen";
+      url = `~/github.com/${cwd.split("/").slice(2).join("/")}`;
     } else {
       return;
     }
