@@ -25,17 +25,26 @@ export async function listen(
   handle: RequestListener,
   _options: Partial<ListenOptions> = {},
 ): Promise<Listener> {
+  const _isProd = _options.isProd ?? process.env.NODE_ENV === "production";
+  const _isTest = _options.isTest ?? process.env.NODE_ENV === "test";
+  const _hostname = process.env.HOST ?? _options.hostname;
+  const _public =
+    _options.public ??
+    (process.argv.includes("--host") ? true : undefined) ??
+    (_hostname === "localhost" ? false : _isProd);
+
   const listhenOptions = defu<ListenOptions, ListenOptions[]>(_options, {
     name: "",
     https: false,
     port: process.env.PORT || 3000,
-    hostname: process.env.HOST || "",
+    hostname: _hostname ?? (_public ? "" : "localhost"),
     showURL: true,
     baseURL: "/",
     open: false,
     clipboard: false,
-    isTest: process.env.NODE_ENV === "test",
-    isProd: process.env.NODE_ENV === "production",
+    isTest: _isTest,
+    isProd: _isProd,
+    public: _public,
     autoClose: true,
   });
 
@@ -152,9 +161,13 @@ export async function listen(
       }
     } else {
       lines.push(
-        `  > Listening${name}:    ${formatURL(
-          getURL(undefined, baseURL),
-        )} ${add}`,
+        `  > Local${name}:   ${formatURL(getURL(undefined, baseURL))} ${add}`,
+      );
+    }
+
+    if (!listhenOptions.public) {
+      lines.push(
+        colors.gray(`  > Network: use ${colors.white("--host")} to expose`),
       );
     }
 

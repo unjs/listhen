@@ -64,10 +64,17 @@ export const main = defineCommand({
     },
     publicURL: {
       type: "string",
+      description: "Displayed public URL (used for qr code)",
       required: false,
     },
     qr: {
       type: "boolean",
+      description: "Display The QR code of public URL when available",
+      required: false,
+    },
+    public: {
+      type: "boolean",
+      description: "Listen to all network interfaces",
       required: false,
     },
   },
@@ -82,6 +89,7 @@ export const main = defineCommand({
       name: args.name,
       qr: args.qr,
       publicURL: args.publicURL,
+      public: args.public,
       https: args.https, // TODO: Support custom cert
     };
 

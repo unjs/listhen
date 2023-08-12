@@ -40,6 +40,12 @@ export interface ListenOptions {
    * @default true
    */
   qr?: boolean;
+  /**
+   * When enabled, listhen tries to listen to all network interfaces
+   *
+   * @default `false` for development and `true` for production
+   */
+  public: boolean;
 }
 
 export type GetURLOptions = Pick<Partial<ListenOptions>, "baseURL">;
