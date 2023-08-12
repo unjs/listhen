@@ -1,3 +1,8 @@
+/**
+ * Forked from https://github.com/JacobLinCool/node-cloudflared
+ *
+ * Check main license for more information
+ */
 import path from "pathe";
 import { tmpdir } from "node:os";
 

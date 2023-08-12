@@ -1,3 +1,8 @@
+/**
+ * Forked from https://github.com/JacobLinCool/node-cloudflared
+ *
+ * Check main license for more information
+ */
 import fs from "node:fs";
 import path from "node:path";
 import https from "node:https";

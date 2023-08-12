@@ -1,3 +1,8 @@
+/**
+ * Forked from https://github.com/JacobLinCool/node-cloudflared
+ *
+ * Check main license for more information
+ */
 import { spawn, ChildProcess } from "node:child_process";
 import type { Connection } from "./types";
 import {

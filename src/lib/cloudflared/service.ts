@@ -1,3 +1,8 @@
+/**
+ * Forked from https://github.com/JacobLinCool/node-cloudflared
+ *
+ * Check main license for more information
+ */
 import os from "node:os";
 import fs from "node:fs";
 import { spawnSync } from "node:child_process";
