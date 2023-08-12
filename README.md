@@ -12,25 +12,25 @@ Elegant HTTP listener!
 
 ## Features
 
-✅ Dev Server with HMR, Static and Typescript Support (with [unjs/jiti](https://github.com/unjs/jiti))
+✅ Dev server with HMR, static, and typescript support with <a href="https://github.com/unjs/jiti">unjs/jiti</a><br>
 
-✅ Works with Node.js, Express, Connect and [unjs/h3](https://github.com/unjs/h3) out of the box
+✅ Works with Node.js, express, and <a href="https://github.com/unjs/h3">unjs/h3</a> out of the box <br>
 
-✅ HTTPS support with self-signed certificates
+✅ Show the QR code of the public URL with <a href="https://github.com/unjs/uqr">unjs/uqr</a><br>
 
-✅ Assign a port or fallback to human friendly fallback (with [unjs/get-port-please](https://github.com/unjs/get-port-please))
+✅ Assign a port or fallback to a nicer alternative with <a href="https://github.com/unjs/get-port-please">unjs/get-port-please</a>
 
-✅ Copy URL to Clipboard
+✅ Gracefully shutdown Server with <a href="https://github.com/thedillonb/http-shutdown">http-shutdown</a><br>
 
-✅ Open URL in Browser
+✅ Copy the URL to the clipboard<br>
 
-✅ Detect test and production environments to auto adjust behavior
+✅ HTTPS support with self-signed certificates<br>
 
-✅ Close on exit signal
+✅ Open URL in browser<br>
 
-✅ Gracefully shutdown server with [http-shutdown](https://github.com/thedillonb/http-shutdown)
+✅ Detect test and production environments to auto-adjust behavior<br>
 
-✅ Show QR Code of Public URL (with [unjs/uqr](https://github.com/unjs/uqr))
+✅ Close on the exit signal<br>
 
 ## Quick Usage (CLI)
 
@@ -114,32 +114,32 @@ Default hostname to listen.
 - Type: Boolean | Object
 - Default: `false`
 
-Listen on https with SSL enabled.
+Listen on HTTPS with SSL enabled.
 
-#### Self Signed Certificate
+#### Self-Signed Certificate
 
-By setting `https: true`, listhen will use an auto generated self-signed certificate.
+By setting `https: true`, listhen will use an auto-generated self-signed certificate.
 
 You can set https to an object for custom options. Possible options:
 
 - `domains`: (Array) Default is `['localhost', '127.0.0.1', '::1']`.
 - `validityDays`: (Number) Default is `1`.
 
-#### User Provided Certificate
+#### User-Provided Certificate
 
-Set `https: { cert, key }` where cert and key are path to the ssl certificates.
-With an encrypted private key you also need to set `passphrase` on the `https` object.
+Set `https: { cert, key }` where the cert and key are paths to the SSL certificates.
+With an encrypted private key, you also need to set `passphrase` on the `https` object.
 
 To provide a certificate stored in a keystore set `https: { pfx }` with a path to the keystore.
 When the keystore is password protected also set `passphrase`.
 
-You can also provide inline cert and key instead of reading from filesystem. In this case, they should start with `--`.
+You can also provide an inline cert and key instead of reading from the filesystem. In this case, they should start with `--`.
 
 ### `showURL`
 
-- Default: `true` (force disabled on test environment)
+- Default: `true` (force disabled on a test environment)
 
-Show a CLI message for listening URL.
+Show a CLI message for the listening URL.
 
 ### `baseURL`
 
@@ -149,13 +149,13 @@ Show a CLI message for listening URL.
 
 - Default: `false` (force disabled on test and production environments)
 
-Open URL in browser. Silently ignores errors.
+Open the URL in the browser. Silently ignores errors.
 
 ### `clipboard`
 
 - Default: `false` (force disabled on test and production environments)
 
-Copy URL to clipboard. Silently ignores errors.
+Copy the URL to the clipboard. Silently ignores errors.
 
 ### `isTest`
 
@@ -167,13 +167,13 @@ Detect if running in a test environment to disable some features.
 
 - Default: `true`
 
-Automatically close when an exit signal is received on process.
+Automatically close when an exit signal is received in the process.
 
 ### `publicURL`
 
 - Default: (the first public URL listening)
 
-The public URL to show in CLI output
+The public URL to show in the CLI output
 
 ### `qr`
 
