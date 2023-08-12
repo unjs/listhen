@@ -47,9 +47,16 @@ export interface ListenOptions {
    * @default `false` for development and `true` for production
    */
   public: boolean;
+  /**
+   * Open a tunnel using cloudflared
+   */
+  tunnel?: boolean;
 }
 
-export type GetURLOptions = Pick<Partial<ListenOptions>, "baseURL">;
+export type GetURLOptions = Pick<
+  Partial<ListenOptions>,
+  "baseURL" | "publicURL"
+>;
 
 export type ShowURLOptions = Pick<
   Partial<ListenOptions>,
@@ -58,8 +65,7 @@ export type ShowURLOptions = Pick<
 
 export interface ListenURL {
   url: string;
-  type: "ipv4" | "ipv6" | "unknown";
-  public: boolean;
+  type: "local" | "network" | "tunnel";
 }
 
 export interface Listener {

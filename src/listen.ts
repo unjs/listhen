@@ -7,7 +7,7 @@ import type { AddressInfo } from "node:net";
 import { getPort } from "get-port-please";
 import addShutdown from "http-shutdown";
 import { defu } from "defu";
-import { colors } from "consola/utils";
+import { ColorName, getColor, colors } from "consola/utils";
 import { renderUnicodeCompact as renderQRCode } from "uqr";
 import { open } from "./lib/open";
 import type {
@@ -23,6 +23,7 @@ import {
   formatURL,
   getNetworkInterfaces,
   getPublicURL,
+  startTunnel,
 } from "./_utils";
 import { resolveCertificate } from "./_cert";
 
@@ -76,7 +77,6 @@ export async function listen(
   const getURL = (host?: string, baseURL?: string) => {
     const anyV4 = addr?.addr === "0.0.0.0";
     const anyV6 = addr?.addr === "[::]";
-
     return `${addr!.proto}://${
       host ||
       listhenOptions.hostname ||
@@ -84,6 +84,7 @@ export async function listen(
     }:${addr!.port}${baseURL || listhenOptions.baseURL}`;
   };
 
+  // Local server
   let https: Listener["https"] = false;
   const httpsOptions = listhenOptions.https as HTTPSOptions;
 
@@ -104,13 +105,20 @@ export async function listen(
     addr = { proto: "http", addr: formatAddress(_addr), port: _addr.port };
   }
 
+  // Tunnel
+  let tunnel: Awaited<ReturnType<typeof startTunnel>> | undefined;
+  if (listhenOptions.tunnel) {
+    tunnel = await startTunnel();
+  }
+
   let _closed = false;
-  const close = () => {
+  const close = async () => {
     if (_closed) {
-      return Promise.resolve();
+      return;
     }
     _closed = true;
-    return promisify((server as any).shutdown)();
+    await promisify((server as any).shutdown)().catch(() => {});
+    await tunnel?.close().catch(() => {});
   };
 
   if (listhenOptions.clipboard) {
@@ -120,25 +128,42 @@ export async function listen(
     });
   }
 
-  const getURLs = (getURLOptions?: GetURLOptions) => {
+  const getURLs = (getURLOptions: GetURLOptions = {}) => {
     const urls: ListenURL[] = [];
     const baseURL = getURLOptions?.baseURL || listhenOptions.baseURL || "";
 
+    // Add local URL
+    urls.push({
+      url: getURL("localhost", baseURL),
+      type: "local",
+    });
+
+    // Add public URL
+    const publicURL =
+      getURLOptions.publicURL || getPublicURL(urls, listhenOptions);
+    if (publicURL) {
+      urls.push({
+        url: publicURL,
+        type: "network",
+      });
+    }
+
+    // Add tunnel URL
+    if (tunnel) {
+      urls.push({
+        url: tunnel.url,
+        type: "tunnel",
+      });
+    }
+
+    // Add network URLs
     const anyV4 = addr?.addr === "0.0.0.0";
     const anyV6 = addr?.addr === "[::]";
-
     if (anyV4 || anyV6) {
-      urls.push({
-        url: getURL("localhost", baseURL),
-        type: anyV4 ? "ipv4" : "ipv6",
-        public: false,
-      });
-
       for (const addr of getNetworkInterfaces(anyV4)) {
         urls.push({
           url: getURL(addr, baseURL),
-          type: addr.includes("[") ? "ipv6" : "ipv4",
-          public: true,
+          type: "network",
         });
       }
     }
@@ -147,27 +172,32 @@ export async function listen(
   };
 
   const showURL = (showURLOptions: ShowURLOptions = {}) => {
-    const add = listhenOptions.clipboard
+    const lines = [];
+
+    const copiedToClipboardMessage = listhenOptions.clipboard
       ? colors.gray("(copied to clipboard)")
       : "";
-    const lines = [];
-    const name =
+
+    const nameSuffix =
       showURLOptions.name || listhenOptions.name
         ? ` (${showURLOptions.name || listhenOptions.name})`
         : "";
-    const baseURL = showURLOptions.baseURL || listhenOptions.baseURL || "";
 
     const urls = getURLs(showURLOptions);
 
-    if (urls.length > 0) {
-      for (const url of urls) {
-        const label = url.public ? `Network${name}:  ` : `Local${name}:    `;
-        lines.push(`  > ${label} ${formatURL(url.url)} ${add}`);
-      }
-    } else {
-      lines.push(
-        `  > Local${name}:   ${formatURL(getURL(undefined, baseURL))} ${add}`,
+    const typeMap: Record<ListenURL["type"], [string, ColorName]> = {
+      local: ["Local", "green"],
+      tunnel: ["Tunnel", "yellow"],
+      network: ["Network", "gray"],
+    };
+
+    for (const url of urls) {
+      const type = typeMap[url.type];
+      const label = getColor(type[1])(
+        `  ➜ ${(type[0] + ":").padEnd(8, " ")}${nameSuffix} `,
       );
+      const suffix = url.type === "local" ? copiedToClipboardMessage : "";
+      lines.push(`${label} ${formatURL(url.url)} ${suffix}`);
     }
 
     if (!listhenOptions.public) {
@@ -176,19 +206,16 @@ export async function listen(
       );
     }
 
-    if ((showURLOptions.qr ?? listhenOptions.qr) !== false) {
-      const publicURL =
-        showURLOptions.publicURL || getPublicURL(urls, listhenOptions);
-      if (publicURL) {
-        const space = " ".repeat(15);
-        lines.push(" ");
-        lines.push(
-          ...renderQRCode(String(publicURL))
-            .split("\n")
-            .map((line) => space + line),
-        );
-        lines.push(space + formatURL(publicURL));
-      }
+    const firstPublic = urls.find((u) => u.type !== "local");
+    if (firstPublic && (showURLOptions.qr ?? listhenOptions.qr) !== false) {
+      const space = " ".repeat(15);
+      lines.push(" ");
+      lines.push(
+        ...renderQRCode(String(firstPublic))
+          .split("\n")
+          .map((line) => space + line),
+      );
+      lines.push(space + formatURL(firstPublic.url));
     }
 
     // eslint-disable-next-line no-console

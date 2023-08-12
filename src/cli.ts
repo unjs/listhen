@@ -103,6 +103,11 @@ export const main = defineCommand({
       description: "Listen to all network interfaces",
       required: false,
     },
+    tunnel: {
+      type: "boolean",
+      description: "Open a tunnel using cloudflared",
+      required: false,
+    },
   },
   async run({ args }) {
     const opts: Partial<ListenOptions & WatchOptions & DevServerOptions> = {
@@ -118,8 +123,6 @@ export const main = defineCommand({
       public: args.public,
       https: args.https ? parseHTTPSArgs(args) : false,
     };
-
-    console.log(opts);
 
     const entry =
       isAbsolute(args.entry) || args.entry.startsWith(".")

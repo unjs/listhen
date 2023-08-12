@@ -1,9 +1,10 @@
 /**
  * Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
- * Inlined for ESM support
- * MIT
+ * Check main LICENSE for more information
  */
+
 // @ts-nocheck
+
 import childProcess from "node:child_process";
 import {
   promises as fs,
