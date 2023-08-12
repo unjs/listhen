@@ -18,7 +18,12 @@ import type {
   ListenURL,
   GetURLOptions,
 } from "./types";
-import { formatAddress, formatURL, getNetworkInterfaces } from "./_utils";
+import {
+  formatAddress,
+  formatURL,
+  getNetworkInterfaces,
+  getPublicURL,
+} from "./_utils";
 import { resolveCertificate } from "./_cert";
 
 export async function listen(
@@ -162,7 +167,7 @@ export async function listen(
       const publicURL =
         showURLOptions.publicURL ||
         listhenOptions.publicURL ||
-        urls.find((url) => url.public && url.type === "ipv4")?.url;
+        getPublicURL(urls);
       if (publicURL) {
         const space = " ".repeat(15);
         lines.push(" ");

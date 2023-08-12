@@ -1,5 +1,6 @@
 import { networkInterfaces } from "node:os";
 import { colors } from "consola/utils";
+import { ListenURL } from "./types";
 
 export function getNetworkInterfaces(v4Only = true): string[] {
   const addrs = new Set<string>();
@@ -34,5 +35,12 @@ export function formatURL(url: string) {
     colors.underline(
       decodeURI(url).replace(/:(\d+)\//g, `:${colors.bold("$1")}/`),
     ),
+  );
+}
+
+export function getPublicURL(urls: ListenURL[]): string | undefined {
+  return (
+    urls.find((url) => url.public && url.type === "ipv4")?.url ||
+    urls.find((url) => url.public)?.url
   );
 }
