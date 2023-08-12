@@ -88,9 +88,10 @@ export async function listenAndWatch(
       )} for changes`,
     );
   } catch (error) {
-    logger.error(error);
     logger.warn(
-      "👀 Cannot start the watcher! Please report this issue to `https://github.com/unjs/listhen`",
+      "Cannot start the watcher! Please report this issue to `https://github.com/unjs/listhen/issues/96`\n",
+      error,
+      "\n\n✔️ Your dev server is still running, but it won't reload automatically after changes. You need to restart it manually.",
     );
   }
 
