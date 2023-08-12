@@ -61,24 +61,21 @@ function detectStackblitzURL(entry?: string) {
     }
 
     const cwd = process.env.INIT_CWD;
-    let url: string;
 
+    // Editor
     if (cwd.startsWith("/home/projects")) {
-      // Editor
-      url = `/edit/${cwd.split("/")[3]}`;
-    } else if (cwd.startsWith("/home")) {
-      // Codeflow
-      url = `~/github.com/${cwd.split("/").slice(2).join("/")}`;
-    } else {
-      return;
+      const relativeEntry =
+        entry && relative(process.cwd(), entry).replace(/^\.\//, "");
+      return `https://stackblitz.com/edit/${cwd.split("/")[3]}${
+        relativeEntry ? `?file=${relativeEntry}` : ""
+      }`;
     }
 
-    const relativeEntry =
-      entry && relative(process.cwd(), entry).replace(/^\.\//, "");
-
-    return `https://stackblitz.com/${url}${
-      relativeEntry ? `?file=${relativeEntry}` : ""
-    }`;
+    // Codeflow
+    if (cwd.startsWith("/home")) {
+      const githubRepo = cwd.split("/").slice(2).join("/");
+      return `https://stackblitz.com/edit/~/github.com/${githubRepo}`;
+    }
   } catch (error) {
     console.error(error);
   }
