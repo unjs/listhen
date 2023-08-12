@@ -146,30 +146,25 @@ export const runMain = () => _runMain(main);
 export function parseHTTPSArgs(args: Record<string, any>): HTTPSOptions {
   const https: HTTPSOptions = {};
 
-  if (args["https.cert"]) {
+  if (args["https.cert"] && args["https.key"]) {
     https.cert = args["https.cert"];
-  }
-
-  if (args["https.key"]) {
     https.key = args["https.key"];
-  }
-
-  if (args["https.pfx"]) {
+  } else if (args["https.pfx"]) {
     https.pfx = args["https.pfx"];
+  } else {
+    if (args["https.validityDays"]) {
+      https.validityDays = args["https.validityDays"];
+    }
+
+    if (args["https.domains"]) {
+      https.domains = args["https.domains"]
+        .split(",")
+        .map((s: string) => s.trim());
+    }
   }
 
   if (args["https.passphrase"]) {
     https.passphrase = args["https.passphrase"];
-  }
-
-  if (args["https.validityDays"]) {
-    https.validityDays = args["https.validityDays"];
-  }
-
-  if (args["https.domains"]) {
-    https.domains = args["https.domains"]
-      .split(",")
-      .map((s: string) => s.trim());
   }
 
   return https;
