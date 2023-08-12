@@ -29,26 +29,30 @@ export interface ListenOptions {
   isTest: boolean;
   isProd: boolean;
   autoClose: boolean;
-}
-
-export interface ListenURL {
-  url: string;
-  type: "ipv4" | "ipv6" | "unknown";
-  public: boolean;
-}
-
-export interface GetURLOptions {
-  baseURL?: string;
-  name?: string;
-}
-
-export interface ShowURLOptions extends GetURLOptions {
+  /**
+   * Used as main public url to display
+   * @default The first public IPV4 address listening to
+   */
+  publicURL?: string;
   /**
    * Print QR Code for public IPv4 address
    *
    * @default true
    */
-  qrcode?: boolean;
+  qr?: boolean;
+}
+
+export type GetURLOptions = Pick<Partial<ListenOptions>, "baseURL">;
+
+export type ShowURLOptions = Pick<
+  Partial<ListenOptions>,
+  "baseURL" | "name" | "publicURL" | "qr"
+>;
+
+export interface ListenURL {
+  url: string;
+  type: "ipv4" | "ipv6" | "unknown";
+  public: boolean;
 }
 
 export interface Listener {

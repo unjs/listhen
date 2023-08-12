@@ -62,6 +62,14 @@ export const main = defineCommand({
       alias: "w",
       default: false,
     },
+    publicURL: {
+      type: "string",
+      required: false,
+    },
+    qr: {
+      type: "boolean",
+      required: false,
+    },
   },
   async run({ args }) {
     const opts: Partial<ListenOptions & WatchOptions & DevServerOptions> = {
@@ -72,6 +80,8 @@ export const main = defineCommand({
       open: args.open,
       baseURL: args.baseURL,
       name: args.name,
+      qr: args.qr,
+      publicURL: args.publicURL,
       https: args.https, // TODO: Support custom cert
     };
 

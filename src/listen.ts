@@ -158,18 +158,21 @@ export async function listen(
       );
     }
 
-    const firstPublicIPv4 = urls.find(
-      (url) => url.public && url.type === "ipv4",
-    );
-    if (firstPublicIPv4 && showURLOptions?.qrcode !== false) {
-      const space = " ".repeat(15);
-      lines.push(" ");
-      lines.push(
-        ...renderQRCode(firstPublicIPv4.url)
-          .split("\n")
-          .map((line) => space + line),
-      );
-      lines.push(space + formatURL(firstPublicIPv4.url));
+    if ((showURLOptions.qr ?? listhenOptions.qr) !== false) {
+      const publicURL =
+        showURLOptions.publicURL ||
+        listhenOptions.publicURL ||
+        urls.find((url) => url.public && url.type === "ipv4")?.url;
+      if (publicURL) {
+        const space = " ".repeat(15);
+        lines.push(" ");
+        lines.push(
+          ...renderQRCode(String(publicURL))
+            .split("\n")
+            .map((line) => space + line),
+        );
+        lines.push(space + formatURL(publicURL));
+      }
     }
 
     // eslint-disable-next-line no-console
