@@ -81,8 +81,15 @@ function detectStackblitzURL(entry?: string) {
   }
 }
 
-// @ts-ignore
-export function mergeHttpsOptions(args) {
+export function mergeHttpsOptions(args: {
+  https?: boolean;
+  tlsCert?: string;
+  tlsKey?: string;
+  keystore?: string;
+  passphrase?: string;
+  validity?: string;
+  domains?: string;
+}) {
   const options = { https: args.https } as any;
   if (!args.https) {
     return args;
