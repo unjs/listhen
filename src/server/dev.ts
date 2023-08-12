@@ -20,7 +20,6 @@ export async function createDevServer(
 
   const h3Entry = await resolvePath("h3", {
     url: [options.cwd!, process.cwd(), import.meta.url].filter(Boolean),
-    conditions: ["node", "import"],
   });
 
   const {
