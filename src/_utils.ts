@@ -64,11 +64,11 @@ function detectStackblitzURL(entry?: string) {
 
     // Editor
     if (cwd.startsWith("/home/projects")) {
+      const projectId = cwd.split("/")[3];
       const relativeEntry =
         entry && relative(process.cwd(), entry).replace(/^\.\//, "");
-      return `https://stackblitz.com/edit/${cwd.split("/")[3]}${
-        relativeEntry ? `?file=${relativeEntry}` : ""
-      }`;
+      const query = relativeEntry ? `?file=${relativeEntry}` : "";
+      return `https://stackblitz.com/edit/${projectId}${query}`;
     }
 
     // Codeflow
