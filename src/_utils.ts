@@ -55,27 +55,31 @@ export function getPublicURL(
 }
 
 function detectStackblitzURL(entry?: string) {
-  if (process.env.SHELL !== "/bin/jsh" || !process.env.INIT_CWD) {
-    return;
+  try {
+    if (process.env.SHELL !== "/bin/jsh" || !process.env.INIT_CWD) {
+      return;
+    }
+
+    const cwd = process.env.INIT_CWD;
+    let url: string;
+
+    if (cwd.startsWith("/home/projects")) {
+      // Editor
+      url = `/edit/${cwd.split("/")[3]}`;
+    } else if (cwd.startsWith("/home")) {
+      // Codeflow
+      url = "~/github.com/unjs/listhen";
+    } else {
+      return;
+    }
+
+    const relativeEntry =
+      entry && relative(process.cwd(), entry).replace(/^\.\//, "");
+
+    return `https://stackblitz.com/${url}${
+      relativeEntry ? `?file=${relativeEntry}` : ""
+    }`;
+  } catch (error) {
+    console.error(error);
   }
-
-  const cwd = process.env.INIT_CWD;
-  let url: string;
-
-  if (cwd.startsWith("/home/projects")) {
-    // Editor
-    url = `/edit/${cwd.split("/")[3]}`;
-  } else if (cwd.startsWith("/home")) {
-    // Codeflow
-    url = "~/github.com/unjs/listhen";
-  } else {
-    return;
-  }
-
-  const relativeEntry =
-    entry && relative(process.cwd(), entry).replace(/^\.\//, "");
-
-  return `https://stackblitz.com/${url}${
-    relativeEntry ? `?file=${relativeEntry}` : ""
-  }`;
 }
