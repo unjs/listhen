@@ -59,6 +59,6 @@ export interface Listener {
   https: false | Certificate;
   close: () => Promise<void>;
   open: () => Promise<void>;
-  showURL: (options?: Pick<ListenOptions, "baseURL">) => void;
+  showURL: (options?: ShowURLOptions) => void;
   getURLs: (options?: GetURLOptions) => ListenURL[];
 }
