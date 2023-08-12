@@ -44,13 +44,17 @@ export async function listenAndWatch(
   };
 
   // Start watcher
-  // https://github.com/parcel-bundler/watcher#wasm
   try {
-    const { default: init, subscribe } = await import("@parcel/watcher-wasm");
+    // https://github.com/parcel-bundler/watcher
+    const subscribe = await import("@parcel/watcher")
+      .then((r) => r.subscribe)
+      .catch(() =>
+        import("@parcel/watcher-wasm").then((r) =>
+          (r.default || r)().then(() => r.subscribe),
+        ),
+      );
 
     const jsExts = new Set([".js", ".mjs", ".cjs", ".ts", ".mts", ".cts"]);
-
-    await (init as any)();
 
     watcher = await subscribe(
       devServer.cwd,
