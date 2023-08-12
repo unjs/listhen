@@ -84,7 +84,7 @@ function detectStackblitzURL(entry?: string) {
   }
 }
 
-export async function startTunnel() {
+export async function startTunnel(url: string) {
   const { install, tunnel, bin } = await import("./lib/cloudflared");
 
   consola.start("Starting cloudflared tunnel...");
@@ -101,7 +101,8 @@ export async function startTunnel() {
   }
 
   const t = await tunnel({
-    "--url": "localhost:3000",
+    "--url": url,
+    "--no-tls-verify": "",
   });
 
   return {

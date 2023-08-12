@@ -108,7 +108,7 @@ export async function listen(
   // Tunnel
   let tunnel: Awaited<ReturnType<typeof startTunnel>> | undefined;
   if (listhenOptions.tunnel) {
-    tunnel = await startTunnel();
+    tunnel = await startTunnel(getURL("localhost"));
   }
 
   let _closed = false;
