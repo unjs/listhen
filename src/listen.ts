@@ -167,7 +167,7 @@ export async function listen(
 
     if (!listhenOptions.public) {
       lines.push(
-        colors.gray(`  > Network: use ${colors.white("--host")} to enable`),
+        colors.gray(`  > Network: use ${colors.white("--host")} to expose`),
       );
     }
 
