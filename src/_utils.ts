@@ -56,11 +56,11 @@ export function getPublicURL(
 
 function detectStackblitzURL(entry?: string) {
   try {
-    if (process.env.SHELL !== "/bin/jsh" || !process.env.INIT_CWD) {
+    if (process.env.SHELL !== "/bin/jsh") {
       return;
     }
 
-    const cwd = process.env.INIT_CWD;
+    const cwd = process.env.PWD || ("" as string);
 
     // Editor
     if (cwd.startsWith("/home/projects")) {
