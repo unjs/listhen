@@ -1,5 +1,5 @@
 export interface Connection {
-    id: string;
-    ip: string;
-    location: string;
+  id: string;
+  ip: string;
+  location: string;
 }
