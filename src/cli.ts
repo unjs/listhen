@@ -122,6 +122,7 @@ export const main = defineCommand({
       publicURL: args.publicURL,
       public: args.public,
       https: args.https ? _parseHTTPSArgs(args) : false,
+      tunnel: args.tunnel,
     };
 
     const entry =
