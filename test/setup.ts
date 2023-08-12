@@ -23,6 +23,12 @@ export default async function generateCert() {
   const decryptedKey = forge.pki.decryptRsaPrivateKey(certs.cert.key, pw);
   await mkdir(resolve("test/.tmp/certs"), { recursive: true });
   await writeFile(resolve("test/.tmp/certs/cert.pem"), certs.cert.cert);
+  await writeFile(resolve("test/.tmp/certs/ca.pem"), certs.ca.cert);
+  await writeFile(resolve("test/.tmp/certs/ca-key.pem"), certs.ca.key);
+  await writeFile(
+    resolve("test/.tmp/certs/cert.chain.pem"),
+    [certs.cert.cert, certs.ca.cert].join("\n"),
+  );
   await writeFile(resolve("test/.tmp/certs/encrypted-key.pem"), certs.cert.key);
   await writeFile(
     resolve("test/.tmp/certs/key.pem"),
@@ -30,8 +36,8 @@ export default async function generateCert() {
   );
   const pfx = convertToPFX(certs.cert.cert, certs.cert.key, "store-pw");
   const pfx2 = convertToPFX(certs.cert.cert, certs.cert.key, "");
-  writeFile(resolve("test/.tmp/certs/keystore.p12"), pfx, "binary");
-  writeFile(resolve("test/.tmp/certs/keystore2.p12"), pfx2, "binary");
+  await writeFile(resolve("test/.tmp/certs/keystore.p12"), pfx, "binary");
+  await writeFile(resolve("test/.tmp/certs/keystore2.p12"), pfx2, "binary");
 }
 
 function convertToPFX(
