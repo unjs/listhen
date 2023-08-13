@@ -49,8 +49,9 @@ export function getPublicURL(
 
   return (
     detectStackblitzURL(listhenOptions._entry) ||
-    urls.find((url) => url.public && url.type === "ipv4")?.url ||
-    urls.find((url) => url.public)?.url
+    urls.find((url) => url.type === "network" && !url.url.startsWith("["))
+      ?.url ||
+    urls.find((url) => url.type === "network")?.url
   );
 }
 

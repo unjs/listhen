@@ -103,6 +103,11 @@ export const main = defineCommand({
       description: "Listen to all network interfaces",
       required: false,
     },
+    tunnel: {
+      type: "boolean",
+      description: "Open a tunnel using https://github.com/unjs/untun",
+      required: false,
+    },
   },
   async run({ args }) {
     const opts: Partial<ListenOptions & WatchOptions & DevServerOptions> = {
@@ -117,6 +122,7 @@ export const main = defineCommand({
       publicURL: args.publicURL,
       public: args.public,
       https: args.https ? _parseHTTPSArgs(args) : false,
+      tunnel: args.tunnel,
     };
 
     const entry =

@@ -47,9 +47,16 @@ export interface ListenOptions {
    * @default `false` for development and `true` for production
    */
   public: boolean;
+  /**
+   * Open a tunnel using https://github.com/unjs/untun
+   */
+  tunnel?: boolean;
 }
 
-export type GetURLOptions = Pick<Partial<ListenOptions>, "baseURL">;
+export type GetURLOptions = Pick<
+  Partial<ListenOptions>,
+  "baseURL" | "publicURL"
+>;
 
 export type ShowURLOptions = Pick<
   Partial<ListenOptions>,
@@ -58,8 +65,7 @@ export type ShowURLOptions = Pick<
 
 export interface ListenURL {
   url: string;
-  type: "ipv4" | "ipv6" | "unknown";
-  public: boolean;
+  type: "local" | "network" | "tunnel";
 }
 
 export interface Listener {
@@ -69,6 +75,6 @@ export interface Listener {
   https: false | Certificate;
   close: () => Promise<void>;
   open: () => Promise<void>;
-  showURL: (options?: ShowURLOptions) => void;
-  getURLs: (options?: GetURLOptions) => ListenURL[];
+  showURL: (options?: ShowURLOptions) => Promise<void>;
+  getURLs: (options?: GetURLOptions) => Promise<ListenURL[]>;
 }
