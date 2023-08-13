@@ -177,10 +177,6 @@ export async function listen(
   const showURL = async (showURLOptions: ShowURLOptions = {}) => {
     const lines = [];
 
-    const copiedToClipboardMessage = listhenOptions.clipboard
-      ? colors.gray("(copied to clipboard)")
-      : "";
-
     const nameSuffix =
       showURLOptions.name || listhenOptions.name
         ? ` (${showURLOptions.name || listhenOptions.name})`
@@ -190,6 +186,8 @@ export async function listen(
 
     const firstLocalUrl = urls.find((u) => u.type === "local");
     const firstPublicUrl = urls.find((u) => u.type !== "local");
+
+    const showQR = (showURLOptions.qr ?? listhenOptions.qr) !== false;
 
     const typeMap: Record<ListenURL["type"], [string, ColorName]> = {
       local: ["Local", "green"],
@@ -202,8 +200,14 @@ export async function listen(
       const label = getColor(type[1])(
         `  ➜ ${(type[0] + ":").padEnd(8, " ")}${nameSuffix} `,
       );
-      const suffix = url === firstLocalUrl ? copiedToClipboardMessage : "";
-      lines.push(`${label} ${formatURL(url.url)} ${suffix}`);
+      let suffix = "";
+      if (url === firstLocalUrl && listhenOptions.clipboard) {
+        suffix += colors.gray(" [copied to clipboard]");
+      }
+      if (url === firstPublicUrl && showQR) {
+        suffix += colors.gray(" [QR code ⬇️ ]");
+      }
+      lines.push(`${label} ${formatURL(url.url)}${suffix}`);
     }
 
     if (!firstPublicUrl) {
@@ -212,7 +216,8 @@ export async function listen(
       );
     }
 
-    if (firstPublicUrl && (showURLOptions.qr ?? listhenOptions.qr) !== false) {
+    // Show QR code
+    if (firstPublicUrl && showQR) {
       const space = " ".repeat(15);
       lines.push(" ");
       lines.push(
@@ -220,7 +225,6 @@ export async function listen(
           .split("\n")
           .map((line) => space + line),
       );
-      lines.push(space + formatURL(firstPublicUrl.url));
     }
 
     // eslint-disable-next-line no-console
