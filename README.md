@@ -35,7 +35,7 @@ Elegant HTTP listener!
 ✅ Close on the exit signal<br>
 
 <div align="center">
-<img width="763" alt="image" src="https://github.com/unjs/listhen/assets/5158436/d73d865b-ef02-4a49-aa8f-06f66312e6e6">
+<img width="100%" src="./.assets/screenshot.png">
 </div>
 
 ## Quick Usage (CLI)
