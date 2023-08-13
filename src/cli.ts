@@ -63,7 +63,7 @@ export const main = defineCommand({
       type: "string",
       description: "Path to TLS key used with HTTPS in PEM format",
     },
-    "kettps.pfx": {
+    "https.pfx": {
       type: "string",
       description:
         "Path to PKCS#12 (.p12/.pfx) keystore containing a TLS certificate and Key",
@@ -116,10 +116,8 @@ export const main = defineCommand({
       qr: args.qr,
       publicURL: args.publicURL,
       public: args.public,
-      https: args.https ? parseHTTPSArgs(args) : false,
+      https: args.https ? _parseHTTPSArgs(args) : false,
     };
-
-    console.log(opts);
 
     const entry =
       isAbsolute(args.entry) || args.entry.startsWith(".")
@@ -141,9 +139,9 @@ export const main = defineCommand({
 
 export const runMain = () => _runMain(main);
 
-// --- utils ---
+// --- internal utils ---
 
-export function parseHTTPSArgs(args: Record<string, any>): HTTPSOptions {
+function _parseHTTPSArgs(args: Record<string, any>): HTTPSOptions {
   const https: HTTPSOptions = {};
 
   if (args["https.cert"]) {
