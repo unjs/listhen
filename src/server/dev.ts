@@ -142,8 +142,8 @@ export async function createDevServer(
     if (error) {
       logger.error(error);
     } else {
-      logger.success(
-        ` Server ${initial ? "initialized" : "reloaded"} in ${loadTime}ms`,
+      logger.log(
+        `✅ Server ${initial ? "initialized" : "reloaded"} in ${loadTime}ms`,
       );
     }
   };

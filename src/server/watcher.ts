@@ -73,7 +73,7 @@ export async function listenAndWatch(
             (e) => `${devServer.resolver.formateRelative(e.path)} ${e.type}d`,
           )
           .join(", ");
-        logger.start(` Reloading server (${eventsString})`);
+        logger.log(`🔄 Reloading server (${eventsString})`);
         devServer.reload();
       },
       {
