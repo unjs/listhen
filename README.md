@@ -34,6 +34,10 @@ Elegant HTTP listener!
 
 ✅ Close on the exit signal<br>
 
+<div align="center">
+<img width="763" alt="image" src="https://github.com/unjs/listhen/assets/5158436/d73d865b-ef02-4a49-aa8f-06f66312e6e6">
+</div>
+
 ## Quick Usage (CLI)
 
 You can run your applications in localhost with typescript support and watch mode using `listhen` CLI:
