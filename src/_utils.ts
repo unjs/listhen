@@ -1,8 +1,6 @@
 import { networkInterfaces } from "node:os";
-import { existsSync } from "node:fs";
 import { relative } from "pathe";
 import { colors } from "consola/utils";
-import { consola } from "consola";
 import { ListenURL, ListenOptions } from "./types";
 
 export function getNetworkInterfaces(v4Only = true): string[] {
@@ -82,33 +80,4 @@ function detectStackblitzURL(entry?: string) {
   } catch (error) {
     console.error(error);
   }
-}
-
-export async function startTunnel(url: string) {
-  const { install, tunnel, bin } = await import("./lib/cloudflared");
-
-  consola.start("Starting cloudflared tunnel...");
-
-  if (!existsSync(bin)) {
-    const canInstall = await consola.prompt(`Install \`cloudflared\` binary?`, {
-      type: "confirm",
-    });
-    if (!canInstall) {
-      consola.info("Skipping tunnel setup.");
-      return;
-    }
-    await install();
-  }
-
-  const t = await tunnel({
-    "--url": url,
-    "--no-tls-verify": "",
-  });
-
-  return {
-    url: await t.url,
-    close: async () => {
-      await t.stop();
-    },
-  };
 }

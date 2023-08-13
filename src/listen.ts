@@ -9,6 +9,7 @@ import addShutdown from "http-shutdown";
 import { defu } from "defu";
 import { ColorName, getColor, colors } from "consola/utils";
 import { renderUnicodeCompact as renderQRCode } from "uqr";
+import type { Tunnel } from "untun";
 import { open } from "./lib/open";
 import type {
   ListenOptions,
@@ -23,7 +24,6 @@ import {
   formatURL,
   getNetworkInterfaces,
   getPublicURL,
-  startTunnel,
 } from "./_utils";
 import { resolveCertificate } from "./_cert";
 
@@ -106,9 +106,12 @@ export async function listen(
   }
 
   // Tunnel
-  let tunnel: Awaited<ReturnType<typeof startTunnel>> | undefined;
+  let tunnel: Tunnel | undefined;
   if (listhenOptions.tunnel) {
-    tunnel = await startTunnel(getURL("localhost"));
+    const { startTunnel } = await import("untun");
+    tunnel = await startTunnel({
+      url: getURL("localhost"),
+    });
   }
 
   let _closed = false;
@@ -128,7 +131,7 @@ export async function listen(
     });
   }
 
-  const getURLs = (getURLOptions: GetURLOptions = {}) => {
+  const getURLs = async (getURLOptions: GetURLOptions = {}) => {
     const urls: ListenURL[] = [];
     const baseURL = getURLOptions?.baseURL || listhenOptions.baseURL || "";
 
@@ -151,7 +154,7 @@ export async function listen(
     // Add tunnel URL
     if (tunnel) {
       urls.push({
-        url: tunnel.url,
+        url: await tunnel.getURL(),
         type: "tunnel",
       });
     }
@@ -171,7 +174,7 @@ export async function listen(
     return urls;
   };
 
-  const showURL = (showURLOptions: ShowURLOptions = {}) => {
+  const showURL = async (showURLOptions: ShowURLOptions = {}) => {
     const lines = [];
 
     const copiedToClipboardMessage = listhenOptions.clipboard
@@ -183,7 +186,7 @@ export async function listen(
         ? ` (${showURLOptions.name || listhenOptions.name})`
         : "";
 
-    const urls = getURLs(showURLOptions);
+    const urls = await getURLs(showURLOptions);
 
     const firstLocalUrl = urls.find((u) => u.type === "local");
     const firstPublicUrl = urls.find((u) => u.type !== "local");
