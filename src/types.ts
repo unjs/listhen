@@ -48,7 +48,7 @@ export interface ListenOptions {
    */
   public: boolean;
   /**
-   * Open a tunnel using cloudflared
+   * Open a tunnel using https://github.com/unjs/untun
    */
   tunnel?: boolean;
 }

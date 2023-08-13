@@ -105,7 +105,7 @@ export const main = defineCommand({
     },
     tunnel: {
       type: "boolean",
-      description: "Open a tunnel using cloudflared",
+      description: "Open a tunnel using https://github.com/unjs/untun",
       required: false,
     },
   },
