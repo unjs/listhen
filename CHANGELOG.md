@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.3.0
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.2.2...v1.3.0)
+
+### 🚀 Enhancements
+
+- Print qr code for public address ([#89](https://github.com/unjs/listhen/pull/89))
+- `qr` and `publicURL` options and `--qr`, `--no-qr`, and `--public-url` cli flags ([#97](https://github.com/unjs/listhen/pull/97))
+- `public` option and `--host` flag to disable network expose in development by default ([#98](https://github.com/unjs/listhen/pull/98))
+- Stackblitz auto url detection (experimental) ([#99](https://github.com/unjs/listhen/pull/99))
+- **cli:** Accept `https.*` options ([#93](https://github.com/unjs/listhen/pull/93))
+- Tunnel support via `unjs/untun` and `cloudflared` (experimental) ([#102](https://github.com/unjs/listhen/pull/102))
+
+### 🔥 Performance
+
+- **dev:** Use `@parcel/watcher` whenever available ([#95](https://github.com/unjs/listhen/pull/95))
+
+### 🩹 Fixes
+
+- **dev:** Try to resolve h3 from user `node_modules` first ([#94](https://github.com/unjs/listhen/pull/94))
+- **dev:** Show better error for when no compatible handler is exported ([#92](https://github.com/unjs/listhen/pull/92))
+
+### 💅 Refactors
+
+- Better watcher warning message ([ec92cf4](https://github.com/unjs/listhen/commit/ec92cf4))
+- Fix option types and handling ([ad82a70](https://github.com/unjs/listhen/commit/ad82a70))
+- Use consistent emojies ([4b26902](https://github.com/unjs/listhen/commit/4b26902))
+- Simplify console output ([e741be0](https://github.com/unjs/listhen/commit/e741be0))
+
+### 🏡 Chore
+
+- **release:** V1.2.2 ([fb01a23](https://github.com/unjs/listhen/commit/fb01a23))
+- Update readme ([4169f50](https://github.com/unjs/listhen/commit/4169f50))
+- Update readme ([1a6eaac](https://github.com/unjs/listhen/commit/1a6eaac))
+- **cli:** Fix typo and avoid exposing internal util ([0c55c9c](https://github.com/unjs/listhen/commit/0c55c9c))
+- **cli:** Remove accidental console log ([bd2b5d6](https://github.com/unjs/listhen/commit/bd2b5d6))
+- Update playground ([1dbb809](https://github.com/unjs/listhen/commit/1dbb809))
+- Update readme ([b45be3f](https://github.com/unjs/listhen/commit/b45be3f))
+- Update readme ([10ad172](https://github.com/unjs/listhen/commit/10ad172))
+
+### ✅ Tests
+
+- Fix order mismatch ([#90](https://github.com/unjs/listhen/pull/90))
+- **setup:** Extend certificate generation to also write ca.pem, ca-key.pem and certificate chain to files ([#103](https://github.com/unjs/listhen/pull/103))
+
+### ❤️  Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Mastercuber <e4d33vb85@mozmail.com>
+- Anthony Fu <anthonyfu117@hotmail.com>
+
 ## v1.2.2
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.2.1...v1.2.2)
