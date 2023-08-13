@@ -1,0 +1,12 @@
+{
+  "name": "listhen-playground",
+  "private": true,
+  "scripts": {
+    "start": "listhen .",
+    "dev": "listhen -w ."
+  },
+  "dependencies": {
+    "h3": "^1.8.0-rc.3",
+    "listhen": "^1.2.2"
+  }
+}
