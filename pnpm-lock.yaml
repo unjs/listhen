@@ -48,8 +48,8 @@ dependencies:
     specifier: ^1.2.0
     version: 1.2.0
   untun:
-    specifier: ^0.1.0
-    version: 0.1.0
+    specifier: ^0.1.1
+    version: 0.1.1
   uqr:
     specifier: ^0.1.0
     version: 0.1.0
@@ -3974,8 +3974,9 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /untun@0.1.0:
-    resolution: {integrity: sha512-yRWQuBqVFItrwNQcMlE/2f3naiRpUhTX7+lqaq69eSxK3luB8ifSwfUHtPq1FVxiz9HhvjRWyCIfmERupFhsMw==}
+  /untun@0.1.1:
+    resolution: {integrity: sha512-Xyo/3TLi2pMLr8SFSXAHVTEpEtVrqXZTzXkZAglRIairiO+utD6y7bCemYejj7GazEwomMwpNB1Gg3hoehY+zA==}
+    hasBin: true
     dependencies:
       citty: 0.1.2
       consola: 3.2.3
