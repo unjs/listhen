@@ -1,5 +1,7 @@
 import { existsSync, statSync } from "node:fs";
 import { readFile, stat } from "node:fs/promises";
+import { Http2ServerRequest, Http2ServerResponse } from "node:http2";
+import { IncomingMessage, ServerResponse } from "node:http";
 import { consola } from "consola";
 import { dirname, join, resolve } from "pathe";
 import type { ConsolaInstance } from "consola";
@@ -11,6 +13,11 @@ export interface DevServerOptions {
   staticDirs?: string[];
   logger?: ConsolaInstance;
 }
+
+type NodeListener = (
+  req: IncomingMessage | Http2ServerRequest,
+  res: ServerResponse | Http2ServerResponse,
+) => void;
 
 export async function createDevServer(
   entry: string,
@@ -151,7 +158,7 @@ export async function createDevServer(
   return {
     cwd,
     resolver,
-    nodeListener: toNodeListener(app),
+    nodeListener: toNodeListener(app) as NodeListener,
     reload: (_initial?: boolean) => loadHandle(_initial),
     _entry: resolveEntry(),
   };

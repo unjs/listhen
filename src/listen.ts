@@ -1,8 +1,10 @@
-import { createServer } from "node:http";
-import type { Server as HTTPServer } from "node:https";
-import { createServer as createHTTPSServer } from "node:https";
+import { createServer, IncomingMessage, ServerResponse } from "node:http";
+import {
+  createSecureServer,
+  Http2ServerRequest,
+  Http2ServerResponse,
+} from "node:http2";
 import { promisify } from "node:util";
-import type { RequestListener, Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { getPort } from "get-port-please";
 import addShutdown from "http-shutdown";
@@ -19,6 +21,7 @@ import type {
   HTTPSOptions,
   ListenURL,
   GetURLOptions,
+  Server,
 } from "./types";
 import {
   formatURL,
@@ -33,6 +36,22 @@ import {
 import { resolveCertificate } from "./_cert";
 import { isWsl } from "./lib/wsl";
 import { isDocker } from "./lib/docker";
+
+type RequestListenerHttp1x<
+  Request extends typeof IncomingMessage = typeof IncomingMessage,
+  Response extends
+    typeof ServerResponse<IncomingMessage> = typeof ServerResponse<IncomingMessage>,
+> = (
+  req: InstanceType<Request>,
+  res: InstanceType<Response> & { req: InstanceType<Request> },
+) => void;
+
+type RequestListenerHttp2<
+  Request extends typeof Http2ServerRequest = typeof Http2ServerRequest,
+  Response extends typeof Http2ServerResponse = typeof Http2ServerResponse,
+> = (request: InstanceType<Request>, response: InstanceType<Response>) => void;
+
+type RequestListener = RequestListenerHttp1x | RequestListenerHttp2;
 
 export async function listen(
   handle: RequestListener,
@@ -108,20 +127,26 @@ export async function listen(
   }));
 
   // --- Listen ---
-  let server: Server | HTTPServer;
+  let server: Server;
   let https: Listener["https"] = false;
   const httpsOptions = listhenOptions.https as HTTPSOptions;
   let _addr: AddressInfo;
   if (httpsOptions) {
     https = await resolveCertificate(httpsOptions);
-    server = createHTTPSServer(https, handle);
+    server = createSecureServer(
+      {
+        ...https,
+        allowHTTP1: true,
+      },
+      handle as RequestListenerHttp2,
+    );
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   } else {
-    server = createServer(handle);
+    server = createServer(handle as RequestListenerHttp1x);
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
