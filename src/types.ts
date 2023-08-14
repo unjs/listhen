@@ -1,7 +1,10 @@
-import type { Server } from "node:http";
-import type { Server as HTTPServer } from "node:https";
-import { AddressInfo } from "node:net";
+import type { Server as HttpServer } from "node:http";
+import type { Server as HttpsServer } from "node:https";
+import type { Http2SecureServer } from "node:http2";
+import type { AddressInfo } from "node:net";
 import type { GetPortInput } from "get-port-please";
+
+export type Server = HttpServer | HttpsServer | Http2SecureServer;
 
 export interface Certificate {
   key: string;
@@ -72,7 +75,7 @@ export interface ListenURL {
 export interface Listener {
   url: string;
   address: AddressInfo;
-  server: Server | HTTPServer;
+  server: Server;
   https: false | Certificate;
   close: () => Promise<void>;
   open: () => Promise<void>;
