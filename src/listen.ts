@@ -218,7 +218,7 @@ export async function listen(
 
     // Show QR code
     if (firstPublicUrl && showQR) {
-      const space = " ".repeat(15);
+      const space = " ".repeat(14);
       lines.push(" ");
       lines.push(
         ...renderQRCode(firstPublicUrl.url)
