@@ -1,13 +1,70 @@
 import { resolve } from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
+import { request } from "node:http";
+import { request as httpsRequest } from "node:https";
+import { platform } from "node:os";
 import { describe, afterEach, test, expect } from "vitest";
+import { toNodeListener, createApp, eventHandler, createRouter } from "h3";
 import { listen, Listener } from "../src";
+import { getSocketPath } from "../src/_utils";
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+function getApp() {
+  const app = createApp({});
+
+  const router = createRouter()
+    .get(
+      "/",
+      eventHandler(() => ({ hello: "world!" })),
+    )
+    .get(
+      "/path",
+      eventHandler(() => ({ hello: "path!" })),
+    )
+    .get(
+      "/unix",
+      eventHandler(() => ({ hello: "unix!" })),
+    );
+
+  app.use(router);
+
+  return app;
+}
 
 // eslint-disable-next-line no-console
 // console.log = fn()
 
 function handle(request: IncomingMessage, response: ServerResponse) {
   response.end(request.url);
+}
+
+function ipcRequest(ipcSocket: string, path: string, https = false) {
+  return new Promise((resolve, reject) => {
+    (https ? httpsRequest : request)(
+      {
+        socketPath: ipcSocket,
+        path,
+      },
+      (res) => {
+        const data: any[] = [];
+        res.setEncoding("utf8");
+        res.on("data", (chunk) => {
+          data.push(chunk);
+        });
+        res.on("error", (e) => {
+          reject(e);
+        });
+        res.on("end", () => {
+          try {
+            resolve(JSON.parse(data.join("")));
+          } catch {
+            resolve(data.join(""));
+          }
+        });
+      },
+    ).end();
+  });
 }
 
 describe("listhen", () => {
@@ -19,6 +76,32 @@ describe("listhen", () => {
       listener = undefined;
     }
   });
+  async function h3AppAssertions(ipcSocket: string, https: boolean) {
+    expect(listener!.url).toBe(ipcSocket);
+
+    await expect(ipcRequest(ipcSocket, "/", https)).resolves.toEqual({
+      hello: "world!",
+    });
+    await expect(ipcRequest(ipcSocket, "/path", https)).resolves.toEqual({
+      hello: "path!",
+    });
+    await expect(ipcRequest(ipcSocket, "/unix", https)).resolves.toEqual({
+      hello: "unix!",
+    });
+    await expect(ipcRequest(ipcSocket, "/test", https)).resolves.toContain({
+      statusCode: 404,
+    });
+  }
+
+  async function handleAssertions(ipcSocket: string, https: boolean) {
+    expect(listener!.url).toBe(ipcSocket);
+
+    await expect(ipcRequest(ipcSocket, "/", https)).resolves.toEqual("/");
+    await expect(ipcRequest(ipcSocket, "/path", https)).resolves.toEqual(
+      "/path",
+    );
+  }
+
   test("should listen to the next port in range (3000 -> 31000)", async () => {
     listener = await listen(handle, {
       port: { port: 3000 },
@@ -47,6 +130,30 @@ describe("listhen", () => {
     // expect(console.log).toHaveBeenCalledWith(expect.stringMatching('\n  > Local:    http://localhost:3000/foo/bar'))
   });
 
+  test("listen on unix domain socket/windows named pipe (handle)", async () => {
+    const ipcSocketName = "listhen";
+    const ipcSocket = getSocketPath(ipcSocketName);
+
+    listener = await listen(handle, {
+      ipc: ipcSocketName,
+    });
+
+    await handleAssertions(ipcSocket, false);
+  });
+
+  test("listen on unix domain socket/windows named pipe (h3 app)", async () => {
+    const ipcSocketName = "listhen2";
+    const ipcSocket = getSocketPath(ipcSocketName);
+
+    listener = await listen(toNodeListener(getApp()), {
+      ipc: ipcSocketName,
+    });
+
+    expect(listener.url).toBe(ipcSocket);
+
+    await h3AppAssertions(ipcSocket, false);
+  });
+
   describe("https", () => {
     test("listen (https - selfsigned)", async () => {
       listener = await listen(handle, { https: true, hostname: "localhost" });
@@ -64,6 +171,32 @@ describe("listhen", () => {
         hostname: "localhost",
       });
       expect(listener.url.startsWith("https://")).toBe(true);
+    });
+
+    test("listen (https - unix domain socket/windows named pipe - handle)", async () => {
+      const ipcSocketName = "listhen-https";
+      const ipcSocket = getSocketPath(ipcSocketName);
+
+      listener = await listen(handle, {
+        ipc: ipcSocketName,
+        https: true,
+      });
+
+      expect(listener.url).toBe(ipcSocket);
+
+      await handleAssertions(ipcSocket, true);
+    });
+
+    test("listen (https - unix domain socket/windows named pipe - h3 app)", async () => {
+      const ipcSocketName = "listhen-https";
+      const ipcSocket = getSocketPath(ipcSocketName);
+
+      listener = await listen(toNodeListener(getApp()), {
+        ipc: ipcSocketName,
+        https: true,
+      });
+
+      await h3AppAssertions(ipcSocket, true);
     });
 
     test("listen (https - custom - with private key passphrase)", async () => {
@@ -171,6 +304,30 @@ describe("listhen", () => {
         port: { port: 50_000, portRange: [50_000, 59_999] },
       });
       expect(listener.url).toMatch(/:5\d{4}\/$/);
+    });
+  });
+
+  describe("_utils", () => {
+    test("getSocketPath: empty ipcSocketName resolves to a 'listhen' named pipe/socket", () => {
+      if (platform() === "win32") {
+        expect(getSocketPath(undefined!)).toEqual("\\\\?\\pipe\\listhen");
+        expect(getSocketPath("")).toEqual("\\\\?\\pipe\\listhen");
+      } else {
+        expect(getSocketPath(undefined!)).toEqual("/tmp/listhen.socket");
+        expect(getSocketPath("")).toEqual("/tmp/listhen.socket");
+      }
+    });
+
+    test("getSocketPath: some string as ipcSocketName resolves to a pipe/socket named as this string", () => {
+      if (platform() === "win32") {
+        expect(getSocketPath("listhen-https")).toEqual(
+          "\\\\?\\pipe\\listhen-https",
+        );
+      } else {
+        expect(getSocketPath("listhen-https")).toEqual(
+          "/tmp/listhen-https.socket",
+        );
+      }
     });
   });
 });
