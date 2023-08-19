@@ -118,19 +118,19 @@ export async function listen(
   const ipcSocket = getSocketPath(listhenOptions.socket);
 
   function constructServerListeningArgs() {
-    return listhenOptions.socket === "_____"
+    return listhenOptions.socket
       ? {
+          ipcSocket,
+          *[Symbol.iterator]() {
+            yield this.ipcSocket;
+          },
+        }
+      : {
           port,
           hostname: listhenOptions.hostname,
           *[Symbol.iterator]() {
             yield this.port;
             yield this.hostname;
-          },
-        }
-      : {
-          ipcSocket,
-          *[Symbol.iterator]() {
-            yield this.ipcSocket;
           },
         };
   }
@@ -218,7 +218,7 @@ export async function listen(
       }
     };
 
-    if (listhenOptions.ipc !== "_____") {
+    if (listhenOptions.socket) {
       _addURL("local", ipcSocket);
       return urls;
     }
@@ -289,8 +289,12 @@ export async function listen(
 
     for (const url of urls) {
       const type = typeMap[url.type];
+      let infix = "";
+      if (listhenOptions.socket && url.type === "local") {
+        infix = listhenOptions.https ? " (https)" : " (http)";
+      }
       const label = getColor(type[1])(
-        `  ➜ ${(type[0] + ":").padEnd(8, " ")}${nameSuffix} `,
+        `  ➜ ${(type[0] + infix + ":").padEnd(8, " ")}${nameSuffix} `,
       );
       let suffix = "";
       if (url === firstLocalUrl && listhenOptions.clipboard) {
@@ -302,7 +306,7 @@ export async function listen(
       lines.push(`${label} ${formatURL(url.url)}${suffix}`);
     }
 
-    if (!firstPublicUrl && listhenOptions.ipc === "_____") {
+    if (!firstPublicUrl && !listhenOptions.socket) {
       lines.push(
         colors.gray(`  ➜ Network:  use ${colors.white("--host")} to expose`),
       );

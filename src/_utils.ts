@@ -94,6 +94,12 @@ export function getSocketPath(ipcSocketName: string) {
     : `/tmp/${ipcSocketName || "listhen"}.socket`;
 }
 
+export const IPC_NOT_USED_NAME = "_____";
+
+export function isSocketUsed(options: ListenOptions): boolean {
+  return options.ipc !== IPC_NOT_USED_NAME;
+}
+
 export function getPublicURL(
   listhenOptions: ListenOptions,
   baseURL?: string,
