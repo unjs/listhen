@@ -1,5 +1,5 @@
-import { networkInterfaces, platform } from "node:os";
-import { relative } from "pathe";
+import { networkInterfaces, platform, tmpdir } from "node:os";
+import { relative, join } from "pathe";
 import { colors } from "consola/utils";
 import { consola } from "consola";
 import { provider } from "std-env";
@@ -89,9 +89,13 @@ export function getDefaultHost(preferPublic?: boolean) {
 }
 
 export function getSocketPath(ipcSocketName: string) {
-  return platform() === "win32"
-    ? `\\\\?\\pipe\\${ipcSocketName || "listhen"}`
-    : `/tmp/${ipcSocketName || "listhen"}.socket`;
+  if (platform() === "win32") {
+    return `\\\\?\\pipe\\${ipcSocketName || "listhen"}`;
+  }
+  return join(
+    tmpdir(),
+    ipcSocketName ? `${ipcSocketName}.socket` : "listhen.socket",
+  );
 }
 
 export const IPC_NOT_USED_NAME = "_____";
