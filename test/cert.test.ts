@@ -83,9 +83,8 @@ describe("Certification Tests", () => {
 
   describe("CA", () => {
     test("Generate certificate and private key (with attributes)", async () => {
-      const { cert, key, passphrase } = await _private.generateCACert(
-        certOptions,
-      );
+      const { cert, key, passphrase } =
+        await _private.generateCACert(certOptions);
       const certificate = forge.pki.certificateFromPem(cert);
       const attrs = certificate.subject.attributes;
       assertDefaultAttributes(attrs);
