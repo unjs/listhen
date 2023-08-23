@@ -25,7 +25,8 @@
   "files": [
     "dist",
     "lib",
-    "bin"
+    "bin",
+    "cli.d.ts"
   ],
   "scripts": {
     "build": "unbuild",
