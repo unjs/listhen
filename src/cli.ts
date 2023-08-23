@@ -22,13 +22,13 @@ export const main = defineCommand({
       description: "Listener entry file (./app.ts)",
       required: true,
     },
-    baseURL: {
-      type: "string",
-      description: "Base URL to use",
-    },
     name: {
       type: "string",
       description: "Name to use in the banner",
+    },
+    baseURL: {
+      type: "string",
+      description: "Base URL to use",
     },
     watch: {
       type: "boolean",
