@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.4.0
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.3.1...v1.4.0)
+
+### 🚀 Enhancements
+
+- **cli:** Expose `getArgs` and `parseArgs` ([#109](https://github.com/unjs/listhen/pull/109))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.3.1
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.3.0...v1.3.1)
