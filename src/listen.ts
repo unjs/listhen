@@ -212,7 +212,7 @@ export async function listen(
 
     if (!firstPublicUrl) {
       lines.push(
-        colors.gray(`  > Network: use ${colors.white("--host")} to expose`),
+        colors.gray(`  ➜ Network:  use ${colors.white("--host")} to expose`),
       );
     }
 

@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.4.0
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.3.1...v1.4.0)
+
+### 🚀 Enhancements
+
+- **cli:** Expose `getArgs` and `parseArgs` ([#109](https://github.com/unjs/listhen/pull/109))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
+## v1.3.1
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.3.0...v1.3.1)
+
+### 🩹 Fixes
+
+- Update qr code padding ([#105](https://github.com/unjs/listhen/pull/105))
+- Use unicode char for network placeholder ([e80f658](https://github.com/unjs/listhen/commit/e80f658))
+
+### 🏡 Chore
+
+- Update dependencies ([f187156](https://github.com/unjs/listhen/commit/f187156))
+- Lint ([275e6bc](https://github.com/unjs/listhen/commit/275e6bc))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Anthony Fu <anthonyfu117@hotmail.com>
+
 ## v1.3.0
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.2.2...v1.3.0)
