@@ -51,11 +51,7 @@ export async function listenAndWatch(
     // https://github.com/parcel-bundler/watcher
     const subscribe = await import("@parcel/watcher")
       .then((r) => r.subscribe)
-      .catch(() =>
-        import("@parcel/watcher-wasm").then((r) =>
-          (r.default || r)().then(() => r.subscribe),
-        ),
-      );
+      .catch(() => import("@parcel/watcher-wasm").then((r) => r.subscribe));
 
     const jsExts = new Set([".js", ".mjs", ".cjs", ".ts", ".mts", ".cts"]);
 
