@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.4.1
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.0...v1.4.1)
+
+### 🩹 Fixes
+
+- **dev:** Update `@parcel/watcher-wasm` usage to 2.3.0 ([329230a](https://github.com/unjs/listhen/commit/329230a))
+
+### 🏡 Chore
+
+- Update dependencies ([b6b8a9c](https://github.com/unjs/listhen/commit/b6b8a9c))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.4.0
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.3.1...v1.4.0)
