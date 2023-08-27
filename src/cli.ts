@@ -152,9 +152,7 @@ export function parseArgs(args: ParsedListhenArgs): Partial<ListenOptions> {
     hostname:
       typeof args.host === "string"
         ? args.host
-        : args.host === true
-        ? ""
-        : undefined,
+        : (args.host === true ? "" : undefined), // prettier-ignore
     clipboard: args.clipboard,
     open: args.open,
     qr: args.qr,
