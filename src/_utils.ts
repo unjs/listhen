@@ -1,9 +1,9 @@
 import { networkInterfaces } from "node:os";
 import { relative } from "pathe";
 import { colors } from "consola/utils";
-import { ListenURL, ListenOptions } from "./types";
+import { ListenOptions } from "./types";
 
-export function getNetworkInterfaces(v4Only = true): string[] {
+export function getNetworkInterfaces(includeIPV6?: boolean): string[] {
   const addrs = new Set<string>();
   for (const details of Object.values(networkInterfaces())) {
     if (details) {
@@ -12,7 +12,7 @@ export function getNetworkInterfaces(v4Only = true): string[] {
           !d.internal &&
           !(d.mac === "00:00:00:00:00:00") &&
           !d.address.startsWith("fe80::") &&
-          !(v4Only && (d.family === "IPv6" || +d.family === 6))
+          !(!includeIPV6 && (d.family === "IPv6" || +d.family === 6))
         ) {
           addrs.add(formatAddress(d));
         }
@@ -39,30 +39,57 @@ export function formatURL(url: string) {
   );
 }
 
-const localhostRegex = /^127(\.\d{1,3}){3}$|^localhost$|^::1$/;
+const _localHosts = new Set(["127.0.0.1", "localhost", "::1"]);
 export function isLocalhost(hostname: string | undefined) {
-  return hostname === undefined ? false : localhostRegex.test(hostname);
+  return hostname === undefined ? false : _localHosts.has(hostname);
 }
 
-const anyhostRegex = /^$|^0\.0\.0\.0$|^::$/;
+const _anyHosts = new Set(["", "0.0.0.0", "::"]);
 export function isAnyhost(hostname: string | undefined) {
-  return hostname === undefined ? false : anyhostRegex.test(hostname);
+  return hostname === undefined ? false : _anyHosts.has(hostname);
+}
+
+export function generateURL(
+  hostname: string,
+  listhenOptions: ListenOptions,
+  baseURL?: string,
+) {
+  const proto = listhenOptions.https ? "https://" : "http://";
+  let port = listhenOptions.port || "";
+  if (
+    (port === 80 && proto === "http://") ||
+    (port === 443 && proto === "https://")
+  ) {
+    port = "";
+  }
+  if (hostname.includes(":")) {
+    hostname = `[${hostname}]`;
+  }
+  return (
+    proto + hostname + ":" + port + (baseURL || listhenOptions.baseURL || "")
+  );
 }
 
 export function getPublicURL(
-  urls: ListenURL[],
   listhenOptions: ListenOptions,
+  baseURL?: string,
 ): string | undefined {
   if (listhenOptions.publicURL) {
     return listhenOptions.publicURL;
   }
 
-  return (
-    detectStackblitzURL(listhenOptions._entry) ||
-    urls.find((url) => url.type === "network" && !url.url.startsWith("["))
-      ?.url ||
-    urls.find((url) => url.type === "network")?.url
-  );
+  const stackblitzURL = detectStackblitzURL(listhenOptions._entry);
+  if (stackblitzURL) {
+    return stackblitzURL;
+  }
+
+  if (
+    listhenOptions.hostname &&
+    !isLocalhost(listhenOptions.hostname) &&
+    !isAnyhost(listhenOptions.hostname)
+  ) {
+    return generateURL(listhenOptions.hostname, listhenOptions, baseURL);
+  }
 }
 
 function detectStackblitzURL(entry?: string) {
