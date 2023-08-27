@@ -39,6 +39,15 @@ export function formatURL(url: string) {
   );
 }
 
+const localhostRegex = /^127(\.\d{1,3}){3}$|^localhost$|^::1$/;
+export function isLocalhost(hostname = "") {
+  return localhostRegex.test(hostname)
+}
+
+export function isAnyhost(hostname = "") {
+  return hostname === "" || hostname === "0.0.0.0" || hostname === "::";
+}
+
 export function getPublicURL(
   urls: ListenURL[],
   listhenOptions: ListenOptions,
