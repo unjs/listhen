@@ -120,7 +120,7 @@ export async function listen(
   }
 
   // --- GetURL Utility ---
-  const getURL = (host = "localhost", baseURL?: string) =>
+  const getURL = (host = listhenOptions.hostname, baseURL?: string) =>
     generateURL(host, listhenOptions, baseURL);
 
   // --- Start Tunnel ---
@@ -174,7 +174,10 @@ export async function listen(
 
     // Add localhost URL
     if (_localhost || _anyhost) {
-      _addURL("local", getURL("localhost", getURLOptions.baseURL));
+      _addURL(
+        "local",
+        getURL(listhenOptions.hostname || "localhost", getURLOptions.baseURL),
+      );
     }
 
     // Add tunnel URL

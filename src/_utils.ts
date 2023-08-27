@@ -62,6 +62,9 @@ export function generateURL(
   ) {
     port = "";
   }
+  if (hostname.includes(":")) {
+    hostname = `[${hostname}]`;
+  }
   return (
     proto + hostname + ":" + port + (baseURL || listhenOptions.baseURL || "")
   );
