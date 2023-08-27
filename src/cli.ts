@@ -39,7 +39,6 @@ export const main = defineCommand({
     ...getArgs(),
   },
   async run({ args }) {
-    console.log(args, parseArgs(args))
     const opts: Partial<ListenOptions & WatchOptions & DevServerOptions> = {
       ...args,
       ...parseArgs(args),
