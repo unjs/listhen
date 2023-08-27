@@ -152,9 +152,9 @@ export function parseArgs(args: ParsedListhenArgs): Partial<ListenOptions> {
     hostname:
       typeof args.host === "string"
         ? args.host
-        : args.host === true
+        : (args.host === true
         ? ""
-        : undefined,
+        : undefined),
     clipboard: args.clipboard,
     open: args.open,
     qr: args.qr,
