@@ -158,7 +158,6 @@ describe("listhen", () => {
   describe("port", () => {
     test("pass hostname to get-port-please", async () => {
       listener = await listen(handle, { hostname: "127.0.0.1" });
-      console.log(listener.url);
       expect(listener.url.startsWith("http://127.0.0.1")).toBe(true);
     });
 
