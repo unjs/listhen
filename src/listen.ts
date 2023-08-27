@@ -21,7 +21,6 @@ import type {
   GetURLOptions,
 } from "./types";
 import {
-  formatAddress,
   formatURL,
   getNetworkInterfaces,
   isLocalhost,

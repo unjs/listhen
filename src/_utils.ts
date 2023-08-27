@@ -1,7 +1,7 @@
 import { networkInterfaces } from "node:os";
 import { relative } from "pathe";
 import { colors } from "consola/utils";
-import { ListenURL, ListenOptions, GetURLOptions } from "./types";
+import { ListenOptions } from "./types";
 
 export function getNetworkInterfaces(includeIPV6?: boolean): string[] {
   const addrs = new Set<string>();
