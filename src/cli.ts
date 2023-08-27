@@ -149,10 +149,8 @@ type ParsedListhenArgs = ParsedArgs<ReturnType<typeof getArgs>>;
 export function parseArgs(args: ParsedListhenArgs): Partial<ListenOptions> {
   return {
     port: args.port,
-    hostname:
-      typeof args.host === "string"
-        ? args.host
-        : (args.host === true ? "" : undefined), // prettier-ignore
+    // prettier-ignore
+    hostname: typeof args.host === "string" ? args.host : (args.host === true ? "" : undefined),
     clipboard: args.clipboard,
     open: args.open,
     qr: args.qr,
