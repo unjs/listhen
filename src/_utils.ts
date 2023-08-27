@@ -47,11 +47,12 @@ export function isLocalhost(hostname: string | undefined) {
   return localhostRegex.test(hostname);
 }
 
+const anyhostRegex = /^$|^0\.0\.0\.0$|^::$/;
 export function isAnyhost(hostname: string | undefined) {
   if (hostname === undefined) {
     return false;
   }
-  return hostname === "" || hostname === "0.0.0.0" || hostname === "::";
+  return anyhostRegex.test(hostname);
 }
 
 export function getPublicURL(
