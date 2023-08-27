@@ -23,6 +23,8 @@ import {
   formatAddress,
   formatURL,
   getNetworkInterfaces,
+  isLocalhost,
+  isAnyhost,
   getPublicURL,
 } from "./_utils";
 import { resolveCertificate } from "./_cert";
@@ -36,8 +38,10 @@ export async function listen(
   const _hostname = process.env.HOST ?? _options.hostname;
   const _public =
     _options.public ??
+    (isLocalhost(_hostname) ? false : undefined) ??
+    (isAnyhost(_hostname) ? true : undefined) ??
     (process.argv.includes("--host") ? true : undefined) ??
-    (_hostname === "localhost" ? false : _isProd);
+    _isProd;
 
   const listhenOptions = defu<ListenOptions, ListenOptions[]>(_options, {
     name: "",
@@ -53,6 +57,23 @@ export async function listen(
     public: _public,
     autoClose: true,
   });
+
+  if (listhenOptions.public && isLocalhost(listhenOptions.hostname)) {
+    console.warn(
+      `[listhen] Trying to listhen on private host ${JSON.stringify(
+        listhenOptions.hostname,
+      )} with public option disabled.`,
+    );
+    listhenOptions.public = false;
+  } else if (!listhenOptions.public && isAnyhost(listhenOptions.hostname)) {
+    console.warn(
+      `[listhen] Trying to listhen on public host ${JSON.stringify(
+        listhenOptions.hostname,
+      )} with public option disabled. Using "localhost".`,
+    );
+    listhenOptions.public = false;
+    listhenOptions.hostname = "localhost";
+  }
 
   if (listhenOptions.isTest) {
     listhenOptions.showURL = false;
