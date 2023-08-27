@@ -76,7 +76,7 @@ export function getArgs() {
     },
     host: {
       description:
-        "Host to listen on. If no value or an empty string provided, will listhen on all available interfaces (use `HOST` environment variable to override)",
+        "Host to listen on. If no value or an empty string provided, will listen on all available interfaces (use `HOST` environment variable to override)",
     },
     clipboard: {
       type: "boolean",
