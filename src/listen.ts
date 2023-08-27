@@ -241,7 +241,7 @@ export async function listen(
         suffix += colors.gray(" [copied to clipboard]");
       }
       if (url === firstPublicUrl && showQR) {
-        suffix += colors.gray(" [QR code ⬇️ ]");
+        suffix += colors.gray(" [QR code]");
       }
       lines.push(`${label} ${formatURL(url.url)}${suffix}`);
     }
