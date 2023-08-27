@@ -212,7 +212,18 @@ export async function listen(
     const firstLocalUrl = urls.find((u) => u.type === "local");
     const firstPublicUrl = urls.find((u) => u.type !== "local");
 
+    // QR Code
     const showQR = (showURLOptions.qr ?? listhenOptions.qr) !== false;
+    if (firstPublicUrl && showQR) {
+      const space = " ".repeat(14);
+      lines.push(" ");
+      lines.push(
+        ...renderQRCode(firstPublicUrl.url)
+          .split("\n")
+          .map((line) => space + line),
+      );
+      lines.push(" ");
+    }
 
     const typeMap: Record<ListenURL["type"], [string, ColorName]> = {
       local: ["Local", "green"],
@@ -241,18 +252,7 @@ export async function listen(
       );
     }
 
-    // Show QR code
-    if (firstPublicUrl && showQR) {
-      const space = " ".repeat(14);
-      lines.push(" ");
-      lines.push(
-        ...renderQRCode(firstPublicUrl.url)
-          .split("\n")
-          .map((line) => space + line),
-      );
-    }
-
-    // eslint-disable-next-line no-console
+    // Print lines
     console.log("\n" + lines.join("\n") + "\n");
   };
 
