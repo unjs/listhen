@@ -1,5 +1,5 @@
 import { WatchOptions } from "node:fs";
-import { defineCommand, runMain as _runMain, ParsedArgs } from "citty";
+import { defineCommand, runMain as _runMain, ParsedArgs, ArgsDef } from "citty";
 import { isAbsolute } from "pathe";
 import { name, description, version } from "../package.json";
 import { listen } from "./listen";
@@ -39,6 +39,7 @@ export const main = defineCommand({
     ...getArgs(),
   },
   async run({ args }) {
+    console.log(args, parseArgs(args))
     const opts: Partial<ListenOptions & WatchOptions & DevServerOptions> = {
       ...args,
       ...parseArgs(args),
@@ -72,12 +73,11 @@ export function getArgs() {
     port: {
       type: "string",
       description:
-        "Port to listen on (use PORT environment variable to override)",
+        "Port to listen on (use `PORT` environment variable to override)",
     },
     host: {
-      type: "string",
       description:
-        "Host to listen on (use HOST environment variable to override)",
+        "Host to listen on. If no value or an empty string provided, will listhen on all available interfaces (use `HOST` environment variable to override)",
     },
     clipboard: {
       type: "boolean",
@@ -141,7 +141,7 @@ export function getArgs() {
       description: "Open a tunnel using https://github.com/unjs/untun",
       required: false,
     },
-  } as const;
+  } as const satisfies ArgsDef;
 }
 
 type ParsedListhenArgs = ParsedArgs<ReturnType<typeof getArgs>>;
@@ -150,7 +150,7 @@ type ParsedListhenArgs = ParsedArgs<ReturnType<typeof getArgs>>;
 export function parseArgs(args: ParsedListhenArgs): Partial<ListenOptions> {
   return {
     port: args.port,
-    hostname: args.host,
+    hostname: typeof args.host === 'string' ? args.host : (args.host === true ? "" : undefined),
     clipboard: args.clipboard,
     open: args.open,
     qr: args.qr,
