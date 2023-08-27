@@ -62,7 +62,7 @@ export function generateURL(
   ) {
     port = "";
   }
-  if (hostname.includes(":")) {
+  if (hostname[0] !== "[" && hostname.includes(":")) {
     hostname = `[${hostname}]`;
   }
   return (
