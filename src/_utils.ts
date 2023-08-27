@@ -39,14 +39,14 @@ export function formatURL(url: string) {
   );
 }
 
-const localhostRegex = /^127(\.\d{1,3}){3}$|^localhost$|^::1$/;
+const _localHosts = new Set(["127.0.0.1", "localhost", "::1"]);
 export function isLocalhost(hostname: string | undefined) {
-  return hostname === undefined ? false : localhostRegex.test(hostname);
+  return hostname === undefined ? false : _localHosts.has(hostname);
 }
 
-const anyhostRegex = /^$|^0\.0\.0\.0$|^::$/;
+const _anyHosts = new Set(["", "0.0.0.0", "::"]);
 export function isAnyhost(hostname: string | undefined) {
-  return hostname === undefined ? false : anyhostRegex.test(hostname);
+  return hostname === undefined ? false : _anyHosts.has(hostname);
 }
 
 export function generateURL(
