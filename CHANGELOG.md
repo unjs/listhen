@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.4.3
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.2...v1.4.3)
+
+### 🩹 Fixes
+
+- Prevent double brackets for ipv6 format ([2110e40](https://github.com/unjs/listhen/commit/2110e40))
+
+### 🏡 Chore
+
+- Update playground version ([f9f1be3](https://github.com/unjs/listhen/commit/f9f1be3))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.4.2
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.4.1...v1.4.2)
