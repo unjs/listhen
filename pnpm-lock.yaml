@@ -97,7 +97,7 @@ importers:
         specifier: ^1.8.1
         version: 1.8.1
       listhen:
-        specifier: ^1.4.1
+        specifier: ^1.4.2
         version: link:..
 
 packages:
