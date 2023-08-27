@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.4.2
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.1...v1.4.2)
+
+### 🩹 Fixes
+
+- Better options handling for public host ([#112](https://github.com/unjs/listhen/pull/112))
+- **cli:** Handle `--host` with boolean value ([#113](https://github.com/unjs/listhen/pull/113))
+- Several bugfixes for generated urls ([#114](https://github.com/unjs/listhen/pull/114))
+
+### 💅 Refactors
+
+- Show qr code above listening urls ([#115](https://github.com/unjs/listhen/pull/115))
+
+### 🏡 Chore
+
+- **release:** V1.4.1 ([a5bf8db](https://github.com/unjs/listhen/commit/a5bf8db))
+- Update playground versions ([e15fc57](https://github.com/unjs/listhen/commit/e15fc57))
+- Update dependencies ([b8840f8](https://github.com/unjs/listhen/commit/b8840f8))
+- Update lockfile ([d91d4ef](https://github.com/unjs/listhen/commit/d91d4ef))
+- Remove emoji ([e4d0037](https://github.com/unjs/listhen/commit/e4d0037))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.4.1
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.4.0...v1.4.1)
