@@ -40,11 +40,17 @@ export function formatURL(url: string) {
 }
 
 const localhostRegex = /^127(\.\d{1,3}){3}$|^localhost$|^::1$/;
-export function isLocalhost(hostname = "") {
+export function isLocalhost(hostname: string | undefined) {
+  if (hostname === undefined) {
+    return false;
+  }
   return localhostRegex.test(hostname);
 }
 
-export function isAnyhost(hostname = "") {
+export function isAnyhost(hostname: string | undefined) {
+  if (hostname === undefined) {
+    return false;
+  }
   return hostname === "" || hostname === "0.0.0.0" || hostname === "::";
 }
 
