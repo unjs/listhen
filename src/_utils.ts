@@ -2,6 +2,7 @@ import { networkInterfaces } from "node:os";
 import { relative } from "pathe";
 import { colors } from "consola/utils";
 import { ListenOptions } from "./types";
+import { isWsl } from "./lib/wsl";
 
 export function getNetworkInterfaces(includeIPV6?: boolean): string[] {
   const addrs = new Set<string>();
@@ -68,6 +69,16 @@ export function generateURL(
   return (
     proto + hostname + ":" + port + (baseURL || listhenOptions.baseURL || "")
   );
+}
+
+export function getDefaultHost(preferPublic?: boolean) {
+  // Prefer IPV4 stack for Windows and WSL to avoid performance issues
+  if (process.platform === "win32" || isWsl()) {
+    return preferPublic ? "0.0.0.0" : "127.0.0.1";
+  }
+  // For local, use "localhost" to be developer friendly and allow loopback customization}
+  // For public, use "" to listen on all NIC interfaces (IPV4 and IPV6)
+  return preferPublic ? "" : "localhost";
 }
 
 export function getPublicURL(

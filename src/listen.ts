@@ -27,6 +27,7 @@ import {
   isAnyhost,
   getPublicURL,
   generateURL,
+  getDefaultHost,
 } from "./_utils";
 import { resolveCertificate } from "./_cert";
 
@@ -49,7 +50,7 @@ export async function listen(
     name: "",
     https: false,
     port: process.env.PORT || 3000,
-    hostname: _hostname ?? (_public ? "" : "localhost"),
+    hostname: _hostname ?? getDefaultHost(_public),
     showURL: true,
     baseURL: "/",
     open: false,
