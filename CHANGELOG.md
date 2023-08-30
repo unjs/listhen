@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.4.4
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.3...v1.4.4)
+
+### 🩹 Fixes
+
+- Use ipv4 for windows and wsl default hostname ([#119](https://github.com/unjs/listhen/pull/119))
+
+### 💅 Refactors
+
+- Tidy up `open`, `wsl`, and `docker` utils ([#118](https://github.com/unjs/listhen/pull/118))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.4.3
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.4.2...v1.4.3)
