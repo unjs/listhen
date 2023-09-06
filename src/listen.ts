@@ -28,6 +28,7 @@ import {
   getPublicURL,
   generateURL,
   getDefaultHost,
+  validateHostname,
 } from "./_utils";
 import { resolveCertificate } from "./_cert";
 
@@ -38,13 +39,17 @@ export async function listen(
   // --- Resolve Options ---
   const _isProd = _options.isProd ?? process.env.NODE_ENV === "production";
   const _isTest = _options.isTest ?? process.env.NODE_ENV === "test";
-  const _hostname = process.env.HOST ?? _options.hostname;
+  const __public =
+    (process.argv.includes("--host") ? true : undefined) ?? _isProd;
+  const _hostname = validateHostname(
+    process.env.HOST ?? _options.hostname,
+    __public,
+  );
   const _public =
     _options.public ??
     (isLocalhost(_hostname) ? false : undefined) ??
     (isAnyhost(_hostname) ? true : undefined) ??
-    (process.argv.includes("--host") ? true : undefined) ??
-    _isProd;
+    __public;
 
   const listhenOptions = defu<ListenOptions, ListenOptions[]>(_options, {
     name: "",

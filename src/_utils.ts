@@ -1,6 +1,7 @@
 import { networkInterfaces } from "node:os";
 import { relative } from "pathe";
 import { colors } from "consola/utils";
+import { consola } from "consola";
 import { ListenOptions } from "./types";
 import { isWsl } from "./lib/wsl";
 
@@ -128,4 +129,20 @@ function detectStackblitzURL(entry?: string) {
   } catch (error) {
     console.error(error);
   }
+}
+
+const HOSTNAME_RE = /^(?!-)[\d.A-Za-z-]{1,63}(?<!-)$/;
+
+export function validateHostname(
+  hostname: string | undefined,
+  _public: boolean,
+) {
+  if (hostname && !HOSTNAME_RE.test(hostname)) {
+    const fallbackHost = _public ? "0.0.0.0" : "127.0.0.1";
+    consola.warn(
+      `[listhen] Invalid hostname: \`${hostname}\`. Using \`${fallbackHost}\` as fallback.`,
+    );
+    return fallbackHost;
+  }
+  return hostname;
 }
