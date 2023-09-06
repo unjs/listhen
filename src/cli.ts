@@ -143,7 +143,6 @@ type ParsedListhenArgs = ParsedArgs<ReturnType<typeof getArgs>>;
 
 /** Convert unjs/citty compatible args to listhen options */
 export function parseArgs(args: ParsedListhenArgs): Partial<ListenOptions> {
-  console.log("args", args);
   return {
     port: args.port,
     // prettier-ignore
