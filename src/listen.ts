@@ -96,6 +96,7 @@ export async function listen(
     verbose: !listhenOptions.isTest,
     host: listhenOptions.hostname,
     alternativePortRange: [3000, 3100],
+    public: listhenOptions.public,
     ...(typeof listhenOptions.port === "object" && listhenOptions.port),
   }));
 
