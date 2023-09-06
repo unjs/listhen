@@ -34,7 +34,6 @@ export const main = defineCommand({
       type: "boolean",
       description: "Watch for changes",
       alias: "w",
-      default: false,
     },
     ...getArgs(),
   },
@@ -81,17 +80,14 @@ export function getArgs() {
     clipboard: {
       type: "boolean",
       description: "Copy the URL to the clipboard",
-      default: false,
     },
     open: {
       type: "boolean",
       description: "Open the URL in the browser",
-      default: false,
     },
     https: {
       type: "boolean",
       description: "Enable HTTPS",
-      default: false,
     },
     "https.cert": {
       type: "string",
@@ -147,6 +143,7 @@ type ParsedListhenArgs = ParsedArgs<ReturnType<typeof getArgs>>;
 
 /** Convert unjs/citty compatible args to listhen options */
 export function parseArgs(args: ParsedListhenArgs): Partial<ListenOptions> {
+  console.log("args", args);
   return {
     port: args.port,
     // prettier-ignore
