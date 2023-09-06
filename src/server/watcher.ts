@@ -88,7 +88,7 @@ export async function listenAndWatch(
     );
   } catch (error) {
     logger.warn(
-      "Cannot start the watcher! Please report this issue to `https://github.com/unjs/listhen/issues/96`\n",
+      "Cannot start the watcher!\n",
       error,
       "\n\n✔️ Your dev server is still running, but it won't reload automatically after changes. You need to restart it manually.",
     );
