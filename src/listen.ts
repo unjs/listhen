@@ -39,17 +39,13 @@ export async function listen(
   // --- Resolve Options ---
   const _isProd = _options.isProd ?? process.env.NODE_ENV === "production";
   const _isTest = _options.isTest ?? process.env.NODE_ENV === "test";
-  const __public =
-    (process.argv.includes("--host") ? true : undefined) ?? _isProd;
-  const _hostname = validateHostname(
-    process.env.HOST ?? _options.hostname,
-    __public,
-  );
+  const _hostname = process.env.HOST ?? _options.hostname;
   const _public =
     _options.public ??
     (isLocalhost(_hostname) ? false : undefined) ??
     (isAnyhost(_hostname) ? true : undefined) ??
-    __public;
+    (process.argv.includes("--host") ? true : undefined) ??
+    _isProd;
 
   const listhenOptions = defu<ListenOptions, ListenOptions[]>(_options, {
     name: "",
@@ -67,6 +63,10 @@ export async function listen(
   });
 
   // --- Validate Options ---
+  listhenOptions.hostname = validateHostname(
+    listhenOptions.hostname,
+    listhenOptions.public,
+  );
   const _localhost = isLocalhost(listhenOptions.hostname);
   const _anyhost = isAnyhost(listhenOptions.hostname);
   if (listhenOptions.public && _localhost) {

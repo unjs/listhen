@@ -133,14 +133,11 @@ function detectStackblitzURL(entry?: string) {
 
 const HOSTNAME_RE = /^(?!-)[\d.A-Za-z-]{1,63}(?<!-)$/;
 
-export function validateHostname(
-  hostname: string | undefined,
-  _public: boolean,
-) {
+export function validateHostname(hostname: string, _public: boolean) {
   if (hostname && !HOSTNAME_RE.test(hostname)) {
     const fallbackHost = _public ? "0.0.0.0" : "127.0.0.1";
     consola.warn(
-      `[listhen] Invalid hostname: \`${hostname}\`. Using \`${fallbackHost}\` as fallback.`,
+      `[listhen] Invalid hostname \`${hostname}\`. Using \`${fallbackHost}\` as fallback.`,
     );
     return fallbackHost;
   }
