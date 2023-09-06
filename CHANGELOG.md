@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.4.7
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.6...v1.4.7)
+
+### 🩹 Fixes
+
+- Validate hostname after applying defaults ([e6c1b89](https://github.com/unjs/listhen/commit/e6c1b89))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.4.6
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.4.5...v1.4.6)
