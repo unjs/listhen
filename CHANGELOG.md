@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.4.5
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.4...v1.4.5)
+
+### 🩹 Fixes
+
+- Update `get-port-please` and pass `public` flag ([3de5b10](https://github.com/unjs/listhen/commit/3de5b10))
+- **cli:** Remove `default: false` for opt-in flag ([180c685](https://github.com/unjs/listhen/commit/180c685))
+
+### 🏡 Chore
+
+- **release:** V1.4.4 ([8972953](https://github.com/unjs/listhen/commit/8972953))
+- Remove watcher github link ([bb2b9f1](https://github.com/unjs/listhen/commit/bb2b9f1))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.4.4
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.4.3...v1.4.4)
