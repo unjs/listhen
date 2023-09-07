@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.4.8
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.7...v1.4.8)
+
+### 🩹 Fixes
+
+- Type and provide `listener.address` ([972fac7](https://github.com/unjs/listhen/commit/972fac7))
+
+### 🏡 Chore
+
+- Update get-port-please and jiti ([8be655c](https://github.com/unjs/listhen/commit/8be655c))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.4.7
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.4.6...v1.4.7)
