@@ -109,20 +109,21 @@ export async function listen(
   let server: Server | HTTPServer;
   let https: Listener["https"] = false;
   const httpsOptions = listhenOptions.https as HTTPSOptions;
+  let _addr: AddressInfo;
   if (httpsOptions) {
     https = await resolveCertificate(httpsOptions);
     server = createHTTPSServer(https, handle);
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
-    const _addr = server.address() as AddressInfo;
+    _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   } else {
     server = createServer(handle);
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
-    const _addr = server.address() as AddressInfo;
+    _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   }
 
@@ -282,6 +283,7 @@ export async function listen(
     url: getURL(),
     https,
     server,
+    address: _addr,
     open: _open,
     showURL,
     getURLs,
