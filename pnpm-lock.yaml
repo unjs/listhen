@@ -27,8 +27,8 @@ importers:
         specifier: ^6.1.2
         version: 6.1.2
       get-port-please:
-        specifier: ^3.1.0
-        version: 3.1.0
+        specifier: ^3.1.1
+        version: 3.1.1
       h3:
         specifier: ^1.8.1
         version: 1.8.1
@@ -36,7 +36,7 @@ importers:
         specifier: ^1.2.2
         version: 1.2.2
       jiti:
-        specifier: ^1.19.3
+        specifier: ^1.10.0
         version: 1.19.3
       mlly:
         specifier: ^1.4.2
@@ -919,6 +919,7 @@ packages:
     dependencies:
       is-glob: 4.0.3
       micromatch: 4.0.5
+      napi-wasm: 1.1.0
     dev: false
     bundledDependencies:
       - napi-wasm
@@ -2554,8 +2555,8 @@ packages:
       has-symbols: 1.0.3
     dev: true
 
-  /get-port-please@3.1.0:
-    resolution: {integrity: sha512-r/qtQh/rku1cnqnEFgnY7CFsy+EXUuWjw4938fk7yfGVMJfEkpJBOTMtkiP4QcXMfXICpuaBJELrifWK+mtvXw==}
+  /get-port-please@3.1.1:
+    resolution: {integrity: sha512-3UBAyM3u4ZBVYDsxOQfJDxEa6XTbpBDrOjp4mf7ExFRt5BKs/QywQQiJsh2B+hxcZLSapWqCRvElUe8DnKcFHA==}
     dev: false
 
   /get-stream@6.0.1:
@@ -3339,6 +3340,10 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
     dev: true
+
+  /napi-wasm@1.1.0:
+    resolution: {integrity: sha512-lHwIAJbmLSjF9VDRm9GoVOy9AGp3aIvkjv+Kvz9h16QR3uSVYH78PNQUnT2U4X53mhlnV2M7wrhibQ3GHicDmg==}
+    dev: false
 
   /natural-compare-lite@1.4.0:
     resolution: {integrity: sha512-Tj+HTDSJJKaZnfiuw+iaF9skdPpTo2GtEly5JHnWV/hfv2Qj/9RKsGISQtLh2ox3l5EAGw487hnBee0sIJ6v2g==}
