@@ -131,7 +131,7 @@ function detectStackblitzURL(entry?: string) {
   }
 }
 
-const HOSTNAME_RE = /^(?!-)[\d.A-Za-z-]{1,63}(?<!-)$/;
+const HOSTNAME_RE = /^(?!-)[\d.:A-Za-z-]{1,63}(?<!-)$/;
 
 export function validateHostname(hostname: string, _public: boolean) {
   if (hostname && !HOSTNAME_RE.test(hostname)) {
