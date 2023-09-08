@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.5.0
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.8...v1.5.0)
+
+### 🚀 Enhancements
+
+- Trap `SIGINT`, `SIGTERM` and `SIGHUP` for autoclosing ([#108](https://github.com/unjs/listhen/pull/108))
+
+### 🩹 Fixes
+
+- Allow valid ipv6 as hostnames ([78dd4b7](https://github.com/unjs/listhen/commit/78dd4b7))
+
+### 🏡 Chore
+
+- Update deps ([7d34ab9](https://github.com/unjs/listhen/commit/7d34ab9))
+
+### ❤️ Contributors
+
+- Mastercuber <e4d33vb85@mozmail.com>
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.4.8
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.4.7...v1.4.8)
