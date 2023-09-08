@@ -88,20 +88,12 @@ export function getDefaultHost(preferPublic?: boolean) {
   return preferPublic ? "" : "localhost";
 }
 
-export function getSocketPath(ipcSocketName: string) {
+export function getSocketPath(name: true | string) {
+  const _name = typeof name === "string" ? name : "listhen";
   if (platform() === "win32") {
-    return `\\\\?\\pipe\\${ipcSocketName || "listhen"}`;
+    return `\\\\?\\pipe\\${_name}`;
   }
-  return join(
-    tmpdir(),
-    ipcSocketName ? `${ipcSocketName}.socket` : "listhen.socket",
-  );
-}
-
-export const IPC_NOT_USED_NAME = "_____";
-
-export function isSocketUsed(options: ListenOptions): boolean {
-  return options.ipc !== IPC_NOT_USED_NAME;
+  return join(tmpdir(), `${_name}.socket`);
 }
 
 export function getPublicURL(

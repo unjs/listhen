@@ -141,8 +141,7 @@ export function getArgs() {
       description: "Open a tunnel using https://github.com/unjs/untun",
       required: false,
     },
-    ipc: {
-      type: "string",
+    socket: {
       description:
         "Listen on a Unix Domain Socket/Windows Pipe, optionally with custom name",
       required: false,
@@ -163,8 +162,8 @@ export function parseArgs(args: ParsedListhenArgs): Partial<ListenOptions> {
     qr: args.qr,
     publicURL: args.publicURL,
     public: args.public,
-    ipc: args.ipc,
     tunnel: args.tunnel,
+    socket: args.socket,
     https: args.https
       ? <HTTPSOptions>{
           cert: args["https.cert"],

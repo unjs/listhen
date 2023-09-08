@@ -135,7 +135,7 @@ describe("listhen", () => {
     const ipcSocket = getSocketPath(ipcSocketName);
 
     listener = await listen(handle, {
-      ipc: ipcSocketName,
+      socket: ipcSocketName,
     });
 
     await handleAssertions(ipcSocket, false);
@@ -146,7 +146,7 @@ describe("listhen", () => {
     const ipcSocket = getSocketPath(ipcSocketName);
 
     listener = await listen(toNodeListener(getApp()), {
-      ipc: ipcSocketName,
+      socket: ipcSocketName,
     });
 
     expect(listener.url).toBe(ipcSocket);
@@ -178,7 +178,7 @@ describe("listhen", () => {
       const ipcSocket = getSocketPath(ipcSocketName);
 
       listener = await listen(handle, {
-        ipc: ipcSocketName,
+        socket: ipcSocketName,
         https: true,
       });
 
@@ -192,7 +192,7 @@ describe("listhen", () => {
       const ipcSocket = getSocketPath(ipcSocketName);
 
       listener = await listen(toNodeListener(getApp()), {
-        ipc: ipcSocketName,
+        socket: ipcSocketName,
         https: true,
       });
 

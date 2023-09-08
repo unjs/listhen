@@ -69,9 +69,8 @@ export interface ListenOptions {
     | ((req: IncomingMessage, head: Buffer) => void);
    * Listhen on a unix domain socket/windows pipe, optionally with custom name
    *
-   * @default listhen
    */
-  ipc: string;
+  socket: boolean | string;
 }
 
 export type GetURLOptions = Pick<

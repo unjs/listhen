@@ -112,45 +112,30 @@ export async function listen(
 
   // --- Listen ---
   let server: Server | HTTPServer;
+
+  const serverOptions = listhenOptions.socket
+    ? { path: getSocketPath(listhenOptions.socket) }
+    : { port, host: listhenOptions.hostname };
+
+  let addr: { proto: "http" | "https"; addr: string; port: number } | null;
+
   let https: Listener["https"] = false;
   const httpsOptions = listhenOptions.https as HTTPSOptions;
-
-  const ipcSocket = getSocketPath(listhenOptions.socket);
-
-  function constructServerListeningArgs() {
-    return listhenOptions.socket
-      ? {
-          ipcSocket,
-          *[Symbol.iterator]() {
-            yield this.ipcSocket;
-          },
-        }
-      : {
-          port,
-          hostname: listhenOptions.hostname,
-          *[Symbol.iterator]() {
-            yield this.port;
-            yield this.hostname;
-          },
-        };
-  }
 
   let _addr: AddressInfo;
   if (httpsOptions) {
     https = await resolveCertificate(httpsOptions);
     server = createHTTPSServer(https, handle);
     addShutdown(server);
-    const args = constructServerListeningArgs();
     // @ts-ignore
-    await promisify(server.listen.bind(server))(...args);
+    await promisify(server.listen.bind(server))(serverOptions);
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   } else {
     server = createServer(handle);
     addShutdown(server);
-    const args = constructServerListeningArgs();
     // @ts-ignore
-    await promisify(server.listen.bind(server))(...args);
+    await promisify(server.listen.bind(server))(serverOptions);
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   }
