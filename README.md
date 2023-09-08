@@ -173,7 +173,7 @@ Detect if running in a test environment to disable some features.
 
 - Default: `true`
 
-Automatically close when an exit signal is received in the process.
+Automatically close when an `exit` event, `SIGTERM`, `SIGINT` or `SIGHUP` signal is received in the process.
 
 ### `publicURL`
 
