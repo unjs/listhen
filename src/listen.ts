@@ -276,11 +276,11 @@ export async function listen(
   }
 
   if (listhenOptions.autoClose) {
-    process.setMaxListeners(4);
-    process.on("exit", () => close());
-    process.on("SIGINT", () => process.exit(0)); // Ctrl + C
-    process.on("SIGTERM", () => process.exit(0)); // Terminate
-    process.on("SIGHUP", () => process.exit(0)); // Closed terminal
+    process.setMaxListeners(0);
+    process.once("exit", () => close());
+    process.once("SIGINT", () => process.exit(0)); // Ctrl + C
+    process.once("SIGTERM", () => process.exit(0)); // Terminate
+    process.once("SIGHUP", () => process.exit(0)); // Closed terminal
   }
 
   return <Listener>{
