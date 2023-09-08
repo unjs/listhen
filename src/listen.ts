@@ -6,6 +6,7 @@ import type { RequestListener, Server } from "node:http";
 import type { AddressInfo } from "node:net";
 import { getPort } from "get-port-please";
 import addShutdown from "http-shutdown";
+import consola from "consola";
 import { defu } from "defu";
 import { ColorName, getColor, colors } from "consola/utils";
 import { renderUnicodeCompact as renderQRCode } from "uqr";
@@ -20,10 +21,14 @@ import type {
   GetURLOptions,
 } from "./types";
 import {
-  formatAddress,
   formatURL,
   getNetworkInterfaces,
+  isLocalhost,
+  isAnyhost,
   getPublicURL,
+  generateURL,
+  getDefaultHost,
+  validateHostname,
 } from "./_utils";
 import { resolveCertificate } from "./_cert";
 
@@ -31,19 +36,22 @@ export async function listen(
   handle: RequestListener,
   _options: Partial<ListenOptions> = {},
 ): Promise<Listener> {
+  // --- Resolve Options ---
   const _isProd = _options.isProd ?? process.env.NODE_ENV === "production";
   const _isTest = _options.isTest ?? process.env.NODE_ENV === "test";
   const _hostname = process.env.HOST ?? _options.hostname;
   const _public =
     _options.public ??
+    (isLocalhost(_hostname) ? false : undefined) ??
+    (isAnyhost(_hostname) ? true : undefined) ??
     (process.argv.includes("--host") ? true : undefined) ??
-    (_hostname === "localhost" ? false : _isProd);
+    _isProd;
 
   const listhenOptions = defu<ListenOptions, ListenOptions[]>(_options, {
     name: "",
     https: false,
     port: process.env.PORT || 3000,
-    hostname: _hostname ?? (_public ? "" : "localhost"),
+    hostname: _hostname ?? getDefaultHost(_public),
     showURL: true,
     baseURL: "/",
     open: false,
@@ -54,6 +62,30 @@ export async function listen(
     autoClose: true,
   });
 
+  // --- Validate Options ---
+  listhenOptions.hostname = validateHostname(
+    listhenOptions.hostname,
+    listhenOptions.public,
+  );
+  const _localhost = isLocalhost(listhenOptions.hostname);
+  const _anyhost = isAnyhost(listhenOptions.hostname);
+  if (listhenOptions.public && _localhost) {
+    consola.warn(
+      `[listhen] Trying to listhen on private host ${JSON.stringify(
+        listhenOptions.hostname,
+      )} with public option disabled.`,
+    );
+    listhenOptions.public = false;
+  } else if (!listhenOptions.public && _anyhost) {
+    consola.warn(
+      `[listhen] Trying to listhen on public host ${JSON.stringify(
+        listhenOptions.hostname,
+      )} with public option disabled. Using "localhost".`,
+    );
+    listhenOptions.public = false;
+    listhenOptions.hostname = "localhost";
+  }
+
   if (listhenOptions.isTest) {
     listhenOptions.showURL = false;
   }
@@ -63,49 +95,43 @@ export async function listen(
     listhenOptions.clipboard = false;
   }
 
-  const port = await getPort({
+  // --- Resolve Port ---
+  const port = (listhenOptions.port = await getPort({
     port: Number(listhenOptions.port),
     verbose: !listhenOptions.isTest,
     host: listhenOptions.hostname,
     alternativePortRange: [3000, 3100],
+    public: listhenOptions.public,
     ...(typeof listhenOptions.port === "object" && listhenOptions.port),
-  });
+  }));
 
+  // --- Listen ---
   let server: Server | HTTPServer;
-
-  let addr: { proto: "http" | "https"; addr: string; port: number } | null;
-  const getURL = (host?: string, baseURL?: string) => {
-    const anyV4 = addr?.addr === "0.0.0.0";
-    const anyV6 = addr?.addr === "[::]";
-    return `${addr!.proto}://${
-      host ||
-      listhenOptions.hostname ||
-      (anyV4 || anyV6 ? "localhost" : addr!.addr)
-    }:${addr!.port}${baseURL || listhenOptions.baseURL}`;
-  };
-
-  // Local server
   let https: Listener["https"] = false;
   const httpsOptions = listhenOptions.https as HTTPSOptions;
-
+  let _addr: AddressInfo;
   if (httpsOptions) {
     https = await resolveCertificate(httpsOptions);
     server = createHTTPSServer(https, handle);
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
-    const _addr = server.address() as AddressInfo;
-    addr = { proto: "https", addr: formatAddress(_addr), port: _addr.port };
+    _addr = server.address() as AddressInfo;
+    listhenOptions.port = _addr.port;
   } else {
     server = createServer(handle);
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
-    const _addr = server.address() as AddressInfo;
-    addr = { proto: "http", addr: formatAddress(_addr), port: _addr.port };
+    _addr = server.address() as AddressInfo;
+    listhenOptions.port = _addr.port;
   }
 
-  // Tunnel
+  // --- GetURL Utility ---
+  const getURL = (host = listhenOptions.hostname, baseURL?: string) =>
+    generateURL(host, listhenOptions, baseURL);
+
+  // --- Start Tunnel ---
   let tunnel: Tunnel | undefined;
   if (listhenOptions.tunnel) {
     const { startTunnel } = await import("untun");
@@ -114,6 +140,7 @@ export async function listen(
     });
   }
 
+  // --- Close Utility ---
   let _closed = false;
   const close = async () => {
     if (_closed) {
@@ -124,6 +151,7 @@ export async function listen(
     await tunnel?.close().catch(() => {});
   };
 
+  // --- Copy URL to Clipboard ---
   if (listhenOptions.clipboard) {
     const clipboardy = await import("clipboardy").then((r) => r.default || r);
     await clipboardy.write(getURL()).catch(() => {
@@ -131,43 +159,48 @@ export async function listen(
     });
   }
 
+  // --- GetURLs Utility ---
   const getURLs = async (getURLOptions: GetURLOptions = {}) => {
     const urls: ListenURL[] = [];
-    const baseURL = getURLOptions?.baseURL || listhenOptions.baseURL || "";
 
-    // Add local URL
-    urls.push({
-      url: getURL("localhost", baseURL),
-      type: "local",
-    });
+    const _addURL = (type: ListenURL["type"], url: string) => {
+      if (!urls.some((u) => u.url === url)) {
+        urls.push({
+          url,
+          type,
+        });
+      }
+    };
 
     // Add public URL
     const publicURL =
-      getURLOptions.publicURL || getPublicURL(urls, listhenOptions);
+      getURLOptions.publicURL ||
+      getPublicURL(listhenOptions, getURLOptions.baseURL);
     if (publicURL) {
-      urls.push({
-        url: publicURL,
-        type: "network",
-      });
+      _addURL("network", publicURL);
+    }
+
+    // Add localhost URL
+    if (_localhost || _anyhost) {
+      _addURL(
+        "local",
+        getURL(listhenOptions.hostname || "localhost", getURLOptions.baseURL),
+      );
     }
 
     // Add tunnel URL
     if (tunnel) {
-      urls.push({
-        url: await tunnel.getURL(),
-        type: "tunnel",
-      });
+      _addURL("tunnel", await tunnel.getURL());
     }
 
-    // Add network URLs
-    const anyV4 = addr?.addr === "0.0.0.0";
-    const anyV6 = addr?.addr === "[::]";
-    if (anyV4 || anyV6) {
-      for (const addr of getNetworkInterfaces(anyV4)) {
-        urls.push({
-          url: getURL(addr, baseURL),
-          type: "network",
-        });
+    // Add public network interface URLs
+    if (listhenOptions.public) {
+      const _ipv6Host = listhenOptions.hostname.includes(":");
+      for (const addr of getNetworkInterfaces(_ipv6Host)) {
+        if (addr === publicURL) {
+          continue;
+        }
+        _addURL("network", getURL(addr, getURLOptions.baseURL));
       }
     }
 
@@ -187,12 +220,23 @@ export async function listen(
     const firstLocalUrl = urls.find((u) => u.type === "local");
     const firstPublicUrl = urls.find((u) => u.type !== "local");
 
+    // QR Code
     const showQR = (showURLOptions.qr ?? listhenOptions.qr) !== false;
+    if (firstPublicUrl && showQR) {
+      const space = " ".repeat(14);
+      lines.push(" ");
+      lines.push(
+        ...renderQRCode(firstPublicUrl.url)
+          .split("\n")
+          .map((line) => space + line),
+      );
+      lines.push(" ");
+    }
 
     const typeMap: Record<ListenURL["type"], [string, ColorName]> = {
       local: ["Local", "green"],
       tunnel: ["Tunnel", "yellow"],
-      network: ["Network", "gray"],
+      network: ["Network", "magenta"],
     };
 
     for (const url of urls) {
@@ -205,7 +249,7 @@ export async function listen(
         suffix += colors.gray(" [copied to clipboard]");
       }
       if (url === firstPublicUrl && showQR) {
-        suffix += colors.gray(" [QR code ⬇️ ]");
+        suffix += colors.gray(" [QR code]");
       }
       lines.push(`${label} ${formatURL(url.url)}${suffix}`);
     }
@@ -216,18 +260,7 @@ export async function listen(
       );
     }
 
-    // Show QR code
-    if (firstPublicUrl && showQR) {
-      const space = " ".repeat(14);
-      lines.push(" ");
-      lines.push(
-        ...renderQRCode(firstPublicUrl.url)
-          .split("\n")
-          .map((line) => space + line),
-      );
-    }
-
-    // eslint-disable-next-line no-console
+    // Print lines
     console.log("\n" + lines.join("\n") + "\n");
   };
 
@@ -254,6 +287,7 @@ export async function listen(
     url: getURL(),
     https,
     server,
+    address: _addr,
     open: _open,
     showURL,
     getURLs,

@@ -1,9 +1,11 @@
 import { networkInterfaces } from "node:os";
 import { relative } from "pathe";
 import { colors } from "consola/utils";
-import { ListenURL, ListenOptions } from "./types";
+import { consola } from "consola";
+import { ListenOptions } from "./types";
+import { isWsl } from "./lib/wsl";
 
-export function getNetworkInterfaces(v4Only = true): string[] {
+export function getNetworkInterfaces(includeIPV6?: boolean): string[] {
   const addrs = new Set<string>();
   for (const details of Object.values(networkInterfaces())) {
     if (details) {
@@ -12,7 +14,7 @@ export function getNetworkInterfaces(v4Only = true): string[] {
           !d.internal &&
           !(d.mac === "00:00:00:00:00:00") &&
           !d.address.startsWith("fe80::") &&
-          !(v4Only && (d.family === "IPv6" || +d.family === 6))
+          !(!includeIPV6 && (d.family === "IPv6" || +d.family === 6))
         ) {
           addrs.add(formatAddress(d));
         }
@@ -39,20 +41,67 @@ export function formatURL(url: string) {
   );
 }
 
-export function getPublicURL(
-  urls: ListenURL[],
+const _localHosts = new Set(["127.0.0.1", "localhost", "::1"]);
+export function isLocalhost(hostname: string | undefined) {
+  return hostname === undefined ? false : _localHosts.has(hostname);
+}
+
+const _anyHosts = new Set(["", "0.0.0.0", "::"]);
+export function isAnyhost(hostname: string | undefined) {
+  return hostname === undefined ? false : _anyHosts.has(hostname);
+}
+
+export function generateURL(
+  hostname: string,
   listhenOptions: ListenOptions,
+  baseURL?: string,
+) {
+  const proto = listhenOptions.https ? "https://" : "http://";
+  let port = listhenOptions.port || "";
+  if (
+    (port === 80 && proto === "http://") ||
+    (port === 443 && proto === "https://")
+  ) {
+    port = "";
+  }
+  if (hostname[0] !== "[" && hostname.includes(":")) {
+    hostname = `[${hostname}]`;
+  }
+  return (
+    proto + hostname + ":" + port + (baseURL || listhenOptions.baseURL || "")
+  );
+}
+
+export function getDefaultHost(preferPublic?: boolean) {
+  // Prefer IPV4 stack for Windows and WSL to avoid performance issues
+  if (process.platform === "win32" || isWsl()) {
+    return preferPublic ? "0.0.0.0" : "127.0.0.1";
+  }
+  // For local, use "localhost" to be developer friendly and allow loopback customization}
+  // For public, use "" to listen on all NIC interfaces (IPV4 and IPV6)
+  return preferPublic ? "" : "localhost";
+}
+
+export function getPublicURL(
+  listhenOptions: ListenOptions,
+  baseURL?: string,
 ): string | undefined {
   if (listhenOptions.publicURL) {
     return listhenOptions.publicURL;
   }
 
-  return (
-    detectStackblitzURL(listhenOptions._entry) ||
-    urls.find((url) => url.type === "network" && !url.url.startsWith("["))
-      ?.url ||
-    urls.find((url) => url.type === "network")?.url
-  );
+  const stackblitzURL = detectStackblitzURL(listhenOptions._entry);
+  if (stackblitzURL) {
+    return stackblitzURL;
+  }
+
+  if (
+    listhenOptions.hostname &&
+    !isLocalhost(listhenOptions.hostname) &&
+    !isAnyhost(listhenOptions.hostname)
+  ) {
+    return generateURL(listhenOptions.hostname, listhenOptions, baseURL);
+  }
 }
 
 function detectStackblitzURL(entry?: string) {
@@ -80,4 +129,17 @@ function detectStackblitzURL(entry?: string) {
   } catch (error) {
     console.error(error);
   }
+}
+
+const HOSTNAME_RE = /^(?!-)[\d.:A-Za-z-]{1,63}(?<!-)$/;
+
+export function validateHostname(hostname: string, _public: boolean) {
+  if (hostname && !HOSTNAME_RE.test(hostname)) {
+    const fallbackHost = _public ? "0.0.0.0" : "127.0.0.1";
+    consola.warn(
+      `[listhen] Invalid hostname \`${hostname}\`. Using \`${fallbackHost}\` as fallback.`,
+    );
+    return fallbackHost;
+  }
+  return hostname;
 }

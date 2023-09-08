@@ -2,6 +2,142 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.4.8
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.7...v1.4.8)
+
+### 🩹 Fixes
+
+- Type and provide `listener.address` ([972fac7](https://github.com/unjs/listhen/commit/972fac7))
+
+### 🏡 Chore
+
+- Update get-port-please and jiti ([8be655c](https://github.com/unjs/listhen/commit/8be655c))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
+## v1.4.7
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.6...v1.4.7)
+
+### 🩹 Fixes
+
+- Validate hostname after applying defaults ([e6c1b89](https://github.com/unjs/listhen/commit/e6c1b89))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
+## v1.4.6
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.5...v1.4.6)
+
+### 🩹 Fixes
+
+- Validate input hostname and warn ([bfc8149](https://github.com/unjs/listhen/commit/bfc8149))
+
+### 🏡 Chore
+
+- Remove `console.log` ([aee15da](https://github.com/unjs/listhen/commit/aee15da))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
+## v1.4.5
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.4...v1.4.5)
+
+### 🩹 Fixes
+
+- Update `get-port-please` and pass `public` flag ([3de5b10](https://github.com/unjs/listhen/commit/3de5b10))
+- **cli:** Remove `default: false` for opt-in flag ([180c685](https://github.com/unjs/listhen/commit/180c685))
+
+### 🏡 Chore
+
+- **release:** V1.4.4 ([8972953](https://github.com/unjs/listhen/commit/8972953))
+- Remove watcher github link ([bb2b9f1](https://github.com/unjs/listhen/commit/bb2b9f1))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
+## v1.4.4
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.3...v1.4.4)
+
+### 🩹 Fixes
+
+- Use ipv4 for windows and wsl default hostname ([#119](https://github.com/unjs/listhen/pull/119))
+
+### 💅 Refactors
+
+- Tidy up `open`, `wsl`, and `docker` utils ([#118](https://github.com/unjs/listhen/pull/118))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
+## v1.4.3
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.2...v1.4.3)
+
+### 🩹 Fixes
+
+- Prevent double brackets for ipv6 format ([2110e40](https://github.com/unjs/listhen/commit/2110e40))
+
+### 🏡 Chore
+
+- Update playground version ([f9f1be3](https://github.com/unjs/listhen/commit/f9f1be3))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
+## v1.4.2
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.1...v1.4.2)
+
+### 🩹 Fixes
+
+- Better options handling for public host ([#112](https://github.com/unjs/listhen/pull/112))
+- **cli:** Handle `--host` with boolean value ([#113](https://github.com/unjs/listhen/pull/113))
+- Several bugfixes for generated urls ([#114](https://github.com/unjs/listhen/pull/114))
+
+### 💅 Refactors
+
+- Show qr code above listening urls ([#115](https://github.com/unjs/listhen/pull/115))
+
+### 🏡 Chore
+
+- **release:** V1.4.1 ([a5bf8db](https://github.com/unjs/listhen/commit/a5bf8db))
+- Update playground versions ([e15fc57](https://github.com/unjs/listhen/commit/e15fc57))
+- Update dependencies ([b8840f8](https://github.com/unjs/listhen/commit/b8840f8))
+- Update lockfile ([d91d4ef](https://github.com/unjs/listhen/commit/d91d4ef))
+- Remove emoji ([e4d0037](https://github.com/unjs/listhen/commit/e4d0037))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
+## v1.4.1
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.4.0...v1.4.1)
+
+### 🩹 Fixes
+
+- **dev:** Update `@parcel/watcher-wasm` usage to 2.3.0 ([329230a](https://github.com/unjs/listhen/commit/329230a))
+
+### 🏡 Chore
+
+- Update dependencies ([b6b8a9c](https://github.com/unjs/listhen/commit/b6b8a9c))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.4.0
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.3.1...v1.4.0)

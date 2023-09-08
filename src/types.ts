@@ -1,5 +1,6 @@
 import type { Server } from "node:http";
 import type { Server as HTTPServer } from "node:https";
+import { AddressInfo } from "node:net";
 import type { GetPortInput } from "get-port-please";
 
 export interface Certificate {
@@ -70,7 +71,7 @@ export interface ListenURL {
 
 export interface Listener {
   url: string;
-  address: any;
+  address: AddressInfo;
   server: Server | HTTPServer;
   https: false | Certificate;
   close: () => Promise<void>;
