@@ -143,7 +143,7 @@ export function getArgs() {
     },
     socket: {
       description:
-        "Listen on a Unix Domain Socket/Windows Pipe, optionally with custom name",
+        "Listen on a Unix Domain Socket/Windows Pipe, optionally with custom name or given absolute path",
       required: false,
     },
   } as const satisfies ArgsDef;

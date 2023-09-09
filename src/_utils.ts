@@ -1,5 +1,5 @@
 import { networkInterfaces, platform, tmpdir } from "node:os";
-import { relative, join } from "pathe";
+import { relative, join, isAbsolute } from "pathe";
 import { colors } from "consola/utils";
 import { consola } from "consola";
 import { provider } from "std-env";
@@ -89,11 +89,14 @@ export function getDefaultHost(preferPublic?: boolean) {
 }
 
 export function getSocketPath(name: true | string) {
-  const _name = typeof name === "string" ? name : "listhen";
+  const _name = typeof name === "string" && name.length > 0 ? name : "listhen";
   if (platform() === "win32") {
+    if (_name.startsWith("\\\\?\\pipe\\")) {
+      return _name;
+    }
     return `\\\\?\\pipe\\${_name}`;
   }
-  return join(tmpdir(), `${_name}.socket`);
+  return isAbsolute(_name) ? _name : join(tmpdir(), `${_name}.socket`);
 }
 
 export function getPublicURL(
