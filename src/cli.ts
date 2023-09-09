@@ -163,7 +163,7 @@ export function parseArgs(args: ParsedListhenArgs): Partial<ListenOptions> {
     publicURL: args.publicURL,
     public: args.public,
     tunnel: args.tunnel,
-    socket: args.socket,
+    socket: args.socket as boolean | string | undefined,
     https: args.https
       ? <HTTPSOptions>{
           cert: args["https.cert"],
