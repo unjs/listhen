@@ -308,26 +308,53 @@ describe("listhen", () => {
   });
 
   describe("_utils", () => {
-    test("getSocketPath: empty ipcSocketName resolves to a 'listhen' named pipe/socket", () => {
-      if (platform() === "win32") {
-        expect(getSocketPath(undefined!)).toEqual("\\\\?\\pipe\\listhen");
-        expect(getSocketPath("")).toEqual("\\\\?\\pipe\\listhen");
-      } else {
-        expect(getSocketPath(undefined!)).toEqual("/tmp/listhen.socket");
-        expect(getSocketPath("")).toEqual("/tmp/listhen.socket");
-      }
-    });
+    describe("socket path", () => {
+      test("empty ipcSocketName resolves to a 'listhen' named pipe/socket", () => {
+        if (platform() === "win32") {
+          expect(getSocketPath(undefined!)).toEqual("\\\\?\\pipe\\listhen");
+          expect(getSocketPath("")).toEqual("\\\\?\\pipe\\listhen");
+        } else {
+          expect(getSocketPath(undefined!)).toEqual("/tmp/listhen.socket");
+          expect(getSocketPath("")).toEqual("/tmp/listhen.socket");
+        }
+      });
 
-    test("getSocketPath: some string as ipcSocketName resolves to a pipe/socket named as this string", () => {
-      if (platform() === "win32") {
-        expect(getSocketPath("listhen-https")).toEqual(
-          "\\\\?\\pipe\\listhen-https",
-        );
-      } else {
-        expect(getSocketPath("listhen-https")).toEqual(
-          "/tmp/listhen-https.socket",
-        );
-      }
+      test("some string as ipcSocketName resolves to a pipe/socket named as this string", () => {
+        if (platform() === "win32") {
+          expect(getSocketPath("listhen-https")).toEqual(
+            "\\\\?\\pipe\\listhen-https",
+          );
+        } else {
+          expect(getSocketPath("listhen-https")).toEqual(
+            "/tmp/listhen-https.socket",
+          );
+        }
+      });
+
+      test("absolute path (or full pipe path) resolves to the exact same path", () => {
+        if (platform() === "win32") {
+          const pipe = "\\\\?\\pipe\\listhen";
+          expect(getSocketPath(pipe)).toEqual(pipe);
+        } else {
+          const socket = "/tmp/listhen.socket";
+          expect(getSocketPath(socket)).toEqual(socket);
+        }
+      });
+
+      test("relative path resolves to a socket named as this relative path", () => {
+        if (platform() === "win32") {
+          expect(getSocketPath("tmp\\listhen")).toEqual(
+            "\\\\?\\pipe\\tmp\\listhen",
+          );
+        } else {
+          expect(getSocketPath("tmp/listhen.socket")).toEqual(
+            "/tmp/tmp/listhen.socket.socket",
+          );
+          expect(getSocketPath("tmp/listhen")).toEqual(
+            "/tmp/tmp/listhen.socket",
+          );
+        }
+      });
     });
   });
 });
