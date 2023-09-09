@@ -117,8 +117,6 @@ export async function listen(
     ? { path: getSocketPath(listhenOptions.socket) }
     : { port, host: listhenOptions.hostname };
 
-  let addr: { proto: "http" | "https"; addr: string; port: number } | null;
-
   let https: Listener["https"] = false;
   const httpsOptions = listhenOptions.https as HTTPSOptions;
 
@@ -160,7 +158,9 @@ export async function listen(
 
   // --- GetURL Utility ---
   const getURL = (host = listhenOptions.hostname, baseURL?: string) =>
-    generateURL(host, listhenOptions, baseURL);
+    serverOptions.path
+      ? `unix+http${listhenOptions.https ? "s" : ""}://${serverOptions.path}`
+      : generateURL(host, listhenOptions, baseURL);
 
   // --- Start Tunnel ---
   let tunnel: Tunnel | undefined;
@@ -203,8 +203,8 @@ export async function listen(
       }
     };
 
-    if (listhenOptions.socket) {
-      _addURL("local", ipcSocket);
+    if (serverOptions.path) {
+      _addURL("local", serverOptions.path);
       return urls;
     }
 
