@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.5.1
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.5.0...v1.5.1)
+
+### 🩹 Fixes
+
+- Open browser on wsl ([#124](https://github.com/unjs/listhen/pull/124))
+
+### 🏡 Chore
+
+- **release:** V1.5.0 ([da86eaa](https://github.com/unjs/listhen/commit/da86eaa))
+- Update dependencies ([ca623b2](https://github.com/unjs/listhen/commit/ca623b2))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Sacha Stafyniak <sacha.stafyniak@gmail.com>
+
 ## v1.5.0
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.4.8...v1.5.0)
