@@ -35,41 +35,40 @@ function _isWsl() {
 // Get the mount point for fixed drives in WSL.
 const defaultMountPoint = "/mnt/";
 let _wslMountpoint: string;
+
+// Default value for "root" param
+// according to https://docs.microsoft.com/en-us/windows/wsl/wsl-config
 export function getWslDrivesMountPoint() {
-  // Default value for "root" param
-  // according to https://docs.microsoft.com/en-us/windows/wsl/wsl-config
-  return function getWslDrivesMountPoint() {
-    if (_wslMountpoint) {
-      // Return memoized mount point value
-      return _wslMountpoint;
-    }
-
-    const configFilePath = "/etc/wsl.conf";
-
-    let isConfigFileExists = false;
-    try {
-      accessSync(configFilePath, fsConstants.F_OK);
-      isConfigFileExists = true;
-    } catch {}
-
-    if (!isConfigFileExists) {
-      return defaultMountPoint;
-    }
-
-    const configContent = readFileSync(configFilePath, { encoding: "utf8" });
-    const configMountPoint = /(?<!#.*)root\s*=\s*(?<mountPoint>.*)/g.exec(
-      configContent,
-    );
-
-    if (!configMountPoint || !configMountPoint.groups) {
-      return defaultMountPoint;
-    }
-
-    _wslMountpoint = configMountPoint.groups.mountPoint.trim();
-    _wslMountpoint = _wslMountpoint.endsWith("/")
-      ? _wslMountpoint
-      : `${_wslMountpoint}/`;
-
+  if (_wslMountpoint) {
+    // Return memoized mount point value
     return _wslMountpoint;
-  };
+  }
+
+  const configFilePath = "/etc/wsl.conf";
+
+  let isConfigFileExists = false;
+  try {
+    accessSync(configFilePath, fsConstants.F_OK);
+    isConfigFileExists = true;
+  } catch {}
+
+  if (!isConfigFileExists) {
+    return defaultMountPoint;
+  }
+
+  const configContent = readFileSync(configFilePath, { encoding: "utf8" });
+  const configMountPoint = /(?<!#.*)root\s*=\s*(?<mountPoint>.*)/g.exec(
+    configContent,
+  );
+
+  if (!configMountPoint || !configMountPoint.groups) {
+    return defaultMountPoint;
+  }
+
+  _wslMountpoint = configMountPoint.groups.mountPoint.trim();
+  _wslMountpoint = _wslMountpoint.endsWith("/")
+    ? _wslMountpoint
+    : `${_wslMountpoint}/`;
+
+  return _wslMountpoint;
 }
