@@ -2,6 +2,7 @@ import { networkInterfaces } from "node:os";
 import { relative } from "pathe";
 import { colors } from "consola/utils";
 import { consola } from "consola";
+import { provider } from "std-env";
 import { ListenOptions } from "./types";
 import { isWsl } from "./lib/wsl";
 import { isDocker } from "./lib/docker";
@@ -91,9 +92,11 @@ export function getPublicURL(
     return listhenOptions.publicURL;
   }
 
-  const stackblitzURL = detectStackblitzURL(listhenOptions._entry);
-  if (stackblitzURL) {
-    return stackblitzURL;
+  if (provider === "stackblitz") {
+    const stackblitzURL = detectStackblitzURL(listhenOptions._entry);
+    if (stackblitzURL) {
+      return stackblitzURL;
+    }
   }
 
   if (
@@ -107,10 +110,6 @@ export function getPublicURL(
 
 function detectStackblitzURL(entry?: string) {
   try {
-    if (process.env.SHELL !== "/bin/jsh") {
-      return;
-    }
-
     const cwd = process.env.PWD || ("" as string);
 
     // Editor
