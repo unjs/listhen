@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.5.2
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.5.1...v1.5.2)
+
+### 🔥 Performance
+
+- Imprve default host for windows, docker and wsl ([#126](https://github.com/unjs/listhen/pull/126))
+
+### 💅 Refactors
+
+- Use `std-env` for stackblitz detection ([933c0c3](https://github.com/unjs/listhen/commit/933c0c3))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.5.1
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.5.0...v1.5.1)
