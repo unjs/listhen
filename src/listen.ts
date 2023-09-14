@@ -72,15 +72,13 @@ export async function listen(
   const _localhost = isLocalhost(listhenOptions.hostname);
   const _anyhost = isAnyhost(listhenOptions.hostname);
   if (listhenOptions.public && _localhost) {
-    if (!isWsl() && !isDocker()) {
-      consola.warn(
-        `[listhen] Trying to listhen on private host ${JSON.stringify(
-          listhenOptions.hostname,
-        )} with public option disabled.`,
-      );
-      listhenOptions.public = false;
-    }
-  } else if (!listhenOptions.public && _anyhost) {
+    consola.warn(
+      `[listhen] Trying to listhen on private host ${JSON.stringify(
+        listhenOptions.hostname,
+      )} with public option disabled.`,
+    );
+    listhenOptions.public = false;
+  } else if (!listhenOptions.public && _anyhost && !(isWsl() || isDocker())) {
     consola.warn(
       `[listhen] Trying to listhen on public host ${JSON.stringify(
         listhenOptions.hostname,
