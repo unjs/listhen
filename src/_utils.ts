@@ -4,6 +4,7 @@ import { colors } from "consola/utils";
 import { consola } from "consola";
 import { ListenOptions } from "./types";
 import { isWsl } from "./lib/wsl";
+import { isDocker } from "./lib/docker";
 
 export function getNetworkInterfaces(includeIPV6?: boolean): string[] {
   const addrs = new Set<string>();
@@ -73,9 +74,9 @@ export function generateURL(
 }
 
 export function getDefaultHost(preferPublic?: boolean) {
-  // Prefer IPV4 stack for Windows and WSL to avoid performance issues
-  if (process.platform === "win32" || isWsl()) {
-    return preferPublic ? "0.0.0.0" : "127.0.0.1";
+  // Prefer default host for docker and wsl
+  if (isDocker() || isWsl()) {
+    return "";
   }
   // For local, use "localhost" to be developer friendly and allow loopback customization}
   // For public, use "" to listen on all NIC interfaces (IPV4 and IPV6)
@@ -135,7 +136,7 @@ const HOSTNAME_RE = /^(?!-)[\d.:A-Za-z-]{1,63}(?<!-)$/;
 
 export function validateHostname(hostname: string, _public: boolean) {
   if (hostname && !HOSTNAME_RE.test(hostname)) {
-    const fallbackHost = _public ? "0.0.0.0" : "127.0.0.1";
+    const fallbackHost = _public ? "" : "localhost";
     consola.warn(
       `[listhen] Invalid hostname \`${hostname}\`. Using \`${fallbackHost}\` as fallback.`,
     );

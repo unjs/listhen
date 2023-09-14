@@ -31,6 +31,8 @@ import {
   validateHostname,
 } from "./_utils";
 import { resolveCertificate } from "./_cert";
+import { isWsl } from "./lib/wsl";
+import { isDocker } from "./lib/docker";
 
 export async function listen(
   handle: RequestListener,
@@ -76,7 +78,7 @@ export async function listen(
       )} with public option disabled.`,
     );
     listhenOptions.public = false;
-  } else if (!listhenOptions.public && _anyhost) {
+  } else if (!listhenOptions.public && _anyhost && !(isWsl() || isDocker())) {
     consola.warn(
       `[listhen] Trying to listhen on public host ${JSON.stringify(
         listhenOptions.hostname,
