@@ -41,7 +41,7 @@ export async function listen(
   // --- Resolve Options ---
   const _isProd = _options.isProd ?? process.env.NODE_ENV === "production";
   const _isTest = _options.isTest ?? process.env.NODE_ENV === "test";
-  const _hostname = process.env.HOST ?? _options.hostname;
+  const _hostname = _options.hostname ?? process.env.HOST;
   const _public =
     _options.public ??
     (isLocalhost(_hostname) ? false : undefined) ??
