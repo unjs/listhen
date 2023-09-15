@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.5.3
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.5.2...v1.5.3)
+
+### 🩹 Fixes
+
+- Correct private host warning message ([df5ff4d](https://github.com/unjs/listhen/commit/df5ff4d))
+- Prefer explicit `hostname` option over `HOST` env ([0674d96](https://github.com/unjs/listhen/commit/0674d96))
+
+### 🏡 Chore
+
+- **release:** V1.5.2 ([1aab0dd](https://github.com/unjs/listhen/commit/1aab0dd))
+- Revert to `codecov/codecov-action@v3` ([c911a1f](https://github.com/unjs/listhen/commit/c911a1f))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.5.2
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.5.1...v1.5.2)
