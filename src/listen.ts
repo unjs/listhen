@@ -75,7 +75,7 @@ export async function listen(
     consola.warn(
       `[listhen] Trying to listhen on private host ${JSON.stringify(
         listhenOptions.hostname,
-      )} with public option disabled.`,
+      )} with public option enabled.`,
     );
     listhenOptions.public = false;
   } else if (!listhenOptions.public && _anyhost && !(isWsl() || isDocker())) {
