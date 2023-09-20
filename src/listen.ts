@@ -130,10 +130,8 @@ export async function listen(
   }
 
   // --- GetURL Utility ---
-  const getURL = (
-    host = listhenOptions.hostname || "localhost",
-    baseURL?: string,
-  ) => generateURL(host, listhenOptions, baseURL);
+  const getURL = (host = listhenOptions.hostname, baseURL?: string) =>
+    generateURL(host, listhenOptions, baseURL);
 
   // --- Start Tunnel ---
   let tunnel: Tunnel | undefined;

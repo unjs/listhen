@@ -70,7 +70,11 @@ export function generateURL(
     hostname = `[${hostname}]`;
   }
   return (
-    proto + hostname + ":" + port + (baseURL || listhenOptions.baseURL || "")
+    proto +
+    (hostname || "localhost") +
+    ":" +
+    port +
+    (baseURL || listhenOptions.baseURL || "")
   );
 }
 
