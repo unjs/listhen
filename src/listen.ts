@@ -186,10 +186,7 @@ export async function listen(
 
     // Add localhost URL
     if (_localhost || _anyhost) {
-      _addURL(
-        "local",
-        getURL(listhenOptions.hostname || "localhost", getURLOptions.baseURL),
-      );
+      _addURL("local", getURL(listhenOptions.hostname, getURLOptions.baseURL));
     }
 
     // Add tunnel URL
