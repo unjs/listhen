@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.5.4
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.5.3...v1.5.4)
+
+### 🩹 Fixes
+
+- Use `localhost` when host is empty for `getURL` ([9ec7d77](https://github.com/unjs/listhen/commit/9ec7d77))
+
+### 📖 Documentation
+
+- Fix typo ([#127](https://github.com/unjs/listhen/pull/127))
+
+### 🏡 Chore
+
+- **release:** V1.5.3 ([c8d2ef9](https://github.com/unjs/listhen/commit/c8d2ef9))
+- Remove unnecessary fallback ([e66b82b](https://github.com/unjs/listhen/commit/e66b82b))
+- Update lockfile ([917abc1](https://github.com/unjs/listhen/commit/917abc1))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Tech Genius
+
 ## v1.5.3
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.5.2...v1.5.3)
