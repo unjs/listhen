@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.5.5
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.5.4...v1.5.5)
+
+### 🩹 Fixes
+
+- Apply default `localhost` in internal `generateURL` util ([6c76d31](https://github.com/unjs/listhen/commit/6c76d31))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.5.4
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.5.3...v1.5.4)
