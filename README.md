@@ -98,7 +98,7 @@ const handler = (req, res) => {
 }
 
 // listener: { url, getURL, server, close, ... }
-const listener = await listen(handle, options?)
+const listener = await listen(handler, options?)
 ```
 
 ## Options
