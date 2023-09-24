@@ -30,6 +30,7 @@ export interface ListenOptions {
   isTest: boolean;
   isProd: boolean;
   autoClose: boolean;
+  ws: boolean;
   _entry?: string;
   /**
    * Used as main public url to display

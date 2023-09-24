@@ -136,6 +136,11 @@ export function getArgs() {
       description: "Open a tunnel using https://github.com/unjs/untun",
       required: false,
     },
+    ws: {
+      type: "boolean",
+      description: "Enable WebSocket support",
+      required: false,
+    },
   } as const satisfies ArgsDef;
 }
 
@@ -153,6 +158,7 @@ export function parseArgs(args: ParsedListhenArgs): Partial<ListenOptions> {
     publicURL: args.publicURL,
     public: args.public,
     tunnel: args.tunnel,
+    ws: args.ws,
     https: args.https
       ? <HTTPSOptions>{
           cert: args["https.cert"],

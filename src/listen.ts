@@ -1,4 +1,4 @@
-import { createServer } from "node:http";
+import { ServerResponse, createServer } from "node:http";
 import type { Server as HTTPServer } from "node:https";
 import { createServer as createHTTPSServer } from "node:https";
 import { promisify } from "node:util";
@@ -62,6 +62,7 @@ export async function listen(
     isProd: _isProd,
     public: _public,
     autoClose: true,
+    webSocket: true,
   });
 
   // --- Validate Options ---
@@ -127,6 +128,13 @@ export async function listen(
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
+  }
+
+  // --- WebSocket Support ---
+  if (listhenOptions.ws) {
+    server.on("upgrade", (req) => {
+      handle(req, new ServerResponse(req));
+    });
   }
 
   // --- GetURL Utility ---
