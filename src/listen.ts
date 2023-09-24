@@ -62,7 +62,7 @@ export async function listen(
     isProd: _isProd,
     public: _public,
     autoClose: true,
-    webSocket: true,
+    ws: true,
   });
 
   // --- Validate Options ---
