@@ -1,4 +1,5 @@
 import { networkInterfaces, platform, tmpdir } from "node:os";
+import { realpathSync } from "node:fs";
 import { relative, join, isAbsolute } from "pathe";
 import { colors } from "consola/utils";
 import { consola } from "consola";
@@ -96,7 +97,15 @@ export function getSocketPath(name: true | string) {
     }
     return `\\\\?\\pipe\\${_name}`;
   }
-  return isAbsolute(_name) ? _name : join(tmpdir(), `${_name}.socket`);
+
+  let socketPath = isAbsolute(_name)
+    ? _name
+    : join(realpathSync(tmpdir()), `${_name}`);
+
+  if (!socketPath.endsWith(".socket")) {
+    socketPath += ".socket";
+  }
+  return socketPath;
 }
 
 export function getPublicURL(

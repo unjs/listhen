@@ -1,8 +1,9 @@
-import { resolve } from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { request } from "node:http";
 import { request as httpsRequest } from "node:https";
-import { platform } from "node:os";
+import { platform, tmpdir } from "node:os";
+import { realpathSync } from "node:fs";
+import { resolve, join } from "pathe";
 import { describe, afterEach, test, expect } from "vitest";
 import { toNodeListener, createApp, eventHandler, createRouter } from "h3";
 import { listen, Listener } from "../src";
@@ -314,8 +315,9 @@ describe("listhen", () => {
           expect(getSocketPath(undefined!)).toEqual("\\\\?\\pipe\\listhen");
           expect(getSocketPath("")).toEqual("\\\\?\\pipe\\listhen");
         } else {
-          expect(getSocketPath(undefined!)).toEqual("/tmp/listhen.socket");
-          expect(getSocketPath("")).toEqual("/tmp/listhen.socket");
+          const socketPath = join(realpathSync(tmpdir()), "listhen.socket");
+          expect(getSocketPath(undefined!)).toEqual(socketPath);
+          expect(getSocketPath("")).toEqual(socketPath);
         }
       });
 
@@ -325,9 +327,11 @@ describe("listhen", () => {
             "\\\\?\\pipe\\listhen-https",
           );
         } else {
-          expect(getSocketPath("listhen-https")).toEqual(
-            "/tmp/listhen-https.socket",
+          const socketPath = join(
+            realpathSync(tmpdir()),
+            "listhen-https.socket",
           );
+          expect(getSocketPath("listhen-https")).toEqual(socketPath);
         }
       });
 
@@ -347,12 +351,13 @@ describe("listhen", () => {
             "\\\\?\\pipe\\tmp\\listhen",
           );
         } else {
-          expect(getSocketPath("tmp/listhen.socket")).toEqual(
-            "/tmp/tmp/listhen.socket.socket",
+          const socketPath = join(
+            realpathSync(tmpdir()),
+            "tmp",
+            "listhen.socket",
           );
-          expect(getSocketPath("tmp/listhen")).toEqual(
-            "/tmp/tmp/listhen.socket",
-          );
+          expect(getSocketPath("tmp/listhen.socket")).toEqual(socketPath);
+          expect(getSocketPath("tmp/listhen")).toEqual(socketPath);
         }
       });
     });
