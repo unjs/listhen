@@ -1,11 +1,10 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { request } from "node:http";
 import { request as httpsRequest } from "node:https";
-import { platform, tmpdir } from "node:os";
-import { realpathSync } from "node:fs";
-import { resolve, join } from "pathe";
-import { describe, afterEach, test, expect } from "vitest";
-import { toNodeListener, createApp, eventHandler, createRouter } from "h3";
+import { platform } from "node:os";
+import { resolve } from "pathe";
+import { afterEach, describe, expect, test } from "vitest";
+import { createApp, createRouter, eventHandler, toNodeListener } from "h3";
 import { listen, Listener } from "../src";
 import { getSocketPath } from "../src/_utils";
 
@@ -309,57 +308,66 @@ describe("listhen", () => {
   });
 
   describe("_utils", () => {
-    describe("socket path", () => {
-      test("empty ipcSocketName resolves to a 'listhen' named pipe/socket", () => {
-        if (platform() === "win32") {
-          expect(getSocketPath(undefined!)).toEqual("\\\\?\\pipe\\listhen");
-          expect(getSocketPath("")).toEqual("\\\\?\\pipe\\listhen");
-        } else {
-          const socketPath = join(realpathSync(tmpdir()), "listhen.socket");
+    describe.runIf(platform() !== "win32")(
+      "socket path (on unixoid systems)",
+      () => {
+        test("empty ipcSocketName resolves to a 'listhen' named pipe/socket", () => {
+          const socketPath = "listhen.sock";
           expect(getSocketPath(undefined!)).toEqual(socketPath);
           expect(getSocketPath("")).toEqual(socketPath);
-        }
-      });
+        });
 
-      test("some string as ipcSocketName resolves to a pipe/socket named as this string", () => {
-        if (platform() === "win32") {
+        test("some string as ipcSocketName resolves to a pipe/socket named as this string", () => {
+          const socketPath = "listhen-https";
+          expect(getSocketPath("listhen-https")).toEqual(socketPath);
+        });
+
+        test("absolute path (or full pipe path) resolves to the exact same path", () => {
+          let socket = "/tmp/listhen.sock";
+          expect(getSocketPath(socket)).toEqual(socket);
+          socket = "/tmp/listhen.sock";
+          expect(getSocketPath(socket)).toEqual(socket);
+          socket = "/tmp/listhen";
+          expect(getSocketPath(socket)).toEqual(socket);
+        });
+
+        test("relative path resolves to a socket named as this relative path", () => {
+          const socketPath = "frontend_run/listhen.sock";
+          expect(getSocketPath("./frontend_run/listhen.sock")).toEqual(
+            "./" + socketPath,
+          );
+          expect(getSocketPath("frontend_run/listhen.sock")).toEqual(
+            socketPath,
+          );
+        });
+      },
+    );
+
+    describe.runIf(platform() === "win32")(
+      "socket path (on windows systems)",
+      () => {
+        test("empty ipcSocketName resolves to a 'listhen' named pipe/socket", () => {
+          expect(getSocketPath(undefined!)).toEqual("\\\\?\\pipe\\listhen");
+          expect(getSocketPath("")).toEqual("\\\\?\\pipe\\listhen");
+        });
+
+        test("some string as ipcSocketName resolves to a pipe/socket named as this string", () => {
           expect(getSocketPath("listhen-https")).toEqual(
             "\\\\?\\pipe\\listhen-https",
           );
-        } else {
-          const socketPath = join(
-            realpathSync(tmpdir()),
-            "listhen-https.socket",
-          );
-          expect(getSocketPath("listhen-https")).toEqual(socketPath);
-        }
-      });
+        });
 
-      test("absolute path (or full pipe path) resolves to the exact same path", () => {
-        if (platform() === "win32") {
+        test("absolute path (or full pipe path) resolves to the exact same path", () => {
           const pipe = "\\\\?\\pipe\\listhen";
           expect(getSocketPath(pipe)).toEqual(pipe);
-        } else {
-          const socket = "/tmp/listhen.socket";
-          expect(getSocketPath(socket)).toEqual(socket);
-        }
-      });
+        });
 
-      test("relative path resolves to a socket named as this relative path", () => {
-        if (platform() === "win32") {
+        test("relative path resolves to a socket named as this relative path", () => {
           expect(getSocketPath("tmp\\listhen")).toEqual(
             "\\\\?\\pipe\\tmp\\listhen",
           );
-        } else {
-          const socketPath = join(
-            realpathSync(tmpdir()),
-            "tmp",
-            "listhen.socket",
-          );
-          expect(getSocketPath("tmp/listhen.socket")).toEqual(socketPath);
-          expect(getSocketPath("tmp/listhen")).toEqual(socketPath);
-        }
-      });
-    });
+        });
+      },
+    );
   });
 });
