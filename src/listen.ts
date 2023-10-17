@@ -205,11 +205,11 @@ export async function listen(
     };
 
     if (serverOptions.path) {
-      let _path = serverOptions.path
-      const currentDirPath = `.${sep}`
+      let _path = serverOptions.path;
+      const currentDirPath = `.${sep}`;
 
       if (!(isAbsolute(_path) || _path.startsWith(currentDirPath))) {
-        _path = currentDirPath + _path
+        _path = currentDirPath + _path;
       }
       _addURL("local", _path);
       return urls;
