@@ -12,6 +12,7 @@ import { ColorName, getColor, colors } from "consola/utils";
 import { renderUnicodeCompact as renderQRCode } from "uqr";
 import type { Tunnel } from "untun";
 import type { AdapterOptions as CrossWSOptions } from "crossws";
+import { isAbsolute, sep } from "pathe";
 import { open } from "./lib/open";
 import type {
   ListenOptions,
@@ -204,7 +205,13 @@ export async function listen(
     };
 
     if (serverOptions.path) {
-      _addURL("local", serverOptions.path);
+      let _path = serverOptions.path
+      const currentDirPath = `.${sep}`
+
+      if (!(isAbsolute(_path) || _path.startsWith(currentDirPath))) {
+        _path = currentDirPath + _path
+      }
+      _addURL("local", _path);
       return urls;
     }
 
