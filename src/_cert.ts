@@ -139,7 +139,10 @@ async function generateCertificates(
     domains,
   });
 
-  await writeFile(resolve(certificateDirectory + "cert.pem"), cert.cert);
+  await writeFile(
+    resolve(certificateDirectory + "cert.pem"),
+    cert.cert + ca.cert,
+  );
   await writeFile(resolve(certificateDirectory + "cert-key.pem"), cert.key);
 
   return { ca, cert };
