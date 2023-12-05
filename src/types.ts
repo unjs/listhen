@@ -30,6 +30,7 @@ export interface ListenOptions {
   isTest: boolean;
   isProd: boolean;
   autoClose: boolean;
+  /** Enable WebSocket support for listener */
   ws: boolean;
   _entry?: string;
   /**

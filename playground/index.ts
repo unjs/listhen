@@ -1,19 +1,16 @@
 import { createApp, eventHandler } from "h3";
 import { WebSocketServer } from "ws";
-export const app = createApp();
+
 const ws = new WebSocketServer({ noServer: true });
-
-ws.on("connection", (socket, req) => {
-  console.log("connected");
+ws.on("connection", (socket) => {
+  console.log("[ws", "connected");
   socket.on("message", (message) => {
-    console.log(new TextDecoder().decode(message));
+    console.log("[ws]", new TextDecoder().decode(message));
   });
-
   socket.send("ping");
 });
 
-app.use(
-  "/",
+export const app = createApp().use(
   eventHandler((event) => {
     if (event.headers.get("upgrade") === "websocket") {
       ws.handleUpgrade(
@@ -27,8 +24,10 @@ app.use(
       return;
     }
 
-    return `<h1>Hello World!</h1><script type="module">
-      const ws = new WebSocket("ws://localhost:3000");
+    return `<!DOCTYPE html>
+     <h1>Hello World!</h1>
+     <script type="module">
+      const ws = new WebSocket("ws://" + location.host);
       await new Promise((resolve) => ws.addEventListener("open", resolve));
       ws.addEventListener("message", (event) => {
         console.log(event.data);

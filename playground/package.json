@@ -2,7 +2,7 @@
   "name": "listhen-playground",
   "private": true,
   "scripts": {
-    "dev": "listhen -w .",
+    "dev": "listhen --ws -w .",
     "start": "listhen ."
   },
   "dependencies": {
