@@ -2,12 +2,12 @@
   "name": "listhen-playground",
   "private": true,
   "scripts": {
-    "start": "listhen .",
-    "dev": "listhen -w ."
+    "dev": "listhen -w .",
+    "start": "listhen ."
   },
   "dependencies": {
-    "h3": "^1.8.1",
-    "listhen": "^1.4.4",
+    "h3": "^1.9.0",
+    "listhen": "^1.5.5",
     "ws": "^8.14.2"
   }
 }

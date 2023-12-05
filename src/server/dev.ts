@@ -3,7 +3,7 @@ import { readFile, stat } from "node:fs/promises";
 import { consola } from "consola";
 import { dirname, join, resolve } from "pathe";
 import type { ConsolaInstance } from "consola";
-import { resolvePath } from "mlly";
+import { resolve as _resolve } from "mlly";
 import { createResolver } from "./_resolver";
 
 export interface DevServerOptions {
@@ -18,7 +18,7 @@ export async function createDevServer(
 ) {
   const logger = options.logger || consola.withTag("listhen");
 
-  const h3Entry = await resolvePath("h3", {
+  const h3Entry = await _resolve("h3", {
     url: [options.cwd!, process.cwd(), import.meta.url].filter(Boolean),
   });
 
