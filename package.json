@@ -1,5 +1,6 @@
 {
   "name": "@joshmossas/listhen",
+  "private": false,
   "version": "1.5.5",
   "description": "👂 Elegant HTTP Listener",
   "repository": "unjs/listhen",
