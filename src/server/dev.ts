@@ -1,3 +1,4 @@
+import { pathToFileURL } from "node:url"
 import { existsSync, statSync } from "node:fs";
 import { readFile, stat } from "node:fs/promises";
 import { consola } from "consola";
@@ -22,6 +23,8 @@ export async function createDevServer(
     url: [options.cwd!, process.cwd(), import.meta.url].filter(Boolean),
   });
 
+  const h3EntryFile = h3Entry.startsWith("file") ? h3Entry : pathToFileURL(h3Entry).href
+
   const {
     createApp,
     fromNodeMiddleware,
@@ -29,7 +32,7 @@ export async function createDevServer(
     eventHandler,
     dynamicEventHandler,
     toNodeListener,
-  } = (await import(h3Entry)) as typeof import("h3");
+  } = (await import(h3EntryFile)) as typeof import("h3");
 
   // Initialize resolver
   const resolver = await createResolver();
