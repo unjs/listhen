@@ -1,8 +1,10 @@
 import {
   createServer as createHttpServer,
+  createServer,
   IncomingMessage,
   ServerResponse,
 } from "node:http";
+import { createServer as createRawServer } from "node:net";
 import { createServer as createHttpsServer } from "node:https";
 import {
   createSecureServer as createHttps2Server,
@@ -154,10 +156,36 @@ export async function listen(
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
+  } else if (listhenOptions.http2) {
+    const h1Server = createServer((req, res) => {
+      /**
+       * TODO check headers to see if we should upgrade the request to HTTP2
+       * if request needs to be updated send necessary headers
+       * and somehow pass the socket over to the h2Server for future use
+       */
+      (handle as RequestListenerHttp1x)(req, res);
+    });
+    const h2Server = createHttp2Server(handle as RequestListenerHttp2);
+    server = createRawServer(async (socket) => {
+      const chunk = await new Promise((resolve) =>
+        socket.once("data", resolve),
+      );
+      // @ts-expect-error
+      socket._readableState.flowing = undefined;
+      socket.unshift(chunk);
+      if ((chunk as any).toString("utf8", 0, 3) === "PRI") {
+        h2Server.emit("connection", socket);
+      } else {
+        h1Server.emit("connection", socket);
+      }
+    });
+    addShutdown(server);
+    // @ts-ignore
+    await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
+    _addr = server.address() as AddressInfo;
+    listhenOptions.port = _addr.port;
   } else {
-    server = listhenOptions.http2
-      ? createHttp2Server(handle as RequestListenerHttp2)
-      : createHttpServer(handle as RequestListenerHttp1x);
+    server = createHttpServer(handle as RequestListenerHttp1x);
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
