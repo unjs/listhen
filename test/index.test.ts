@@ -106,9 +106,21 @@ describe("listhen", () => {
   });
 
   // see https://http2.github.io/faq/#does-http2-require-encryption
-  test("listen (http2)", async () => {
+  test("listen (http2): http1 client", async () => {
     listener = await listen(handle);
     expect(listener.url.startsWith("http://")).toBeTruthy();
+
+    const response = (await sendRequest(listener.url, false)) as string;
+    expect(JSON.parse(response)).toEqual({
+      path: "/",
+      httpVersion: "1.1",
+    });
+  });
+  test("listhen (http2): http2 client", async () => {
+    listener = await listen(handle);
+    expect(listener.url.startsWith("http://")).toBeTruthy();
+
+    // Protocol HTTP 0.9 is used in firefox
     await expect(sendHttp2Request(listener.url)).rejects.toThrowError(
       "Protocol error",
     );
@@ -118,6 +130,7 @@ describe("listhen", () => {
     test("listen (http2)", async () => {
       listener = await listen(handle, {
         https: true,
+        http2: true,
       });
       expect(listener.url.startsWith("https:")).toBeTruthy();
 

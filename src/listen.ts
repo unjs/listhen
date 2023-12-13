@@ -1,6 +1,12 @@
-import { createServer, IncomingMessage, ServerResponse } from "node:http";
 import {
-  createSecureServer,
+  createServer as createHttpServer,
+  IncomingMessage,
+  ServerResponse,
+} from "node:http";
+import { createServer as createHttpsServer } from "node:https";
+import {
+  createSecureServer as createHttps2Server,
+  createServer as createHttp2Server,
   Http2ServerRequest,
   Http2ServerResponse,
 } from "node:http2";
@@ -10,27 +16,27 @@ import { getPort } from "get-port-please";
 import addShutdown from "http-shutdown";
 import consola from "consola";
 import { defu } from "defu";
-import { ColorName, getColor, colors } from "consola/utils";
+import { ColorName, colors, getColor } from "consola/utils";
 import { renderUnicodeCompact as renderQRCode } from "uqr";
 import type { Tunnel } from "untun";
 import { open } from "./lib/open";
 import type {
-  ListenOptions,
-  Listener,
-  ShowURLOptions,
-  HTTPSOptions,
-  ListenURL,
   GetURLOptions,
+  HTTPSOptions,
+  Listener,
+  ListenOptions,
+  ListenURL,
   Server,
+  ShowURLOptions,
 } from "./types";
 import {
   formatURL,
-  getNetworkInterfaces,
-  isLocalhost,
-  isAnyhost,
-  getPublicURL,
   generateURL,
   getDefaultHost,
+  getNetworkInterfaces,
+  getPublicURL,
+  isAnyhost,
+  isLocalhost,
   validateHostname,
 } from "./_utils";
 import { resolveCertificate } from "./_cert";
@@ -71,6 +77,7 @@ export async function listen(
   const listhenOptions = defu<ListenOptions, ListenOptions[]>(_options, {
     name: "",
     https: false,
+    http2: false,
     port: process.env.PORT || 3000,
     hostname: _hostname ?? getDefaultHost(_public),
     showURL: true,
@@ -133,20 +140,24 @@ export async function listen(
   let _addr: AddressInfo;
   if (httpsOptions) {
     https = await resolveCertificate(httpsOptions);
-    server = createSecureServer(
-      {
-        ...https,
-        allowHTTP1: true,
-      },
-      handle as RequestListenerHttp2,
-    );
+    server = listhenOptions.http2
+      ? createHttps2Server(
+          {
+            ...https,
+            allowHTTP1: true,
+          },
+          handle as RequestListenerHttp2,
+        )
+      : createHttpsServer(https, handle as RequestListenerHttp1x);
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   } else {
-    server = createServer(handle as RequestListenerHttp1x);
+    server = listhenOptions.http2
+      ? createHttp2Server(handle as RequestListenerHttp2)
+      : createHttpServer(handle as RequestListenerHttp1x);
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
