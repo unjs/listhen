@@ -1,10 +1,15 @@
 import type { Server as HttpServer } from "node:http";
 import type { Server as HttpsServer } from "node:https";
 import type { Http2Server, Http2SecureServer } from "node:http2";
-import type { AddressInfo } from "node:net";
+import type { AddressInfo, Server as RawTcpIpcServer } from "node:net";
 import type { GetPortInput } from "get-port-please";
 
-export type Server = HttpServer | HttpsServer | Http2Server | Http2SecureServer;
+export type Server =
+  | HttpServer
+  | HttpsServer
+  | Http2Server
+  | Http2SecureServer
+  | RawTcpIpcServer;
 
 export interface Certificate {
   key: string;
