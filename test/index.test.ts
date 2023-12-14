@@ -120,10 +120,11 @@ describe("listhen", () => {
     listener = await listen(handle);
     expect(listener.url.startsWith("http://")).toBeTruthy();
 
-    // Protocol HTTP 0.9 is used in firefox
-    await expect(sendHttp2Request(listener.url)).rejects.toThrowError(
-      "Protocol error",
-    );
+    const response = (await sendRequest(listener.url, false)) as string;
+    expect(JSON.parse(response)).toEqual({
+      path: "/",
+      httpVersion: "1.1",
+    });
   });
 
   describe("https", () => {
