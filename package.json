@@ -1,5 +1,5 @@
 {
-  "name": "@joshmossas/listhen",
+  "name": "listhen",
   "private": false,
   "version": "1.5.5",
   "description": "👂 Elegant HTTP Listener",
