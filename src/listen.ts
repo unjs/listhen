@@ -1,10 +1,8 @@
 import {
   createServer as createHttpServer,
-  createServer,
   IncomingMessage,
   ServerResponse,
 } from "node:http";
-import { createServer as createRawServer } from "node:net";
 import { createServer as createHttpsServer } from "node:https";
 import {
   createSecureServer as createHttps2Server,
@@ -13,8 +11,11 @@ import {
   Http2ServerResponse,
 } from "node:http2";
 import { promisify } from "node:util";
-import type { AddressInfo } from "node:net";
-import { createServer as createRawTcpIpcServer } from "node:net";
+import {
+  createServer as createRawTcpIpcServer,
+  AddressInfo,
+  Socket,
+} from "node:net";
 import { getPort } from "get-port-please";
 import addShutdown from "http-shutdown";
 import consola from "consola";
@@ -148,7 +149,6 @@ export async function listen(
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   }
-
   if (httpsOptions) {
     https = await resolveCertificate(httpsOptions);
     server = listhenOptions.http2
@@ -163,19 +163,9 @@ export async function listen(
     addShutdown(server);
     await bind();
   } else if (listhenOptions.http2) {
-    const h1Server = createHttpServer((req, res) => {
-      if (req.headers.upgrade === "h2c") {
-        res.writeHead(101, {
-          Upgrade: "h2c",
-          Connection: "Upgrade",
-        });
-        res.flushHeaders();
-        // TODO Headers are flushed to the client, but it seems as the connection is not passed to the h2Server
-        h2Server.emit("connection", req, res.socket);
-      }
-      (handle as RequestListenerHttp1x)(req, res);
-    });
+    const h1Server = createHttpServer(handle as RequestListenerHttp1x);
     const h2Server = createHttp2Server(handle as RequestListenerHttp2);
+
     server = createRawTcpIpcServer(async (socket) => {
       const chunk = await new Promise((resolve) =>
         socket.once("data", resolve),
@@ -183,11 +173,21 @@ export async function listen(
       // @ts-expect-error
       socket._readableState.flowing = undefined;
       socket.unshift(chunk);
+      const headers: string = (chunk as any).toString();
       if ((chunk as any).toString("utf8", 0, 3) === "PRI") {
+        h2Server.emit("connection", socket);
+      } else if (headers.includes("Upgrade: h2c\r\n")) {
+        socket.write(
+          `HTTP/1.1 101 Switching Protocols\r\nUpgrade: HTTP/2\r\nConnection: Upgrade\r\n\r\n`,
+        );
+        socket.pipe(socket);
         h2Server.emit("connection", socket);
       } else {
         h1Server.emit("connection", socket);
       }
+    });
+    h2Server.on("request", (req, res) => {
+      console.log("NEW H2 REQUEST", req.headers);
     });
     addShutdown(server);
     await bind();
