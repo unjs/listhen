@@ -57,7 +57,7 @@ import { createApp, eventHandler } from "h3";
 
 export const app = createApp();
 
-app.use("/", () => "Hello world!");
+app.use("/", eventHandler(() => "Hello world!");
 ```
 
 or use npx to invoke `listhen` command:
