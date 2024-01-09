@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.5.6
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.5.5...v1.5.6)
+
+### 🩹 Fixes
+
+- Apply default `localhost` in internal `generateURL` util ([6c76d31](https://github.com/unjs/listhen/commit/6c76d31))
+- **dev:** Fix absolute paths imports on windows ([#142](https://github.com/unjs/listhen/pull/142))
+
+### 📖 Documentation
+
+- Update h3 example ([#147](https://github.com/unjs/listhen/pull/147))
+
+### 🏡 Chore
+
+- **release:** V1.5.5 ([50224b5](https://github.com/unjs/listhen/commit/50224b5))
+- Update lockfile ([8b873f0](https://github.com/unjs/listhen/commit/8b873f0))
+- Fix  h3 example ([#150](https://github.com/unjs/listhen/pull/150))
+- Update lockfile and dependencies ([79de7b8](https://github.com/unjs/listhen/commit/79de7b8))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- Eugen Istoc <eugenistoc@gmail.com>
+- Jean-philippe Martel 
+- Haruaki OTAKE <aaharu@hotmail.com>
+
 ## v1.5.5
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.5.4...v1.5.5)
