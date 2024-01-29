@@ -34,7 +34,7 @@
     "lint": "eslint --ext .ts . && prettier -c src test",
     "lint:fix": "eslint --fix --ext .ts . && prettier -w src test",
     "listhen": "node ./scripts/listhen.mjs",
-    "play": "node ./scripts/listhen.mjs -w ./playground",
+    "play": "node ./scripts/listhen.mjs -w ./playground --ws",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "test": "pnpm lint && vitest run --coverage"
   },
