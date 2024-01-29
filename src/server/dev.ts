@@ -11,7 +11,7 @@ export interface DevServerOptions {
   cwd?: string;
   staticDirs?: string[];
   logger?: ConsolaInstance;
-  ws?: boolean;
+  ws?: boolean | Partial<WebSocketHooks>;
 }
 
 export async function createDevServer(
@@ -62,7 +62,10 @@ export async function createDevServer(
   if (options.ws) {
     const createDynamicHook =
       (name: string) =>
-      (...args: any[]) => {
+      async (...args: any[]) => {
+        if (typeof options.ws === "object") {
+          await (options.ws as any)[name]?.(...args);
+        }
         return (webSocketHooks as any)[name]?.(...args);
       };
     _ws = new Proxy(
