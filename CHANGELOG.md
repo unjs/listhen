@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.6.0
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.5.6...v1.6.0)
+
+### 🚀 Enhancements
+
+- Experimental websocket support ([#158](https://github.com/unjs/listhen/pull/158))
+
+### 🏡 Chore
+
+- Update lockfile ([ebef2d1](https://github.com/unjs/listhen/commit/ebef2d1))
+- Remove `ws` from shared args for now ([d115045](https://github.com/unjs/listhen/commit/d115045))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.5.6
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.5.5...v1.5.6)
