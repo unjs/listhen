@@ -35,6 +35,10 @@ export const main = defineCommand({
       description: "Watch for changes",
       alias: "w",
     },
+    ws: {
+      type: "boolean",
+      description: "Enable Experimental WebSocket support",
+    },
     ...getArgs(),
   },
   async run({ args }) {
@@ -85,10 +89,6 @@ export function getArgs() {
     open: {
       type: "boolean",
       description: "Open the URL in the browser",
-    },
-    ws: {
-      type: "boolean",
-      description: "Enable Experimental WebSocket support",
     },
     https: {
       type: "boolean",
