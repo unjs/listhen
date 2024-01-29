@@ -23,6 +23,9 @@ importers:
       consola:
         specifier: ^3.2.3
         version: 3.2.3
+      crossws:
+        specifier: ^0.1.0
+        version: 0.1.0
       defu:
         specifier: ^6.1.4
         version: 6.1.4
@@ -1679,6 +1682,10 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
+
+  /crossws@0.1.0:
+    resolution: {integrity: sha512-k/CMEn83hK9xflL4RD4puf+qOgTjTsA8svK+u/fkbKCrVzthkWAhiXpXc49Ju5V+aa3TqM3EW+0ROixh1MclzA==}
+    dev: false
 
   /css-declaration-sorter@7.1.1(postcss@8.4.33):
     resolution: {integrity: sha512-dZ3bVTEEc1vxr3Bek9vGwfB5Z6ESPULhcRvO472mfjVnj8jRcTnKO8/JTczlvxM10Myb+wBM++1MtdO76eWcaQ==}
