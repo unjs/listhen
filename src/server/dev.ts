@@ -4,12 +4,14 @@ import { consola } from "consola";
 import { dirname, join, resolve } from "pathe";
 import type { ConsolaInstance } from "consola";
 import { resolve as _resolve } from "mlly";
+import type { WebSocketHooks } from "crossws";
 import { createResolver } from "./_resolver";
 
 export interface DevServerOptions {
   cwd?: string;
   staticDirs?: string[];
   logger?: ConsolaInstance;
+  ws?: boolean;
 }
 
 export async function createDevServer(
@@ -53,6 +55,25 @@ export async function createDevServer(
 
   // Create app instance
   const app = createApp();
+
+  // WebSocket
+  let _ws: Partial<WebSocketHooks> | undefined;
+  const webSocketHooks = Object.create(null);
+  if (options.ws) {
+    const createDynamicHook =
+      (name: string) =>
+      (...args: any[]) => {
+        return (webSocketHooks as any)[name]?.(...args);
+      };
+    _ws = new Proxy(
+      {},
+      {
+        get(_, prop) {
+          return createDynamicHook(prop as string);
+        },
+      },
+    );
+  }
 
   // Register static asset handlers
   const staticDirs = (options.staticDirs || ["public"])
@@ -122,9 +143,27 @@ export async function createDevServer(
           `🚀 Loading server entry ${resolver.formateRelative(_entry)}`,
         );
       }
-      let _handler = await resolver
-        .import(_entry)
-        .then((r) => r.handler || r.handle || r.app || r.default || r);
+
+      const _loadedEntry = await resolver.import(_entry);
+
+      let _handler =
+        _loadedEntry.handler ||
+        _loadedEntry.handle ||
+        _loadedEntry.app ||
+        _loadedEntry.default ||
+        _loadedEntry;
+
+      if (options.ws) {
+        Object.assign(
+          webSocketHooks,
+          _loadedEntry.webSocket ||
+            _loadedEntry.websocket ||
+            _handler.webSocket ||
+            _handler.websocket ||
+            {},
+        );
+      }
+
       if (_handler.handler) {
         _handler = _handler.handler; // h3 app
       }
@@ -153,6 +192,7 @@ export async function createDevServer(
     resolver,
     nodeListener: toNodeListener(app),
     reload: (_initial?: boolean) => loadHandle(_initial),
+    _ws,
     _entry: resolveEntry(),
   };
 }

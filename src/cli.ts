@@ -57,6 +57,7 @@ export const main = defineCommand({
       await listen(devServer.nodeListener, {
         ...opts,
         _entry: devServer._entry,
+        ws: opts.ws ? devServer._ws : undefined,
       });
       await devServer.reload(true);
     }
@@ -84,6 +85,10 @@ export function getArgs() {
     open: {
       type: "boolean",
       description: "Open the URL in the browser",
+    },
+    ws: {
+      type: "boolean",
+      description: "Enable Experimental WebSocket support",
     },
     https: {
       type: "boolean",

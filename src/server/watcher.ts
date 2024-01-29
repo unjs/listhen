@@ -22,7 +22,7 @@ export async function listenAndWatch(
 
   // Create dev server
   const devServer = await createDevServer(entry, {
-    cwd: options.cwd,
+    ...options,
     logger,
   });
 
@@ -30,6 +30,7 @@ export async function listenAndWatch(
   const listenter = await listen(devServer.nodeListener, {
     ...options,
     _entry: devServer._entry,
+    ws: options.ws ? devServer._ws : undefined,
   });
 
   // Load dev server handler first time
