@@ -50,11 +50,11 @@ function getWebSocketTestPage() {
 
 export const webSocket = defineWebSocketHooks({
   open(peer) {
-    console.log("[ws]] open", peer);
+    console.log("[ws] open", peer);
     peer.send("Hello!");
   },
   message(peer, message) {
-    console.log("[ws]] message", peer);
+    console.log("[ws] message", peer);
     if (message.text() === "ping") {
       peer.send("pong");
     }
