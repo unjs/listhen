@@ -7,6 +7,6 @@
   },
   "dependencies": {
     "h3": "^1.10.1",
-    "listhen": "^1.5.6"
+    "listhen": "^1.6.0"
   }
 }
