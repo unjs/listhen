@@ -1,8 +1,9 @@
-import type { Server as HttpServer } from "node:http";
+import type { Server as HttpServer,IncomingMessage } from "node:http";
 import type { Server as HttpsServer } from "node:https";
 import type { Http2Server, Http2SecureServer } from "node:http2";
 import type { AddressInfo, Server as RawTcpIpcServer } from "node:net";
 import type { GetPortInput } from "get-port-please";
+import type { WebSocketHooks } from "crossws";
 
 export type Server =
   | HttpServer
@@ -61,6 +62,18 @@ export interface ListenOptions {
    * Open a tunnel using https://github.com/unjs/untun
    */
   tunnel?: boolean;
+  /**
+   * WebSocket Upgrade Handler
+   *
+   * Input can be an upgrade handler or CrossWS options
+   *
+   * @experimental CrossWS usage is subject to change
+   * @see https://github.com/unjs/crossws
+   */
+  ws?:
+    | boolean
+    | Partial<WebSocketHooks>
+    | ((req: IncomingMessage, head: Buffer) => void);
 }
 
 export type GetURLOptions = Pick<

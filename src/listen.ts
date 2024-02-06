@@ -182,6 +182,23 @@ export async function listen(
     await bind();
   }
 
+  // --- WebSocket ---
+  if (listhenOptions.ws) {
+    if (typeof listhenOptions.ws === "function") {
+      server.on("upgrade", listhenOptions.ws);
+    } else {
+      consola.warn(
+        "[listhen] Using experimental websocket API. Learn more: `https://crossws.unjs.io`",
+      );
+      const nodeWSAdapter = await import("crossws/adapters/node").then(
+        (r) => r.default || r,
+      );
+      // @ts-expect-error TODO
+      const { handleUpgrade } = nodeWSAdapter(listhenOptions.ws);
+      server.on("upgrade", handleUpgrade);
+    }
+  }
+
   // --- GetURL Utility ---
   const getURL = (host = listhenOptions.hostname, baseURL?: string) =>
     generateURL(host, listhenOptions, baseURL);

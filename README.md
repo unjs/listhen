@@ -12,7 +12,7 @@ Elegant HTTP listener!
 
 ## Features
 
-✅ Dev server with HMR, static, and typescript support with <a href="https://github.com/unjs/jiti">unjs/jiti</a><br>
+✅ Dev server with HMR, static, WebSockets and typescript support with <a href="https://github.com/unjs/jiti">unjs/jiti</a><br>
 
 ✅ Works with Node.js, express, and <a href="https://github.com/unjs/h3">unjs/h3</a> out of the box <br>
 
@@ -23,6 +23,8 @@ Elegant HTTP listener!
 ✅ Assign a port or fallback to a nicer alternative with <a href="https://github.com/unjs/get-port-please">unjs/get-port-please</a>
 
 ✅ Gracefully shutdown Server with <a href="https://github.com/thedillonb/http-shutdown">http-shutdown</a><br>
+
+✅ Zero Config WebSockets with <a href="https://github.com/unjs/crossws">unjs/crossws</a>
 
 ✅ Copy the URL to the clipboard<br>
 
@@ -57,7 +59,10 @@ import { createApp, eventHandler } from "h3";
 
 export const app = createApp();
 
-app.use("/", () => "Hello world!");
+app.use(
+  "/",
+  eventHandler(() => "Hello world!"),
+);
 ```
 
 or use npx to invoke `listhen` command:
@@ -199,6 +204,16 @@ Print QR Code for public address.
 - Default: `false` for development or when `hostname` is `localhost` and `true` for production
 
 When enabled, listhen tries to listen to all network interfaces. You can also enable this option using `--host` CLI flag.
+
+### `ws`
+
+- Default: `false`
+
+Enable experimental WebSocket support.
+
+Option can be a function for Node.js `upgrade` handler (`(req, head) => void`) or an Object to use [CrossWS Hooks](https://github.com/unjs/crossws).
+
+When using dev server CLI, you can easily use `--ws` and a named export called `webSocket` to define [CrossWS Hooks](https://github.com/unjs/crossws) with HMR support!
 
 ## License
 

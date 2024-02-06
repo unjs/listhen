@@ -35,6 +35,10 @@ export const main = defineCommand({
       description: "Watch for changes",
       alias: "w",
     },
+    ws: {
+      type: "boolean",
+      description: "Enable Experimental WebSocket support",
+    },
     ...getArgs(),
   },
   async run({ args }) {
@@ -57,6 +61,7 @@ export const main = defineCommand({
       await listen(devServer.nodeListener, {
         ...opts,
         _entry: devServer._entry,
+        ws: opts.ws ? devServer._ws : undefined,
       });
       await devServer.reload(true);
     }
