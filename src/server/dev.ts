@@ -4,7 +4,7 @@ import { consola } from "consola";
 import { dirname, join, resolve } from "pathe";
 import type { ConsolaInstance } from "consola";
 import { resolve as _resolve } from "mlly";
-import type { WebSocketOptions, ListenOptions } from "../types";
+import type { CrossWSOptions, ListenOptions } from "../types";
 import { createResolver } from "./_resolver";
 
 export interface DevServerOptions {
@@ -56,15 +56,15 @@ export async function createDevServer(
   // Create app instance
   const app = createApp();
 
-  const webSocketHooks = Object.create(null); // Dynamically updated with HMR
+  const dynamicWS = Object.create(null);
   let _ws: DevServerOptions["ws"] = options.ws;
   if (_ws && typeof _ws !== "function") {
     _ws = {
-      ...(options.ws as WebSocketOptions),
-      async $resolve(info) {
+      ...(options.ws as CrossWSOptions),
+      async resolve(info) {
         return {
-          ...webSocketHooks,
-          ...(await (options.ws as WebSocketOptions).$resolve?.(info)),
+          ...dynamicWS.hooks,
+          ...(await (options.ws as CrossWSOptions).resolve?.(info)),
         };
       },
     };
@@ -150,7 +150,7 @@ export async function createDevServer(
 
       if (options.ws) {
         Object.assign(
-          webSocketHooks,
+          dynamicWS,
           _loadedEntry.webSocket ||
             _loadedEntry.websocket ||
             _handler.webSocket ||

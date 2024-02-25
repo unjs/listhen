@@ -2,12 +2,9 @@ import type { IncomingMessage, Server } from "node:http";
 import type { Server as HTTPServer } from "node:https";
 import { AddressInfo } from "node:net";
 import type { GetPortInput } from "get-port-please";
-import type { UserHooks as WSHooks, CrossWSOptions } from "crossws";
+import type { NodeOptions } from "crossws/adapters/node";
 
-export interface WebSocketOptions extends WSHooks {
-  $resolve: CrossWSOptions["resolve"];
-  $options: CrossWSOptions;
-}
+export type CrossWSOptions = NodeOptions;
 
 export interface Certificate {
   key: string;
@@ -68,7 +65,7 @@ export interface ListenOptions {
    */
   ws?:
     | boolean
-    | WebSocketOptions
+    | CrossWSOptions
     | ((req: IncomingMessage, head: Buffer) => void);
 }
 

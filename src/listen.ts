@@ -11,6 +11,7 @@ import { defu } from "defu";
 import { ColorName, getColor, colors } from "consola/utils";
 import { renderUnicodeCompact as renderQRCode } from "uqr";
 import type { Tunnel } from "untun";
+import type { AdapterOptions as CrossWSOptions } from "crossws";
 import { open } from "./lib/open";
 import type {
   ListenOptions,
@@ -19,7 +20,6 @@ import type {
   HTTPSOptions,
   ListenURL,
   GetURLOptions,
-  WebSocketOptions,
 } from "./types";
 import {
   formatURL,
@@ -141,13 +141,8 @@ export async function listen(
       const nodeWSAdapter = await import("crossws/adapters/node").then(
         (r) => r.default || r,
       );
-      const { $resolve, $options, ...hooks } =
-        listhenOptions.ws === true
-          ? ({} as WebSocketOptions)
-          : listhenOptions.ws;
-      const { handleUpgrade } = nodeWSAdapter(hooks, {
-        ...$options,
-        resolve: $resolve,
+      const { handleUpgrade } = nodeWSAdapter({
+        ...(listhenOptions.ws as CrossWSOptions),
       });
       server.on("upgrade", handleUpgrade);
     }
