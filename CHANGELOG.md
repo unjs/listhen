@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.7.0
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.6.0...v1.7.0)
+
+### 🚀 Enhancements
+
+- **ws:** Support dynamic websocket resolver ([7b006e2](https://github.com/unjs/listhen/commit/7b006e2))
+
+### 🏡 Chore
+
+- Update deps ([1d625a9](https://github.com/unjs/listhen/commit/1d625a9))
+- Update readme with automd ([f540c9d](https://github.com/unjs/listhen/commit/f540c9d))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.6.0
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.5.6...v1.6.0)
