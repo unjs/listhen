@@ -4,14 +4,14 @@ import { consola } from "consola";
 import { dirname, join, resolve } from "pathe";
 import type { ConsolaInstance } from "consola";
 import { resolve as _resolve } from "mlly";
-import type { WebSocketHooks } from "crossws";
+import type { WebSocketOptions, ListenOptions } from "../types";
 import { createResolver } from "./_resolver";
 
 export interface DevServerOptions {
   cwd?: string;
   staticDirs?: string[];
   logger?: ConsolaInstance;
-  ws?: boolean | Partial<WebSocketHooks>;
+  ws?: ListenOptions["ws"];
 }
 
 export async function createDevServer(
@@ -56,26 +56,18 @@ export async function createDevServer(
   // Create app instance
   const app = createApp();
 
-  // WebSocket
-  let _ws: Partial<WebSocketHooks> | undefined;
-  const webSocketHooks = Object.create(null);
-  if (options.ws) {
-    const createDynamicHook =
-      (name: string) =>
-      async (...args: any[]) => {
-        if (typeof options.ws === "object") {
-          await (options.ws as any)[name]?.(...args);
-        }
-        return (webSocketHooks as any)[name]?.(...args);
-      };
-    _ws = new Proxy(
-      {},
-      {
-        get(_, prop) {
-          return createDynamicHook(prop as string);
-        },
+  const webSocketHooks = Object.create(null); // Dynamically updated with HMR
+  let _ws: DevServerOptions["ws"] = options.ws;
+  if (_ws && typeof _ws !== "function") {
+    _ws = {
+      ...(options.ws as WebSocketOptions),
+      async $resolve(info) {
+        return {
+          ...webSocketHooks,
+          ...(await (options.ws as WebSocketOptions).$resolve?.(info)),
+        };
       },
-    );
+    };
   }
 
   // Register static asset handlers

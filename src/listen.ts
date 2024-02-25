@@ -19,6 +19,7 @@ import type {
   HTTPSOptions,
   ListenURL,
   GetURLOptions,
+  WebSocketOptions,
 } from "./types";
 import {
   formatURL,
@@ -140,8 +141,14 @@ export async function listen(
       const nodeWSAdapter = await import("crossws/adapters/node").then(
         (r) => r.default || r,
       );
-      // @ts-expect-error TODO
-      const { handleUpgrade } = nodeWSAdapter(listhenOptions.ws);
+      const { $resolve, $options, ...hooks } =
+        listhenOptions.ws === true
+          ? ({} as WebSocketOptions)
+          : listhenOptions.ws;
+      const { handleUpgrade } = nodeWSAdapter(hooks, {
+        ...$options,
+        resolve: $resolve,
+      });
       server.on("upgrade", handleUpgrade);
     }
   }

@@ -203,11 +203,11 @@ When enabled, listhen tries to listen to all network interfaces. You can also en
 
 - Default: `false`
 
-Enable experimental WebSocket support.
+Enable experimental WebSocket support using [unjs/crossws](https://crossws.unjs.io/) or node upgrade handler.
 
-Option can be a function for Node.js `upgrade` handler (`(req, head) => void`) or an Object to use [CrossWS Hooks](https://github.com/unjs/crossws).
+Option can be a function for Node.js `upgrade` handler (`(req, head) => void`) or an Object to use [CrossWS Hooks](https://crossws.unjs.io/guide/api).
 
-When using dev server CLI, you can easily use `--ws` and a named export called `webSocket` to define [CrossWS Hooks](https://github.com/unjs/crossws) with HMR support!
+When using dev server CLI, you can easily use `--ws` and a named export called `websocket` to define [CrossWS Hooks](https://github.com/unjs/crossws) with HMR support!
 
 ## License
 
