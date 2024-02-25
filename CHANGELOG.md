@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.7.1
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.7.0...v1.7.1)
+
+### 💅 Refactors
+
+- Update to crossws 0.2 api ([b29607f](https://github.com/unjs/listhen/commit/b29607f))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.7.0
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.6.0...v1.7.0)
