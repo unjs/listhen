@@ -63,8 +63,9 @@ export async function createDevServer(
       ...(options.ws as CrossWSOptions),
       async resolve(info) {
         return {
+          ...(await (options.ws as CrossWSOptions)?.resolve?.(info)),
           ...dynamicWS.hooks,
-          ...(await (options.ws as CrossWSOptions).resolve?.(info)),
+          ...(await dynamicWS.resolve?.(info)),
         };
       },
     };
