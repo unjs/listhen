@@ -6,7 +6,7 @@
     "dev": "listhen -w ."
   },
   "dependencies": {
-    "h3": "^1.10.1",
-    "listhen": "^1.5.6"
+    "h3": "^1.11.1",
+    "listhen": "^1.7.2"
   }
 }
