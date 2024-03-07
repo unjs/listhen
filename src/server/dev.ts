@@ -142,8 +142,8 @@ export async function createDevServer(
 
       const _loadedEntry = await resolver.import(_entry);
 
-      let _handler = 
-      _loadedEntry.handler ||
+      let _handler =
+        _loadedEntry.handler ||
         _loadedEntry.handle ||
         _loadedEntry.app ||
         _loadedEntry.default ||
