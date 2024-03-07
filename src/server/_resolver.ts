@@ -1,4 +1,4 @@
-import { relative } from "node:path";
+import { relative } from "pathe";
 
 export async function createResolver() {
   const jiti = await import("jiti").then((r) => r.default || r);
