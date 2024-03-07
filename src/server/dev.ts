@@ -142,12 +142,16 @@ export async function createDevServer(
 
       const _loadedEntry = await resolver.import(_entry);
 
-      let _handler =
-        _loadedEntry.handler ||
+      let _handler = 
+      _loadedEntry.handler ||
         _loadedEntry.handle ||
         _loadedEntry.app ||
         _loadedEntry.default ||
         _loadedEntry;
+
+      if (_handler.options && _handler.options.onError) {
+        app.options.onError = _handler.options.onError;
+      }
 
       if (options.ws) {
         Object.assign(
