@@ -19,7 +19,7 @@ import { defu } from "defu";
 import { ColorName, colors, getColor } from "consola/utils";
 import { renderUnicodeCompact as renderQRCode } from "uqr";
 import type { Tunnel } from "untun";
-import type { AdapterOptions as CrossWSOptions } from "crossws";
+import type { Adapter as CrossWSOptions } from "crossws";
 import { open } from "./lib/open";
 import type {
   GetURLOptions,
@@ -136,6 +136,7 @@ export async function listen(
 
   // --- Listen ---
   let server: Server;
+  let serverH1: Server | undefined;
   let https: Listener["https"] = false;
   const httpsOptions = listhenOptions.https as HTTPSOptions;
   let _addr: AddressInfo;
@@ -175,6 +176,7 @@ export async function listen(
       }
       h1Server.emit("connection", socket);
     });
+    serverH1 = h1Server;
     addShutdown(server);
     await bind();
   } else {
@@ -186,6 +188,13 @@ export async function listen(
   // --- WebSocket ---
   if (listhenOptions.ws) {
     if (typeof listhenOptions.ws === "function") {
+      serverH1?.on("upgrade", () => {
+        console.log("HELLO WORLD");
+      });
+      server.on("upgrade", () => {
+        console.log("HELLO WORLD");
+      });
+      serverH1?.on("upgrade", listhenOptions.ws);
       server.on("upgrade", listhenOptions.ws);
     } else {
       consola.warn(
@@ -194,9 +203,10 @@ export async function listen(
       const nodeWSAdapter = await import("crossws/adapters/node").then(
         (r) => r.default || r,
       );
-      const { handleUpgrade } = nodeWSAdapter({
-        ...(listhenOptions.ws as CrossWSOptions),
+      const { handleUpgrade } = (nodeWSAdapter as any)({
+        ...(listhenOptions.ws as CrossWSOptions<any, any>),
       });
+      serverH1?.on("upgrade", handleUpgrade);
       server.on("upgrade", handleUpgrade);
     }
   }
@@ -358,7 +368,7 @@ export async function listen(
     url: getURL(),
     https,
     server,
-    // @ts-ignore
+    // @ts-ignoref
     address: _addr,
     open: _open,
     showURL,
