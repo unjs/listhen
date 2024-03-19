@@ -203,7 +203,7 @@ export async function listen(
       const nodeWSAdapter = await import("crossws/adapters/node").then(
         (r) => r.default || r,
       );
-      const { handleUpgrade } = (nodeWSAdapter as any)({
+      const { handleUpgrade } = nodeWSAdapter({
         ...(listhenOptions.ws as CrossWSOptions<any, any>),
       });
       if (wsTargetServer) {
