@@ -136,7 +136,7 @@ export async function listen(
 
   // --- Listen ---
   let server: Server;
-  let serverH1: Server | undefined;
+  let wsTargetServer: Server | undefined;
   let https: Listener["https"] = false;
   const httpsOptions = listhenOptions.https as HTTPSOptions;
   let _addr: AddressInfo;
@@ -176,7 +176,10 @@ export async function listen(
       }
       h1Server.emit("connection", socket);
     });
-    serverH1 = h1Server;
+
+    // websockets need to listen for upgrades here when both http1 and http2 and running without https
+    wsTargetServer = h1Server;
+
     addShutdown(server);
     await bind();
   } else {
@@ -188,14 +191,11 @@ export async function listen(
   // --- WebSocket ---
   if (listhenOptions.ws) {
     if (typeof listhenOptions.ws === "function") {
-      serverH1?.on("upgrade", () => {
-        console.log("HELLO WORLD");
-      });
-      server.on("upgrade", () => {
-        console.log("HELLO WORLD");
-      });
-      serverH1?.on("upgrade", listhenOptions.ws);
-      server.on("upgrade", listhenOptions.ws);
+      if (wsTargetServer) {
+        wsTargetServer.on("upgrade", listhenOptions.ws);
+      } else {
+        server.on("upgrade", listhenOptions.ws);
+      }
     } else {
       consola.warn(
         "[listhen] Using experimental websocket API. Learn more: `https://crossws.unjs.io`",
@@ -206,8 +206,11 @@ export async function listen(
       const { handleUpgrade } = (nodeWSAdapter as any)({
         ...(listhenOptions.ws as CrossWSOptions<any, any>),
       });
-      serverH1?.on("upgrade", handleUpgrade);
-      server.on("upgrade", handleUpgrade);
+      if (wsTargetServer) {
+        wsTargetServer.on("upgrade", handleUpgrade);
+      } else {
+        server.on("upgrade", handleUpgrade);
+      }
     }
   }
 
