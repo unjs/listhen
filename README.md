@@ -1,10 +1,11 @@
 # 👂 listhen
 
-[![npm version][npm-version-src]][npm-version-href]
-[![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![Codecov][codecov-src]][codecov-href]
-[![License][license-src]][license-href]
-[![JSDocs][jsdocs-src]][jsdocs-href]
+<!-- automd:badges -->
+
+[![npm version](https://flat.badgen.net/npm/v/listhen)](https://npmjs.com/package/listhen)
+[![npm downloads](https://flat.badgen.net/npm/dm/listhen)](https://npmjs.com/package/listhen)
+
+<!-- /automd -->
 
 Elegant HTTP listener!
 
@@ -209,25 +210,29 @@ When enabled, listhen tries to listen to all network interfaces. You can also en
 
 - Default: `false`
 
-Enable experimental WebSocket support.
+Enable experimental WebSocket support using [unjs/crossws](https://crossws.unjs.io/) or node upgrade handler.
 
-Option can be a function for Node.js `upgrade` handler (`(req, head) => void`) or an Object to use [CrossWS Hooks](https://github.com/unjs/crossws).
+Option can be a function for Node.js `upgrade` handler (`(req, head) => void`) or an Object to use [CrossWS Hooks](https://crossws.unjs.io/guide/api).
 
-When using dev server CLI, you can easily use `--ws` and a named export called `webSocket` to define [CrossWS Hooks](https://github.com/unjs/crossws) with HMR support!
+When using dev server CLI, you can easily use `--ws` and a named export called `websocket` to define [CrossWS Hooks](https://github.com/unjs/crossws) with HMR support!
 
 ## License
 
-MIT. Made with 💖
+<!-- automd:contributors license=MIT author="pi0" -->
 
-<!-- Badges -->
+Published under the [MIT](https://github.com/unjs/listhen/blob/main/LICENSE) license.
+Made by [@pi0](https://github.com/pi0) and [community](https://github.com/unjs/listhen/graphs/contributors) 💛
+<br><br>
+<a href="https://github.com/unjs/listhen/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=unjs/listhen" />
+</a>
 
-[npm-version-src]: https://img.shields.io/npm/v/listhen?style=flat&colorA=18181B&colorB=F0DB4F
-[npm-version-href]: https://npmjs.com/package/listhen
-[npm-downloads-src]: https://img.shields.io/npm/dm/listhen?style=flat&colorA=18181B&colorB=F0DB4F
-[npm-downloads-href]: https://npmjs.com/package/listhen
-[codecov-src]: https://img.shields.io/codecov/c/gh/unjs/listhen/main?style=flat&colorA=18181B&colorB=F0DB4F
-[codecov-href]: https://codecov.io/gh/unjs/listhen
-[license-src]: https://img.shields.io/github/license/unjs/listhen.svg?style=flat&colorA=18181B&colorB=F0DB4F
-[license-href]: https://github.com/unjs/listhen/blob/main/LICENSE
-[jsdocs-src]: https://img.shields.io/badge/jsDocs.io-reference-18181B?style=flat&colorA=18181B&colorB=F0DB4F
-[jsdocs-href]: https://www.jsdocs.io/package/listhen
+<!-- /automd -->
+
+<!-- automd:with-automd -->
+
+---
+
+_🤖 auto updated with [automd](https://automd.unjs.io)_
+
+<!-- /automd -->

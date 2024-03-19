@@ -3,7 +3,9 @@ import type { Server as HttpsServer } from "node:https";
 import type { Http2Server, Http2SecureServer } from "node:http2";
 import type { AddressInfo, Server as RawTcpIpcServer } from "node:net";
 import type { GetPortInput } from "get-port-please";
-import type { WebSocketHooks } from "crossws";
+import type { NodeOptions } from "crossws/adapters/node";
+
+export type CrossWSOptions = NodeOptions;
 
 export type Server =
   | HttpServer
@@ -72,7 +74,7 @@ export interface ListenOptions {
    */
   ws?:
     | boolean
-    | Partial<WebSocketHooks>
+    | CrossWSOptions
     | ((req: IncomingMessage, head: Buffer) => void);
 }
 

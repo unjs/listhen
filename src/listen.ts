@@ -19,6 +19,7 @@ import { defu } from "defu";
 import { ColorName, colors, getColor } from "consola/utils";
 import { renderUnicodeCompact as renderQRCode } from "uqr";
 import type { Tunnel } from "untun";
+import type { AdapterOptions as CrossWSOptions } from "crossws";
 import { open } from "./lib/open";
 import type {
   GetURLOptions,
@@ -193,8 +194,9 @@ export async function listen(
       const nodeWSAdapter = await import("crossws/adapters/node").then(
         (r) => r.default || r,
       );
-      // @ts-expect-error TODO
-      const { handleUpgrade } = nodeWSAdapter(listhenOptions.ws);
+      const { handleUpgrade } = nodeWSAdapter({
+        ...(listhenOptions.ws as CrossWSOptions),
+      });
       server.on("upgrade", handleUpgrade);
     }
   }
