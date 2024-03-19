@@ -68,7 +68,7 @@ export async function createDevServer(
   if (_ws && typeof _ws !== "function") {
     _ws = {
       ...(options.ws as CrossWSOptions),
-      async resolve(info) {
+      async resolve(info: any) {
         return {
           ...(await (options.ws as CrossWSOptions)?.resolve?.(info)),
           ...dynamicWS.hooks,
