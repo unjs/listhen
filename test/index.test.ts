@@ -108,7 +108,7 @@ describe("listhen", () => {
   // see https://http2.github.io/faq/#does-http2-require-encryption
   test("listen (http2): http1 client", async () => {
     listener = await listen(handle, {
-      http2: true
+      http2: true,
     });
     expect(listener.url.startsWith("http://")).toBeTruthy();
 
@@ -120,7 +120,7 @@ describe("listhen", () => {
   });
   test("listhen (http2): http2 client", async () => {
     listener = await listen(handle, {
-      http2: true
+      http2: true,
     });
     expect(listener.url.startsWith("http://")).toBeTruthy();
 
