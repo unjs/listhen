@@ -107,7 +107,9 @@ describe("listhen", () => {
 
   // see https://http2.github.io/faq/#does-http2-require-encryption
   test("listen (http2): http1 client", async () => {
-    listener = await listen(handle);
+    listener = await listen(handle, {
+      http2: true
+    });
     expect(listener.url.startsWith("http://")).toBeTruthy();
 
     const response = (await sendRequest(listener.url, false)) as string;
@@ -117,13 +119,15 @@ describe("listhen", () => {
     });
   });
   test("listhen (http2): http2 client", async () => {
-    listener = await listen(handle);
+    listener = await listen(handle, {
+      http2: true
+    });
     expect(listener.url.startsWith("http://")).toBeTruthy();
 
-    const response = (await sendRequest(listener.url, false)) as string;
+    const response = (await sendHttp2Request(listener.url)) as string;
     expect(JSON.parse(response)).toEqual({
       path: "/",
-      httpVersion: "1.1",
+      httpVersion: "2.0",
     });
   });
 
