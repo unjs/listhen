@@ -272,6 +272,11 @@ export async function listen(
       _addURL("local", getURL(listhenOptions.hostname, getURLOptions.baseURL));
     }
 
+
+    if (listhenOptions.ws) {
+      _addURL("local", getURL(listhenOptions.hostname, getURLOptions.baseURL).replace('http', 'ws'))
+    }
+
     // Add tunnel URL
     if (tunnel) {
       _addURL("tunnel", await tunnel.getURL());
