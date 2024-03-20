@@ -1,5 +1,7 @@
 import { existsSync, statSync } from "node:fs";
 import { readFile, stat } from "node:fs/promises";
+import { Http2ServerRequest, Http2ServerResponse } from "node:http2";
+import { IncomingMessage, ServerResponse } from "node:http";
 import { consola } from "consola";
 import { dirname, join, resolve } from "pathe";
 import type { ConsolaInstance } from "consola";
@@ -13,6 +15,11 @@ export interface DevServerOptions {
   logger?: ConsolaInstance;
   ws?: ListenOptions["ws"];
 }
+
+type NodeListener = (
+  req: IncomingMessage | Http2ServerRequest,
+  res: ServerResponse | Http2ServerResponse,
+) => void;
 
 export async function createDevServer(
   entry: string,
@@ -61,7 +68,7 @@ export async function createDevServer(
   if (_ws && typeof _ws !== "function") {
     _ws = {
       ...(options.ws as CrossWSOptions),
-      async resolve(info) {
+      async resolve(info: any) {
         return {
           ...(await (options.ws as CrossWSOptions)?.resolve?.(info)),
           ...dynamicWS.hooks,
@@ -186,7 +193,7 @@ export async function createDevServer(
   return {
     cwd,
     resolver,
-    nodeListener: toNodeListener(app),
+    nodeListener: toNodeListener(app) as NodeListener,
     reload: (_initial?: boolean) => loadHandle(_initial),
     _ws,
     _entry: resolveEntry(),

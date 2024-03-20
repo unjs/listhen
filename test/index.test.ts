@@ -1,5 +1,8 @@
 import { resolve } from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
+import { request } from "node:http";
+import { request as httpsRequest } from "node:https";
+import { connect } from "node:http2";
 import { describe, afterEach, test, expect } from "vitest";
 import { listen, Listener } from "../src";
 
@@ -7,7 +10,57 @@ import { listen, Listener } from "../src";
 // console.log = fn()
 
 function handle(request: IncomingMessage, response: ServerResponse) {
-  response.end(request.url);
+  response.end(
+    JSON.stringify({
+      path: request.url,
+      httpVersion: request.httpVersion,
+    }),
+  );
+}
+
+// disable TLS certificate checks
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
+function sendRequest(url: string, https = false) {
+  return new Promise((resolve) => {
+    (https ? httpsRequest : request)(url, (res) => {
+      const data: any[] = [];
+      res.on("data", (chunk) => {
+        data.push(chunk);
+      });
+      res.on("end", () => {
+        resolve(data.join(""));
+      });
+    }).end();
+  });
+}
+
+function sendHttp2Request(url: string) {
+  // eslint-disable-next-line promise/param-names
+  return new Promise((resolve1, reject) => {
+    const client = connect(url);
+
+    client.on("error", (err: Error) => {
+      reject(err);
+      client.close();
+    });
+
+    const req = client.request({
+      ":path": "/",
+    });
+
+    let data = "";
+    req.on("data", (chunk) => {
+      data += chunk;
+    });
+
+    req.on("end", () => {
+      resolve1(data);
+      client.close();
+    });
+
+    req.end();
+  });
 }
 
 describe("listhen", () => {
@@ -45,9 +98,60 @@ describe("listhen", () => {
     expect(listener.url.endsWith("/foo/bar")).toBe(true);
     // eslint-disable-next-line no-console
     // expect(console.log).toHaveBeenCalledWith(expect.stringMatching('\n  > Local:    http://localhost:3000/foo/bar'))
+    const response = (await sendRequest(listener.url)) as string;
+    expect(JSON.parse(response)).toEqual({
+      path: "/foo/bar",
+      httpVersion: "1.1",
+    });
+  });
+
+  // see https://http2.github.io/faq/#does-http2-require-encryption
+  test("listen (http2): http1 client", async () => {
+    listener = await listen(handle, {
+      http2: true,
+    });
+    expect(listener.url.startsWith("http://")).toBeTruthy();
+
+    const response = (await sendRequest(listener.url, false)) as string;
+    expect(JSON.parse(response)).toEqual({
+      path: "/",
+      httpVersion: "1.1",
+    });
+  });
+  test("listhen (http2): http2 client", async () => {
+    listener = await listen(handle, {
+      http2: true,
+    });
+    expect(listener.url.startsWith("http://")).toBeTruthy();
+
+    const response = (await sendHttp2Request(listener.url)) as string;
+    expect(JSON.parse(response)).toEqual({
+      path: "/",
+      httpVersion: "2.0",
+    });
   });
 
   describe("https", () => {
+    test("listen (http2)", async () => {
+      listener = await listen(handle, {
+        https: true,
+        http2: true,
+      });
+      expect(listener.url.startsWith("https:")).toBeTruthy();
+
+      let response = (await sendRequest(listener.url, true)) as string;
+      expect(JSON.parse(response)).toEqual({
+        path: "/",
+        httpVersion: "1.1",
+      });
+
+      response = (await sendHttp2Request(listener.url)) as string;
+      expect(JSON.parse(response)).toEqual({
+        path: "/",
+        httpVersion: "2.0",
+      });
+    });
+
     test("listen (https - selfsigned)", async () => {
       listener = await listen(handle, { https: true, hostname: "localhost" });
       expect(listener.url.startsWith("https://")).toBe(true);
