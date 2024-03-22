@@ -57,7 +57,7 @@ function ipcRequest(ipcSocket: string, path: string, https = false) {
         });
         res.on("end", () => {
           try {
-            resolve(JSON.parse(data.join("")));
+            resolve(JSON.parse(data));
           } catch {
             resolve(data.join(""));
           }
@@ -88,9 +88,11 @@ describe("listhen", () => {
     await expect(ipcRequest(ipcSocket, "/unix", https)).resolves.toEqual({
       hello: "unix!",
     });
-    await expect(ipcRequest(ipcSocket, "/test", https)).resolves.toContain({
-      statusCode: 404,
-    });
+    const response = await ipcRequest(ipcSocket, "/test", https);
+    expect(response.statusCode).toEqual(404);
+    expect(response.statusMessage).toEqual(
+      "Cannot find any path matching /test.",
+    );
   }
 
   async function handleAssertions(ipcSocket: string, https: boolean) {
