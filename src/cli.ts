@@ -141,6 +141,11 @@ export function getArgs() {
       description: "Open a tunnel using https://github.com/unjs/untun",
       required: false,
     },
+    socket: {
+      description:
+        "Listen on a Unix Domain Socket/Windows Pipe, optionally with custom name or given absolute path",
+      required: false,
+    },
   } as const satisfies ArgsDef;
 }
 
@@ -158,6 +163,7 @@ export function parseArgs(args: ParsedListhenArgs): Partial<ListenOptions> {
     publicURL: args.publicURL,
     public: args.public,
     tunnel: args.tunnel,
+    socket: args.socket as boolean | string | undefined,
     https: args.https
       ? <HTTPSOptions>{
           cert: args["https.cert"],

@@ -12,6 +12,7 @@ import { ColorName, getColor, colors } from "consola/utils";
 import { renderUnicodeCompact as renderQRCode } from "uqr";
 import type { Tunnel } from "untun";
 import type { AdapterOptions as CrossWSOptions } from "crossws";
+import { isAbsolute, sep } from "pathe";
 import { open } from "./lib/open";
 import type {
   ListenOptions,
@@ -27,6 +28,7 @@ import {
   isLocalhost,
   isAnyhost,
   getPublicURL,
+  getSocketPath,
   generateURL,
   getDefaultHost,
   validateHostname,
@@ -62,6 +64,7 @@ export async function listen(
     isTest: _isTest,
     isProd: _isProd,
     public: _public,
+    socket: false,
     autoClose: true,
   });
 
@@ -110,22 +113,28 @@ export async function listen(
 
   // --- Listen ---
   let server: Server | HTTPServer;
+
+  const serverOptions = listhenOptions.socket
+    ? { path: getSocketPath(listhenOptions.socket) }
+    : { port, host: listhenOptions.hostname };
+
   let https: Listener["https"] = false;
   const httpsOptions = listhenOptions.https as HTTPSOptions;
+
   let _addr: AddressInfo;
   if (httpsOptions) {
     https = await resolveCertificate(httpsOptions);
     server = createHTTPSServer(https, handle);
     addShutdown(server);
     // @ts-ignore
-    await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
+    await promisify(server.listen.bind(server))(serverOptions);
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   } else {
     server = createServer(handle);
     addShutdown(server);
     // @ts-ignore
-    await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
+    await promisify(server.listen.bind(server))(serverOptions);
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   }
@@ -150,7 +159,9 @@ export async function listen(
 
   // --- GetURL Utility ---
   const getURL = (host = listhenOptions.hostname, baseURL?: string) =>
-    generateURL(host, listhenOptions, baseURL);
+    serverOptions.path
+      ? `unix+http${listhenOptions.https ? "s" : ""}://${serverOptions.path}`
+      : generateURL(host, listhenOptions, baseURL);
 
   // --- Start Tunnel ---
   let tunnel: Tunnel | undefined;
@@ -192,6 +203,17 @@ export async function listen(
         });
       }
     };
+
+    if (serverOptions.path) {
+      let _path = serverOptions.path;
+      const currentDirPath = `.${sep}`;
+
+      if (!(isAbsolute(_path) || _path.startsWith(currentDirPath))) {
+        _path = currentDirPath + _path;
+      }
+      _addURL("local", _path);
+      return urls;
+    }
 
     // Add public URL
     const publicURL =
@@ -259,8 +281,12 @@ export async function listen(
 
     for (const url of urls) {
       const type = typeMap[url.type];
+      let infix = "";
+      if (listhenOptions.socket && url.type === "local") {
+        infix = listhenOptions.https ? " (https)" : " (http)";
+      }
       const label = getColor(type[1])(
-        `  ➜ ${(type[0] + ":").padEnd(8, " ")}${nameSuffix} `,
+        `  ➜ ${(type[0] + infix + ":").padEnd(8, " ")}${nameSuffix} `,
       );
       let suffix = "";
       if (url === firstLocalUrl && listhenOptions.clipboard) {
@@ -272,7 +298,7 @@ export async function listen(
       lines.push(`${label} ${formatURL(url.url)}${suffix}`);
     }
 
-    if (!firstPublicUrl) {
+    if (!firstPublicUrl && !listhenOptions.socket) {
       lines.push(
         colors.gray(`  ➜ Network:  use ${colors.white("--host")} to expose`),
       );
