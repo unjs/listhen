@@ -1,4 +1,4 @@
-import { networkInterfaces } from "node:os";
+import { networkInterfaces, platform } from "node:os";
 import { relative } from "pathe";
 import { colors } from "consola/utils";
 import { consola } from "consola";
@@ -86,6 +86,12 @@ export function getDefaultHost(preferPublic?: boolean) {
   // For local, use "localhost" to be developer friendly and allow loopback customization}
   // For public, use "" to listen on all NIC interfaces (IPV4 and IPV6)
   return preferPublic ? "" : "localhost";
+}
+
+export function getSocketPath(ipcSocketName: string) {
+  return platform() === "win32"
+    ? `\\\\?\\pipe\\${ipcSocketName || "listhen"}`
+    : `/tmp/${ipcSocketName || "listhen"}.socket`;
 }
 
 export function getPublicURL(

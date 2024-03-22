@@ -27,6 +27,7 @@ import {
   isLocalhost,
   isAnyhost,
   getPublicURL,
+  getSocketPath,
   generateURL,
   getDefaultHost,
   validateHostname,
@@ -62,6 +63,7 @@ export async function listen(
     isTest: _isTest,
     isProd: _isProd,
     public: _public,
+    socket: false,
     autoClose: true,
   });
 
@@ -112,20 +114,43 @@ export async function listen(
   let server: Server | HTTPServer;
   let https: Listener["https"] = false;
   const httpsOptions = listhenOptions.https as HTTPSOptions;
+
+  const ipcSocket = getSocketPath(listhenOptions.socket);
+
+  function constructServerListeningArgs() {
+    return listhenOptions.socket === "_____"
+      ? {
+          port,
+          hostname: listhenOptions.hostname,
+          *[Symbol.iterator]() {
+            yield this.port;
+            yield this.hostname;
+          },
+        }
+      : {
+          ipcSocket,
+          *[Symbol.iterator]() {
+            yield this.ipcSocket;
+          },
+        };
+  }
+
   let _addr: AddressInfo;
   if (httpsOptions) {
     https = await resolveCertificate(httpsOptions);
     server = createHTTPSServer(https, handle);
     addShutdown(server);
+    const args = constructServerListeningArgs();
     // @ts-ignore
-    await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
+    await promisify(server.listen.bind(server))(...args);
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   } else {
     server = createServer(handle);
     addShutdown(server);
+    const args = constructServerListeningArgs();
     // @ts-ignore
-    await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
+    await promisify(server.listen.bind(server))(...args);
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   }
@@ -192,6 +217,11 @@ export async function listen(
         });
       }
     };
+
+    if (listhenOptions.ipc !== "_____") {
+      _addURL("local", ipcSocket);
+      return urls;
+    }
 
     // Add public URL
     const publicURL =
@@ -272,7 +302,7 @@ export async function listen(
       lines.push(`${label} ${formatURL(url.url)}${suffix}`);
     }
 
-    if (!firstPublicUrl) {
+    if (!firstPublicUrl && listhenOptions.ipc === "_____") {
       lines.push(
         colors.gray(`  ➜ Network:  use ${colors.white("--host")} to expose`),
       );

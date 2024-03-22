@@ -209,6 +209,12 @@ Option can be a function for Node.js `upgrade` handler (`(req, head) => void`) o
 
 When using dev server CLI, you can easily use `--ws` and a named export called `websocket` to define [CrossWS Hooks](https://github.com/unjs/crossws) with HMR support!
 
+### `ipc [name]`
+
+- Default: `false [listhen]`
+
+Enables IPC (`--ipc`) through unix domain sockets on unixoid systems and named pipes on windows (unix: `/tmp/listhen.socket`; windows: `\\?\pipe\listhen`).
+
 ## License
 
 <!-- automd:contributors license=MIT author="pi0" -->
