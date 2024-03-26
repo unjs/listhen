@@ -2,8 +2,8 @@
 
 <!-- automd:badges -->
 
-[![npm version](https://flat.badgen.net/npm/v/listhen)](https://npmjs.com/package/listhen)
-[![npm downloads](https://flat.badgen.net/npm/dm/listhen)](https://npmjs.com/package/listhen)
+[![npm version](https://img.shields.io/npm/v/listhen)](https://npmjs.com/package/listhen)
+[![npm downloads](https://img.shields.io/npm/dm/listhen)](https://npmjs.com/package/listhen)
 
 <!-- /automd -->
 
