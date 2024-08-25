@@ -13,9 +13,9 @@ Elegant HTTP listener!
 
 ## Features
 
-✅ Dev server with HMR, static, WebSockets and typescript support with <a href="https://github.com/unjs/jiti">unjs/jiti</a><br>
+✅ Dev server with HMR, static, WebSockets and TypeScript support with <a href="https://github.com/unjs/jiti">unjs/jiti</a><br>
 
-✅ Works with Node.js, express, and <a href="https://github.com/unjs/h3">unjs/h3</a> out of the box <br>
+✅ Works with Node.js, Express, and <a href="https://github.com/unjs/h3">unjs/h3</a> out of the box <br>
 
 ✅ Show the QR code of the public URL with <a href="https://github.com/unjs/uqr">unjs/uqr</a><br>
 
@@ -43,7 +43,7 @@ Elegant HTTP listener!
 
 ## Quick Usage (CLI)
 
-You can run your applications in localhost with typescript support and watch mode using `listhen` CLI:
+You can run your applications in localhost with TypeScript support and watch mode using `listhen` CLI:
 
 Create `index.ts`:
 
