@@ -1,10 +1,18 @@
-import type { IncomingMessage, Server } from "node:http";
-import type { Server as HTTPServer } from "node:https";
-import { AddressInfo } from "node:net";
+import type { Server as HttpServer, IncomingMessage } from "node:http";
+import type { Server as HttpsServer } from "node:https";
+import type { Http2Server, Http2SecureServer } from "node:http2";
+import type { AddressInfo, Server as RawTcpIpcServer } from "node:net";
 import type { GetPortInput } from "get-port-please";
 import type { NodeOptions } from "crossws/adapters/node";
 
 export type CrossWSOptions = NodeOptions;
+
+export type Server =
+  | HttpServer
+  | HttpsServer
+  | Http2Server
+  | Http2SecureServer
+  | RawTcpIpcServer;
 
 export interface Certificate {
   key: string;
@@ -29,6 +37,7 @@ export interface ListenOptions {
   baseURL: string;
   open: boolean;
   https: boolean | HTTPSOptions;
+  http2: boolean;
   clipboard: boolean;
   isTest: boolean;
   isProd: boolean;
@@ -87,7 +96,7 @@ export interface ListenURL {
 export interface Listener {
   url: string;
   address: AddressInfo;
-  server: Server | HTTPServer;
+  server: Server;
   https: false | Certificate;
   close: () => Promise<void>;
   open: () => Promise<void>;

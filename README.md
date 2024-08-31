@@ -147,6 +147,13 @@ When the keystore is password protected also set `passphrase`.
 
 You can also provide an inline cert and key instead of reading from the filesystem. In this case, they should start with `--`.
 
+### `http2`
+
+- Type: Boolean
+- Default: `false`
+
+HTTP-Versions 1 and 2 will be used when enabled; otherwise only HTTP 1 is used.
+
 ### `showURL`
 
 - Default: `true` (force disabled on a test environment)
