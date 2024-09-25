@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.8.0
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.7.2...v1.8.0)
+
+### 🚀 Enhancements
+
+- **dev:** Update jiti to v2 ([499e7bb](https://github.com/unjs/listhen/commit/499e7bb))
+
+### 🩹 Fixes
+
+- **dev:** Call dynamic websocket resolver ([7360d27](https://github.com/unjs/listhen/commit/7360d27))
+- **dev:** Normalize paths with `pathe` ([#166](https://github.com/unjs/listhen/pull/166))
+
+### 📖 Documentation
+
+- Fix typo ([#179](https://github.com/unjs/listhen/pull/179))
+
+### 🏡 Chore
+
+- **release:** V1.7.2 ([f38f69a](https://github.com/unjs/listhen/commit/f38f69a))
+- Update deps ([a8c4564](https://github.com/unjs/listhen/commit/a8c4564))
+- Lint with eslint v9 ([7c9d8f9](https://github.com/unjs/listhen/commit/7c9d8f9))
+- Apply automated updates ([99c283e](https://github.com/unjs/listhen/commit/99c283e))
+- Apply automated updates ([a6edc8f](https://github.com/unjs/listhen/commit/a6edc8f))
+
+### 🤖 CI
+
+- Update node to 20 ([b97bc01](https://github.com/unjs/listhen/commit/b97bc01))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+- @beer ([@iiio2](http://github.com/iiio2))
+- Markthree ([@markthree](http://github.com/markthree))
+
 ## v1.7.2
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.7.1...v1.7.2)

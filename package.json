@@ -1,6 +1,6 @@
 {
   "name": "listhen",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "description": "👂 Elegant HTTP Listener",
   "repository": "unjs/listhen",
   "license": "MIT",
