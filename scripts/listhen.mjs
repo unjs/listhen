@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-import jiti from "jiti";
+import { createJiti } from "jiti";
 
-const { runMain } = jiti(import.meta.url)("../src/cli");
+const jiti =  createJiti(import.meta.url)
+const { runMain } = await jiti.import("../src/cli");
 
 runMain();
