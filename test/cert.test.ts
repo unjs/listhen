@@ -4,7 +4,6 @@ import { resolve } from "pathe";
 import { Listener } from "../src";
 import { TLSCertOptions, _private } from "../src/_cert";
 
-// eslint-disable-next-line no-console
 // console.log = fn()
 
 function assertDefaultAttributes(attrs: forge.pki.CertificateField[]) {

@@ -18,7 +18,7 @@ export async function listenAndWatch(
   options: Partial<ListenOptions & WatchOptions>,
 ): Promise<Listener> {
   const logger = options.logger || consola.withTag("listhen");
-  let watcher: AsyncSubscription; // eslint-disable-line prefer-const
+  let watcher: AsyncSubscription;
 
   // Create dev server
   const devServer = await createDevServer(entry, {

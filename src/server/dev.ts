@@ -207,7 +207,9 @@ function normalizeErrorStack(error: Error) {
       .map((l) => l.replace(cwd, "."))
       .filter((l) => !InternalStackRe.test(l))
       .join("\n");
-  } catch {}
+  } catch {
+    // Ignore errors
+  }
   return error;
 }
 

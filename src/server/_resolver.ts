@@ -20,7 +20,9 @@ export async function createResolver() {
   const tryResolve = (id: string) => {
     try {
       return resolve(id);
-    } catch {}
+    } catch {
+      // Ignore errors
+    }
   };
 
   return {

@@ -6,7 +6,6 @@ import { _private } from "../src/_cert";
 
 export async function setup() {
   if (!existsSync(resolve("test/.tmp/certs/cert.pem"))) {
-    // eslint-disable-next-line unicorn/prefer-top-level-await
     const start = Date.now();
     console.log("Generating certificates...");
     await generateCert();
