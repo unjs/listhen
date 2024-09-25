@@ -66,9 +66,7 @@ export async function listenAndWatch(
           return;
         }
         const eventsString = filteredEvents
-          .map(
-            (e) => `${devServer.resolver.formatRelative(e.path)} ${e.type}d`,
-          )
+          .map((e) => `${devServer.resolver.formatRelative(e.path)} ${e.type}d`)
           .join(", ");
         logger.log(`🔄 Reloading server (${eventsString})`);
         devServer.reload();

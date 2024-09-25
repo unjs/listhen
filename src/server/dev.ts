@@ -140,7 +140,7 @@ export async function createDevServer(
         );
       }
 
-      const _loadedEntry = await resolver.import(_entry) as any;
+      const _loadedEntry = (await resolver.import(_entry)) as any;
 
       let _handler =
         _loadedEntry.handler ||

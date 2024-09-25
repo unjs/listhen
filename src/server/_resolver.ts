@@ -3,12 +3,11 @@ import { join, relative } from "pathe";
 export async function createResolver() {
   const { createJiti } = await import("jiti");
 
-  const jiti = createJiti(join(process.cwd(), '_'), {
+  const jiti = createJiti(join(process.cwd(), "_"), {
     cache: true,
     requireCache: false,
     interopDefault: true,
   });
-
 
   return {
     relative: (path: string) => relative(process.cwd(), path),
