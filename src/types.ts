@@ -67,6 +67,10 @@ export interface ListenOptions {
     | boolean
     | CrossWSOptions
     | ((req: IncomingMessage, head: Buffer) => void);
+  /**
+   * Listhen on a unix domain socket/windows pipe, optionally with custom name
+   */
+  socket: boolean | string;
 }
 
 export type GetURLOptions = Pick<
