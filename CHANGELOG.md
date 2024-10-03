@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.9.0
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.8.0...v1.9.0)
+
+### 🚀 Enhancements
+
+- Update crossws to 0.3.x ([#181](https://github.com/unjs/listhen/pull/181))
+
+### 📦 Build
+
+- Relax crossws dep constraint ([bcb9bf4](https://github.com/unjs/listhen/commit/bcb9bf4))
+
+### 🏡 Chore
+
+- Update deps ([9f24f20](https://github.com/unjs/listhen/commit/9f24f20))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](http://github.com/pi0))
+
 ## v1.8.0
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.7.2...v1.8.0)
