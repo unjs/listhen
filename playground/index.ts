@@ -5,11 +5,7 @@ export const app = createApp();
 
 app.use(
   "/ws",
-  defineEventHandler(() =>
-    fetch(
-      "https://raw.githubusercontent.com/unjs/crossws/main/examples/h3/public/index.html",
-    ).then((r) => r.text()),
-  ),
+  defineEventHandler(async () => await import("./_ws").then((m) => m.default)),
 );
 
 app.use(
@@ -20,14 +16,24 @@ app.use(
 export const websocket = {
   hooks: defineHooks({
     open(peer) {
-      console.log("[ws] open", peer);
-      peer.send("Hello!");
+      peer.send({ user: "server", message: `Welcome ${peer}!` });
+      peer.publish("chat", { user: "server", message: `${peer} joined!` });
+      peer.subscribe("chat");
     },
     message(peer, message) {
-      console.log("[ws] message", peer);
-      if (message.text() === "ping") {
-        peer.send("pong");
+      if (message.text().includes("ping")) {
+        peer.send({ user: "server", message: "pong" });
+      } else {
+        const msg = {
+          user: peer.toString(),
+          message: message.toString(),
+        };
+        peer.send(msg); // echo
+        peer.publish("chat", msg);
       }
+    },
+    close(peer) {
+      peer.publish("chat", { user: "server", message: `${peer} left!` });
     },
   }),
 };
