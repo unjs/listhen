@@ -11,7 +11,6 @@ import { defu } from "defu";
 import { ColorName, getColor, colors } from "consola/utils";
 import { renderUnicodeCompact as renderQRCode } from "uqr";
 import type { Tunnel } from "untun";
-import type { AdapterOptions as CrossWSOptions } from "crossws";
 import { open } from "./lib/open";
 import type {
   ListenOptions,
@@ -20,6 +19,7 @@ import type {
   HTTPSOptions,
   ListenURL,
   GetURLOptions,
+  CrossWSOptions,
 } from "./types";
 import {
   formatURL,
