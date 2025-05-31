@@ -149,8 +149,11 @@ export async function listen(
   }
 
   // --- GetURL Utility ---
-  const getURL = (host = listhenOptions.hostname, baseURL?: string) =>
-    generateURL(host, listhenOptions, baseURL);
+  const getURL = (
+    host = listhenOptions.hostname,
+    baseURL?: string,
+    relativePath?: string,
+  ) => generateURL(host, listhenOptions, baseURL, relativePath);
 
   // --- Start Tunnel ---
   let tunnel: Tunnel | undefined;
