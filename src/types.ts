@@ -1,5 +1,5 @@
 import type { IncomingMessage, Server } from "node:http";
-import type { Server as HTTPServer } from "node:https";
+import type { Http2SecureServer } from "node:http2";
 import { AddressInfo } from "node:net";
 import type { GetPortInput } from "get-port-please";
 import type { NodeOptions } from "crossws/adapters/node";
@@ -87,7 +87,7 @@ export interface ListenURL {
 export interface Listener {
   url: string;
   address: AddressInfo;
-  server: Server | HTTPServer;
+  server: Server | Http2SecureServer;
   https: false | Certificate;
   close: () => Promise<void>;
   open: () => Promise<void>;

@@ -1,6 +1,10 @@
 import { createServer } from "node:http";
-import type { Server as HTTPServer } from "node:https";
-import { createServer as createHTTPSServer } from "node:https";
+import {
+  createSecureServer,
+  Http2SecureServer,
+  Http2ServerRequest,
+  Http2ServerResponse,
+} from "node:http2";
 import { promisify } from "node:util";
 import type { RequestListener, Server } from "node:http";
 import type { AddressInfo } from "node:net";
@@ -36,7 +40,9 @@ import { isWsl } from "./lib/wsl";
 import { isDocker } from "./lib/docker";
 
 export async function listen(
-  handle: RequestListener,
+  handle:
+    | RequestListener
+    | ((request: Http2ServerRequest, response: Http2ServerResponse) => void),
   _options: Partial<ListenOptions> = {},
 ): Promise<Listener> {
   // --- Resolve Options ---
@@ -109,20 +115,26 @@ export async function listen(
   }));
 
   // --- Listen ---
-  let server: Server | HTTPServer;
+  let server: Server | Http2SecureServer;
   let https: Listener["https"] = false;
   const httpsOptions = listhenOptions.https as HTTPSOptions;
   let _addr: AddressInfo;
   if (httpsOptions) {
     https = await resolveCertificate(httpsOptions);
-    server = createHTTPSServer(https, handle);
+    server = createSecureServer(
+      { ...https, allowHTTP1: true },
+      handle as (
+        request: Http2ServerRequest,
+        response: Http2ServerResponse,
+      ) => void,
+    );
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   } else {
-    server = createServer(handle);
+    server = createServer(handle as RequestListener);
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
