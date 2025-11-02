@@ -287,7 +287,7 @@ export async function listen(
   }
 
   const _open = async () => {
-    await open(getURL()).catch(() => {});
+    await open(getURL(), { browser: process.env.BROWSER }).catch(() => {});
   };
   if (listhenOptions.open) {
     await _open();
