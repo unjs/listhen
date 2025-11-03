@@ -174,10 +174,17 @@ export async function listen(
 
   // --- Copy URL to Clipboard ---
   if (listhenOptions.clipboard) {
-    const clipboardy = await import("clipboardy").then((r) => r.default || r);
-    await clipboardy.write(getURL()).catch(() => {
+    try {
+      const copy = await import("copy-paste").then((r) => r.copy);
+      await new Promise((resolve, reject) =>
+        copy(getURL(), (err) => {
+          if (err) return reject(err);
+          resolve(true);
+        }),
+      );
+    } catch {
       listhenOptions.clipboard = false;
-    });
+    }
   }
 
   // --- GetURLs Utility ---
