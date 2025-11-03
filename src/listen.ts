@@ -249,13 +249,13 @@ export async function listen(
     const showQR = (showURLOptions.qr ?? listhenOptions.qr) !== false;
     if (firstPublicUrl && showQR) {
       const space = " ".repeat(14);
-      lines.push(" ");
       lines.push(
+        " ",
         ...renderQRCode(firstPublicUrl.url)
           .split("\n")
           .map((line) => space + line),
+        " ",
       );
-      lines.push(" ");
     }
 
     const typeMap: Record<ListenURL["type"], [string, ColorName]> = {
