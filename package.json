@@ -42,7 +42,7 @@
     "@parcel/watcher": "^2.4.1",
     "@parcel/watcher-wasm": "^2.4.1",
     "citty": "^0.1.6",
-    "clipboardy": "^4.0.0",
+    "clipboardy": "^5.0.0",
     "consola": "^3.2.3",
     "crossws": ">=0.2.0 <0.4.0",
     "defu": "^6.1.4",
