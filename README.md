@@ -159,9 +159,10 @@ Show a CLI message for the listening URL.
 
 ### `open`
 
+- Type: string | boolean
 - Default: `false` (force disabled on test and production environments)
 
-Open the URL in the browser. Silently ignores errors.
+Open the URL with an optional supplied relative path in the browser. Silently ignores errors.
 
 ### `clipboard`
 

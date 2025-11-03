@@ -87,8 +87,8 @@ export function getArgs() {
       description: "Copy the URL to the clipboard",
     },
     open: {
-      type: "boolean",
-      description: "Open the URL in the browser",
+      description:
+        "Open the URL in the browser. If you specify a string, it will append the value to the URL.",
     },
     https: {
       type: "boolean",
@@ -153,7 +153,8 @@ export function parseArgs(args: ParsedListhenArgs): Partial<ListenOptions> {
     // prettier-ignore
     hostname: typeof args.host === "string" ? args.host : (args.host === true ? "" : undefined),
     clipboard: args.clipboard,
-    open: args.open,
+    // prettier-ignore
+    open: typeof args.open === "string" ? args.open : (typeof args.open === "boolean" ? args.open : false),
     qr: args.qr,
     publicURL: args.publicURL,
     public: args.public,

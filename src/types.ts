@@ -27,7 +27,7 @@ export interface ListenOptions {
   hostname: string;
   showURL: boolean;
   baseURL: string;
-  open: boolean;
+  open: boolean | string;
   https: boolean | HTTPSOptions;
   clipboard: boolean;
   isTest: boolean;

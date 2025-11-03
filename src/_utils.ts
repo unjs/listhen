@@ -57,6 +57,7 @@ export function generateURL(
   hostname: string,
   listhenOptions: ListenOptions,
   baseURL?: string,
+  relativePath?: string,
 ) {
   const proto = listhenOptions.https ? "https://" : "http://";
   let port = listhenOptions.port || "";
@@ -69,12 +70,16 @@ export function generateURL(
   if (hostname[0] !== "[" && hostname.includes(":")) {
     hostname = `[${hostname}]`;
   }
+  const extraPath =
+    relativePath ||
+    (typeof listhenOptions.open === "string" ? listhenOptions.open : "");
   return (
     proto +
     (hostname || "localhost") +
     ":" +
     port +
-    (baseURL || listhenOptions.baseURL || "")
+    (baseURL || listhenOptions.baseURL || "") +
+    extraPath
   );
 }
 
