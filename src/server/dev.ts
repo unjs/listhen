@@ -39,7 +39,7 @@ export interface DevServerOptions {
 /**
  * Creates and configures a development server with options for serving static files,
  * WebSocket support and custom logging.
- * 
+ *
  * @param entry The path to the server's entry file.
  * @param options Configuration options for the development server. See {@link DevServerOptions}.
  * @returns an object containing server configuration details such as the current working directory (`cwd`),

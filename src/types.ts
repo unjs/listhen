@@ -30,7 +30,7 @@ export interface HTTPSOptions {
    * @optional
    */
   cert?: string;
-  
+
   /**
    * Path to the SSL key file.
    * @optional
@@ -87,7 +87,7 @@ export interface ListenOptions {
    * @default true
    */
   showURL: boolean;
-  
+
   /**
    * The base URL path to prepend to all routes.
    * @default "/"
@@ -124,7 +124,7 @@ export interface ListenOptions {
    */
   isProd: boolean;
 
- /**
+  /**
    * Whether to automatically close the server on `SIGINT` and `SIGTERM` signals.
    * @default true
    */
@@ -226,14 +226,14 @@ export interface Listener {
 
   /**
    * Displays the server URL in the console, with optional appearance configuration.
-   * 
+   *
    * @param options Configuration options for displaying the URL. See {@link ShowURLOptions}.
    */
   showURL: (options?: ShowURLOptions) => Promise<void>;
 
   /**
    * Gets an array of URLs where the server can be reached, based on the options provided.
-   * 
+   *
    * @param options Configuration options for retrieving URLs. See {@link GetURLOptions}.
    * @returns a promise that resolves to an array of {@link ListenURL} objects.
    */
