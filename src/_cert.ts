@@ -33,8 +33,7 @@ export interface SigningOptions {
 }
 
 export interface TLSCertOptions
-  extends CommonCertificateOptions,
-    SigningOptions {
+  extends CommonCertificateOptions, SigningOptions {
   bits?: number;
   validityDays?: number;
   passphrase?: string;
