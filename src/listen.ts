@@ -185,13 +185,8 @@ export async function listen(
   // --- Copy URL to Clipboard ---
   if (listhenOptions.clipboard) {
     try {
-      const copy = await import("copy-paste").then((r) => r.copy);
-      await new Promise((resolve, reject) =>
-        copy(getURL(), (err) => {
-          if (err) return reject(err);
-          resolve(true);
-        }),
-      );
+      const { writeText } = await import("tinyclip");
+      await writeText(getURL());
     } catch {
       listhenOptions.clipboard = false;
     }
