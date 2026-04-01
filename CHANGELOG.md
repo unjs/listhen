@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.9.1
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.9.0...v1.9.1)
+
+### 🔥 Performance
+
+- Do not call `Array.push` multiple times ([6526551](https://github.com/unjs/listhen/commit/6526551))
+- Migrate to `copy-paste` from `clipboardy` ([#211](https://github.com/unjs/listhen/pull/211))
+- Migrate to `tinyclip` from `copy-paste` ([#217](https://github.com/unjs/listhen/pull/217))
+
+### 📖 Documentation
+
+- Add jsdocs for exported functions and types ([#171](https://github.com/unjs/listhen/pull/171))
+
+### 🏡 Chore
+
+- **cli:** Fix typo ([#184](https://github.com/unjs/listhen/pull/184))
+- Apply automated updates ([c4114b4](https://github.com/unjs/listhen/commit/c4114b4))
+- Update deps ([44f076b](https://github.com/unjs/listhen/commit/44f076b))
+- Apply automated updates ([9c11bb4](https://github.com/unjs/listhen/commit/9c11bb4))
+
+### ❤️ Contributors
+
+- Florian Lefebvre ([@florian-lefebvre](https://github.com/florian-lefebvre))
+- Pooya Parsa ([@pi0](https://github.com/pi0))
+- Max <maximogarciamtnez@gmail.com>
+- Daniel Roe ([@danielroe](https://github.com/danielroe))
+- Bobbie Goede <bobbiegoede@gmail.com>
+
 ## v1.9.0
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.8.0...v1.9.0)
