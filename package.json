@@ -65,7 +65,7 @@
     "@vitest/coverage-v8": "^4.0.6",
     "automd": "^0.4.2",
     "changelogen": "^0.6.2",
-    "eslint": "^9.39.0",
+    "eslint": "^10.1.0",
     "eslint-config-unjs": "^0.5.0",
     "ip-regex": "^5.0.0",
     "prettier": "^3.6.2",
