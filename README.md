@@ -163,6 +163,12 @@ Show a CLI message for the listening URL.
 
 Open the URL in the browser. Silently ignores errors.
 
+### `browser`
+
+- Default: `process.env.BROWSER` (and use the system default browser if not specified).
+
+Open the URL in the specified browser.
+
 ### `clipboard`
 
 - Default: `false` (force disabled on test and production environments)

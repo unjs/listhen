@@ -14,6 +14,7 @@ export type OpenOptions = {
   background?: boolean;
   newInstance?: boolean;
   allowNonzeroExitCode?: boolean;
+  browser?: string;
 };
 
 export async function open(target: string, options: OpenOptions = {}) {
@@ -35,6 +36,10 @@ export async function open(target: string, options: OpenOptions = {}) {
 
     if (options.newInstance) {
       cliArguments.push("--new");
+    }
+
+    if (options.browser) {
+      cliArguments.push("-a", options.browser);
     }
   } else if (process.platform === "win32" || (isWsl() && !isDocker())) {
     // --- Windows or WSL ---
@@ -60,6 +65,12 @@ export async function open(target: string, options: OpenOptions = {}) {
       encodedArguments.push("-Wait");
     }
 
+    if (options.browser) {
+      // Double quote with double quotes to ensure the inner quotes are passed through.
+      // Inner quotes are delimited for PowerShell interpretation with backticks.
+      encodedArguments.push(`"\`"${options.browser}\`""`);
+    }
+
     encodedArguments.push(target);
 
     // Using Base64-encoded command, accepted by PowerShell, to allow special characters.
@@ -68,29 +79,33 @@ export async function open(target: string, options: OpenOptions = {}) {
     );
   } else {
     // --- Linux ---
-    command = "xdg-open";
-    const useSystemXdgOpen =
-      process.versions.electron || process.platform === "android";
-    if (!useSystemXdgOpen) {
-      command = join(os.tmpdir(), "xdg-open");
-      if (!fs.existsSync(command)) {
-        try {
-          fs.writeFileSync(
-            join(os.tmpdir(), "xdg-open"),
-            await import("./xdg-open").then((r) => r.xdgOpenScript()),
-            "utf8",
-          );
-          fs.chmodSync(command, 0o755 /* rwx r-x r-x */);
-        } catch {
-          command = "xdg-open";
+    if (options.browser) {
+      command = options.browser;
+    } else {
+      command = "xdg-open";
+      const useSystemXdgOpen =
+        process.versions.electron || process.platform === "android";
+      if (!useSystemXdgOpen) {
+        command = join(os.tmpdir(), "xdg-open");
+        if (!fs.existsSync(command)) {
+          try {
+            fs.writeFileSync(
+              join(os.tmpdir(), "xdg-open"),
+              await import("./xdg-open").then((r) => r.xdgOpenScript()),
+              "utf8",
+            );
+            fs.chmodSync(command, 0o755 /* rwx r-x r-x */);
+          } catch {
+            command = "xdg-open";
+          }
         }
       }
-    }
 
-    if (!options.wait) {
-      // `xdg-open` will block the process unless stdio is ignored and it's detached from the parent even if it's unref'd.
-      childProcessOptions.stdio = "ignore";
-      childProcessOptions.detached = true;
+      if (!options.wait) {
+        // `xdg-open` will block the process unless stdio is ignored and it's detached from the parent even if it's unref'd.
+        childProcessOptions.stdio = "ignore";
+        childProcessOptions.detached = true;
+      }
     }
   }
 
