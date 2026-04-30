@@ -196,11 +196,7 @@ export async function listen(
   const getURLs = async (getURLOptions: GetURLOptions = {}) => {
     const urls: ListenURL[] = [];
 
-    const _addURL = (
-      type: ListenURL["type"],
-      url: string,
-      title?: string,
-    ) => {
+    const _addURL = (type: ListenURL["type"], url: string, title?: string) => {
       if (!urls.some((u) => u.url === url)) {
         urls.push({
           url,
@@ -234,8 +230,7 @@ export async function listen(
     ];
     for (const extraURL of extraURLs) {
       const url =
-        extraURL.url ||
-        (extraURL.env ? process.env[extraURL.env] : undefined);
+        extraURL.url || (extraURL.env ? process.env[extraURL.env] : undefined);
       if (url) {
         _addURL("extra", url, extraURL.title);
       }
