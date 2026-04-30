@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.10.0
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.9.1...v1.10.0)
+
+### 🚀 Enhancements
+
+- Support `extraURLs` and detect portless by env by default ([#228](https://github.com/unjs/listhen/pull/228))
+
+### 🩹 Fixes
+
+- Filter IPv4 link-local addresses from network interfaces ([#226](https://github.com/unjs/listhen/pull/226))
+- Do not use fallback port in production ([#223](https://github.com/unjs/listhen/pull/223))
+
+### 🏡 Chore
+
+- Update deps ([402c52d](https://github.com/unjs/listhen/commit/402c52d))
+
+### ❤️ Contributors
+
+- Kricsleo ([@kricsleo](https://github.com/kricsleo))
+- Tim Krajcar ([@tkrajcar](https://github.com/tkrajcar))
+- Max <maximogarciamtnez@gmail.com>
+- Pooya Parsa ([@pi0](https://github.com/pi0))
+
 ## v1.9.1
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.9.0...v1.9.1)
