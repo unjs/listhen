@@ -208,8 +208,7 @@ export async function listen(
     // Add public URL
     const publicURL =
       getURLOptions.publicURL ||
-      getPublicURL(listhenOptions, getURLOptions.baseURL) ||
-      process.env.PORTLESS_URL;
+      getPublicURL(listhenOptions, getURLOptions.baseURL);
     if (publicURL) {
       _addURL("network", publicURL);
     }
@@ -222,6 +221,20 @@ export async function listen(
     // Add tunnel URL
     if (tunnel) {
       _addURL("tunnel", await tunnel.getURL());
+    }
+
+    // Add additional URLs
+    for (const additionalURL of listhenOptions.additionalURLs || []) {
+      const url =
+        additionalURL.url ||
+        (additionalURL.env ? process.env[additionalURL.env] : undefined);
+      if (url) {
+        urls.push({
+          type: "additional",
+          title: additionalURL.title,
+          url,
+        });
+      }
     }
 
     // Add public network interface URLs
@@ -264,14 +277,20 @@ export async function listen(
       );
     }
 
-    const typeMap: Record<ListenURL["type"], [string, ColorName]> = {
+    const typeMap: Record<
+      Exclude<ListenURL["type"], "additional">,
+      [string, ColorName]
+    > = {
       local: ["Local", "green"],
       tunnel: ["Tunnel", "yellow"],
       network: ["Network", "magenta"],
     };
 
     for (const url of urls) {
-      const type = typeMap[url.type];
+      const type =
+        url.type === "additional"
+          ? ([url.title || "URL", "magenta"] as const)
+          : typeMap[url.type];
       const label = getColor(type[1])(
         `  ➜ ${(type[0] + ":").padEnd(8, " ")}${nameSuffix} `,
       );

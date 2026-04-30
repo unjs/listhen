@@ -169,31 +169,43 @@ describe("listhen", () => {
   });
 
   describe("public urls", () => {
-    test("includes PORTLESS_URL as a fallback public url", async () => {
+    test("includes additional env-backed urls", async () => {
+      listener = await listen(handle, {
+        hostname: "localhost",
+        additionalURLs: [{ title: "Portless", env: "PORTLESS_URL" }],
+      });
+
       process.env.PORTLESS_URL = "https://app.portless.dev";
-      listener = await listen(handle, { hostname: "localhost" });
 
       expect(await listener.getURLs()).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            type: "network",
+            type: "additional",
+            title: "Portless",
             url: "https://app.portless.dev",
           }),
         ]),
       );
     });
 
-    test("prefers explicit publicURL over PORTLESS_URL", async () => {
+    test("prefers explicit additional url over env fallback", async () => {
       process.env.PORTLESS_URL = "https://fallback.portless.dev";
       listener = await listen(handle, {
         hostname: "localhost",
-        publicURL: "https://configured.example.com",
+        additionalURLs: [
+          {
+            title: "Portless",
+            url: "https://configured.example.com",
+            env: "PORTLESS_URL",
+          },
+        ],
       });
 
       expect(await listener.getURLs()).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            type: "network",
+            type: "additional",
+            title: "Portless",
             url: "https://configured.example.com",
           }),
         ]),

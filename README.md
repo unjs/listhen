@@ -187,6 +187,12 @@ Automatically close when an `exit` event, `SIGTERM`, `SIGINT` or `SIGHUP` signal
 
 The public URL to show in the CLI output
 
+### `additionalURLs`
+
+- Type: `Array<{ title: string, url?: string, env?: string }>`
+
+Additional URLs to show in the CLI output. Use `url` for static links or `env` to resolve the URL from an environment variable when `showURL()` is called.
+
 ### `qr`
 
 - Default: `true`
