@@ -214,9 +214,9 @@ export interface ListenURL {
   title?: string;
 
   /**
-   * The type of URL (local, network, tunnel, or extra).
+   * The type of URL (local, network, or extra).
    */
-  type: "local" | "network" | "tunnel" | "extra";
+  type: "local" | "network" | "extra";
 }
 
 export interface Listener {

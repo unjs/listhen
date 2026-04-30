@@ -1,7 +1,14 @@
 import { resolve } from "node:path";
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { describe, afterEach, test, expect } from "vitest";
+import { describe, afterEach, test, expect, vi } from "vitest";
 import { listen, Listener } from "../src";
+
+vi.mock("untun", () => ({
+  startTunnel: async () => ({
+    getURL: async () => "https://tunnel.example.com",
+    close: async () => {},
+  }),
+}));
 
 // console.log = fn()
 
@@ -231,6 +238,32 @@ describe("listhen", () => {
 
       const urls = await listener.getURLs();
       expect(urls.filter((u) => u.url === shared).length).toBe(1);
+    });
+
+    test("displays tunnel urls as extra entries", async () => {
+      listener = await listen(handle, {
+        hostname: "localhost",
+        tunnel: true,
+      });
+
+      const urls = await listener.getURLs();
+
+      expect(urls).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            type: "extra",
+            title: "Tunnel",
+            url: "https://tunnel.example.com",
+          }),
+        ]),
+      );
+      expect(urls).not.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            type: "tunnel",
+          }),
+        ]),
+      );
     });
   });
 });

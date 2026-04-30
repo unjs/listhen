@@ -221,7 +221,7 @@ export async function listen(
 
     // Add tunnel URL
     if (tunnel) {
-      _addURL("tunnel", await tunnel.getURL());
+      _addURL("extra", await tunnel.getURL(), "Tunnel");
     }
 
     // Add extra URLs
@@ -280,7 +280,6 @@ export async function listen(
       [string, ColorName]
     > = {
       local: ["Local", "green"],
-      tunnel: ["Tunnel", "yellow"],
       network: ["Network", "magenta"],
     };
 
