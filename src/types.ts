@@ -177,12 +177,12 @@ export interface ListenOptions {
 
 export type GetURLOptions = Pick<
   Partial<ListenOptions>,
-  "baseURL" | "publicURL"
+  "baseURL" | "publicURL" | "extraURLs"
 >;
 
 export type ShowURLOptions = Pick<
   Partial<ListenOptions>,
-  "baseURL" | "name" | "publicURL" | "qr"
+  "baseURL" | "name" | "publicURL" | "qr" | "extraURLs"
 >;
 
 export interface ExtraURL {
