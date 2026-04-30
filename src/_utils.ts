@@ -16,6 +16,7 @@ export function getNetworkInterfaces(includeIPV6?: boolean): string[] {
           !d.internal &&
           !(d.mac === "00:00:00:00:00:00") &&
           !d.address.startsWith("fe80::") &&
+          !d.address.startsWith("169.254.") &&
           !(!includeIPV6 && (d.family === "IPv6" || +d.family === 6))
         ) {
           addrs.add(formatAddress(d));
