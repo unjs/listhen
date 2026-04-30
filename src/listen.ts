@@ -198,11 +198,7 @@ export async function listen(
 
     const _addURL = (type: ListenURL["type"], url: string, title?: string) => {
       if (!urls.some((u) => u.url === url)) {
-        urls.push({
-          url,
-          type,
-          ...(title ? { title } : {}),
-        });
+        urls.push({ url, type, title });
       }
     };
 
