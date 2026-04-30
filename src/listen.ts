@@ -221,8 +221,8 @@ export async function listen(
     }
 
     // Add extra URLs
-    const extraURLs = getURLOptions.extraURLs ||
-      listhenOptions.extraURLs || [{ title: "Portless", env: "PORTLESS_URL" }];
+    const extraURLs = getURLOptions.extraURLs ??
+      listhenOptions.extraURLs ?? [{ title: "Portless", env: "PORTLESS_URL" }];
     for (const extraURL of extraURLs) {
       const url =
         extraURL.url || (extraURL.env ? process.env[extraURL.env] : undefined);
