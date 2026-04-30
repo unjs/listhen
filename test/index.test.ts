@@ -17,6 +17,7 @@ describe("listhen", () => {
       await listener.close();
       listener = undefined;
     }
+    delete process.env.PORTLESS_URL;
   });
   test("should listen to the next port in range (3000 -> 31000)", async () => {
     listener = await listen(handle, {
@@ -164,6 +165,46 @@ describe("listhen", () => {
         port: { port: 50_000, portRange: [50_000, 59_999] },
       });
       expect(listener.url).toMatch(/:5\d{4}\/$/);
+    });
+  });
+
+  describe("public urls", () => {
+    test("includes PORTLESS_URL as a fallback public url", async () => {
+      process.env.PORTLESS_URL = "https://app.portless.dev";
+      listener = await listen(handle, { hostname: "localhost" });
+
+      expect(await listener.getURLs()).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            type: "network",
+            url: "https://app.portless.dev",
+          }),
+        ]),
+      );
+    });
+
+    test("prefers explicit publicURL over PORTLESS_URL", async () => {
+      process.env.PORTLESS_URL = "https://fallback.portless.dev";
+      listener = await listen(handle, {
+        hostname: "localhost",
+        publicURL: "https://configured.example.com",
+      });
+
+      expect(await listener.getURLs()).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            type: "network",
+            url: "https://configured.example.com",
+          }),
+        ]),
+      );
+      expect(await listener.getURLs()).not.toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            url: "https://fallback.portless.dev",
+          }),
+        ]),
+      );
     });
   });
 });

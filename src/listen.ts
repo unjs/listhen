@@ -208,7 +208,8 @@ export async function listen(
     // Add public URL
     const publicURL =
       getURLOptions.publicURL ||
-      getPublicURL(listhenOptions, getURLOptions.baseURL);
+      getPublicURL(listhenOptions, getURLOptions.baseURL) ||
+      process.env.PORTLESS_URL;
     if (publicURL) {
       _addURL("network", publicURL);
     }
