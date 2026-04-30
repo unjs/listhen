@@ -142,6 +142,10 @@ export interface ListenOptions {
    */
   publicURL?: string;
   /**
+   * Extra URLs to show in the CLI output.
+   */
+  extraURLs?: ExtraURL[];
+  /**
    * Print QR Code for public IPv4 address
    *
    * @default true
@@ -173,13 +177,30 @@ export interface ListenOptions {
 
 export type GetURLOptions = Pick<
   Partial<ListenOptions>,
-  "baseURL" | "publicURL"
+  "baseURL" | "publicURL" | "extraURLs"
 >;
 
 export type ShowURLOptions = Pick<
   Partial<ListenOptions>,
-  "baseURL" | "name" | "publicURL" | "qr"
+  "baseURL" | "name" | "publicURL" | "qr" | "extraURLs"
 >;
+
+export interface ExtraURL {
+  /**
+   * The label shown in the CLI output.
+   */
+  title: string;
+
+  /**
+   * Static URL to show.
+   */
+  url?: string;
+
+  /**
+   * Environment variable that contains the URL to show.
+   */
+  env?: string;
+}
 
 export interface ListenURL {
   /**
@@ -188,9 +209,14 @@ export interface ListenURL {
   url: string;
 
   /**
-   * The type of URL (local, network, or tunnel).
+   * Optional custom label for the URL.
    */
-  type: "local" | "network" | "tunnel";
+  title?: string;
+
+  /**
+   * The type of URL (local, network, tunnel, or extra).
+   */
+  type: "local" | "network" | "tunnel" | "extra";
 }
 
 export interface Listener {

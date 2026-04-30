@@ -196,12 +196,9 @@ export async function listen(
   const getURLs = async (getURLOptions: GetURLOptions = {}) => {
     const urls: ListenURL[] = [];
 
-    const _addURL = (type: ListenURL["type"], url: string) => {
+    const _addURL = (type: ListenURL["type"], url: string, title?: string) => {
       if (!urls.some((u) => u.url === url)) {
-        urls.push({
-          url,
-          type,
-        });
+        urls.push({ url, type, title });
       }
     };
 
@@ -221,6 +218,17 @@ export async function listen(
     // Add tunnel URL
     if (tunnel) {
       _addURL("tunnel", await tunnel.getURL());
+    }
+
+    // Add extra URLs
+    const extraURLs = getURLOptions.extraURLs ??
+      listhenOptions.extraURLs ?? [{ title: "Portless", env: "PORTLESS_URL" }];
+    for (const extraURL of extraURLs) {
+      const url =
+        extraURL.url || (extraURL.env ? process.env[extraURL.env] : undefined);
+      if (url) {
+        _addURL("extra", url, extraURL.title);
+      }
     }
 
     // Add public network interface URLs
@@ -263,16 +271,26 @@ export async function listen(
       );
     }
 
-    const typeMap: Record<ListenURL["type"], [string, ColorName]> = {
+    const typeMap: Record<
+      Exclude<ListenURL["type"], "extra">,
+      [string, ColorName]
+    > = {
       local: ["Local", "green"],
       tunnel: ["Tunnel", "yellow"],
       network: ["Network", "magenta"],
     };
 
-    for (const url of urls) {
-      const type = typeMap[url.type];
+    const labels = urls.map((url) =>
+      url.type === "extra"
+        ? ([url.title || "URL", "blue"] as const)
+        : typeMap[url.type],
+    );
+    const labelWidth = Math.max(7, ...labels.map(([name]) => name.length)) + 1;
+
+    for (const [i, url] of urls.entries()) {
+      const type = labels[i];
       const label = getColor(type[1])(
-        `  ➜ ${(type[0] + ":").padEnd(8, " ")}${nameSuffix} `,
+        `  ➜ ${(type[0] + ":").padEnd(labelWidth, " ")}${nameSuffix} `,
       );
       let suffix = "";
       if (url === firstLocalUrl && listhenOptions.clipboard) {
