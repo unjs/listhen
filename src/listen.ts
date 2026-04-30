@@ -196,11 +196,16 @@ export async function listen(
   const getURLs = async (getURLOptions: GetURLOptions = {}) => {
     const urls: ListenURL[] = [];
 
-    const _addURL = (type: ListenURL["type"], url: string) => {
+    const _addURL = (
+      type: ListenURL["type"],
+      url: string,
+      title?: string,
+    ) => {
       if (!urls.some((u) => u.url === url)) {
         urls.push({
           url,
           type,
+          ...(title ? { title } : {}),
         });
       }
     };
@@ -223,20 +228,16 @@ export async function listen(
       _addURL("tunnel", await tunnel.getURL());
     }
 
-    // Add additional URLs
-    const additionalURLs = listhenOptions.additionalURLs || [
+    // Add extra URLs
+    const extraURLs = listhenOptions.extraURLs || [
       { title: "Portless", env: "PORTLESS_URL" },
     ];
-    for (const additionalURL of additionalURLs) {
+    for (const extraURL of extraURLs) {
       const url =
-        additionalURL.url ||
-        (additionalURL.env ? process.env[additionalURL.env] : undefined);
+        extraURL.url ||
+        (extraURL.env ? process.env[extraURL.env] : undefined);
       if (url) {
-        urls.push({
-          type: "additional",
-          title: additionalURL.title,
-          url,
-        });
+        _addURL("extra", url, extraURL.title);
       }
     }
 
@@ -281,7 +282,7 @@ export async function listen(
     }
 
     const typeMap: Record<
-      Exclude<ListenURL["type"], "additional">,
+      Exclude<ListenURL["type"], "extra">,
       [string, ColorName]
     > = {
       local: ["Local", "green"],
@@ -289,13 +290,17 @@ export async function listen(
       network: ["Network", "magenta"],
     };
 
-    for (const url of urls) {
-      const type =
-        url.type === "additional"
-          ? ([url.title || "URL", "magenta"] as const)
-          : typeMap[url.type];
+    const labels = urls.map((url) =>
+      url.type === "extra"
+        ? ([url.title || "URL", "blue"] as const)
+        : typeMap[url.type],
+    );
+    const labelWidth = Math.max(7, ...labels.map(([name]) => name.length)) + 1;
+
+    for (const [i, url] of urls.entries()) {
+      const type = labels[i];
       const label = getColor(type[1])(
-        `  ➜ ${(type[0] + ":").padEnd(8, " ")}${nameSuffix} `,
+        `  ➜ ${(type[0] + ":").padEnd(labelWidth, " ")}${nameSuffix} `,
       );
       let suffix = "";
       if (url === firstLocalUrl && listhenOptions.clipboard) {

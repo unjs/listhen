@@ -168,19 +168,20 @@ describe("listhen", () => {
     });
   });
 
-  describe("public urls", () => {
-    test("includes additional env-backed urls", async () => {
+  describe("extra urls", () => {
+    test("includes env-backed urls (resolved at getURLs time)", async () => {
       listener = await listen(handle, {
         hostname: "localhost",
-        additionalURLs: [{ title: "Portless", env: "PORTLESS_URL" }],
+        extraURLs: [{ title: "Portless", env: "PORTLESS_URL" }],
       });
 
+      // Set after listen() to confirm env is resolved lazily on getURLs()
       process.env.PORTLESS_URL = "https://app.portless.dev";
 
       expect(await listener.getURLs()).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            type: "additional",
+            type: "extra",
             title: "Portless",
             url: "https://app.portless.dev",
           }),
@@ -188,11 +189,11 @@ describe("listhen", () => {
       );
     });
 
-    test("prefers explicit additional url over env fallback", async () => {
+    test("prefers explicit url over env fallback", async () => {
       process.env.PORTLESS_URL = "https://fallback.portless.dev";
       listener = await listen(handle, {
         hostname: "localhost",
-        additionalURLs: [
+        extraURLs: [
           {
             title: "Portless",
             url: "https://configured.example.com",
@@ -201,22 +202,35 @@ describe("listhen", () => {
         ],
       });
 
-      expect(await listener.getURLs()).toEqual(
+      const urls = await listener.getURLs();
+      expect(urls).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
-            type: "additional",
+            type: "extra",
             title: "Portless",
             url: "https://configured.example.com",
           }),
         ]),
       );
-      expect(await listener.getURLs()).not.toEqual(
+      expect(urls).not.toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             url: "https://fallback.portless.dev",
           }),
         ]),
       );
+    });
+
+    test("does not duplicate an extra url that matches an existing one", async () => {
+      const shared = "https://shared.example.com";
+      listener = await listen(handle, {
+        hostname: "localhost",
+        publicURL: shared,
+        extraURLs: [{ title: "Same", url: shared }],
+      });
+
+      const urls = await listener.getURLs();
+      expect(urls.filter((u) => u.url === shared).length).toBe(1);
     });
   });
 });

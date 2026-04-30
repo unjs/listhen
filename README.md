@@ -187,11 +187,13 @@ Automatically close when an `exit` event, `SIGTERM`, `SIGINT` or `SIGHUP` signal
 
 The public URL to show in the CLI output
 
-### `additionalURLs`
+### `extraURLs`
 
 - Type: `Array<{ title: string, url?: string, env?: string }>`
 
-Additional URLs to show in the CLI output. Use `url` for static links or `env` to resolve the URL from an environment variable when `showURL()` is called.
+Extra URLs to show in the CLI output. Use `url` for a static link or `env` to resolve the URL from an environment variable at `showURL()` time.
+
+By default, `[{ title: "Portless", env: "PORTLESS_URL" }]` is used to surface a Portless URL when present. Pass `extraURLs: []` to disable.
 
 ### `qr`
 
