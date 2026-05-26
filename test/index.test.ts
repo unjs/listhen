@@ -46,6 +46,21 @@ describe("listhen", () => {
     ).rejects.toThrow(/Unable to find an available port/);
   });
 
+  test("should throw with strictPort if port is already in use", async () => {
+    listener = await listen(handle, {
+      port: { port: 3000 },
+      hostname: "localhost",
+    });
+    expect(listener.url).toMatch(/:3000\/$/);
+    await expect(
+      listen(handle, {
+        port: { port: 3000 },
+        hostname: "localhost",
+        strictPort: true,
+      }),
+    ).rejects.toThrow(/Unable to find an available port/);
+  });
+
   test("listen (no args)", async () => {
     listener = await listen(handle);
     expect(listener.url.startsWith("http://")).toBe(true);

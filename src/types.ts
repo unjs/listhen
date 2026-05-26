@@ -157,6 +157,15 @@ export interface ListenOptions {
    * @default `false` for development and `true` for production
    */
   public: boolean;
+
+  /**
+   * If true, fail when the specified port is already in use instead of
+   * automatically trying the next available port.
+   *
+   * @default false
+   */
+  strictPort?: boolean;
+
   /**
    * Open a tunnel using https://github.com/unjs/untun
    */
