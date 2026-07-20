@@ -38,8 +38,15 @@
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "test": "pnpm lint && vitest run --coverage"
   },
+  "peerDependencies": {
+    "@parcel/watcher": "^2.5.6"
+  },
+  "peerDependenciesMeta": {
+    "@parcel/watcher": {
+      "optional": true
+    }
+  },
   "dependencies": {
-    "@parcel/watcher": "^2.5.6",
     "@parcel/watcher-wasm": "^2.5.6",
     "citty": "^0.2.2",
     "consola": "^3.4.2",
