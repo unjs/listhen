@@ -46,10 +46,7 @@ export interface DevServerOptions {
  * a resolver function, the node listener function for integration with other Node.js servers or middleware,
  * a reload function to reload the server configuration, and WebSocket options (`_ws`).
  */
-export async function createDevServer(
-  entry: string,
-  options: DevServerOptions,
-) {
+export async function createDevServer(entry: string, options: DevServerOptions) {
   const logger = options.logger || consola.withTag("listhen");
 
   const h3Entry = await _resolve("h3", {
@@ -151,9 +148,7 @@ export async function createDevServer(
   const loadHandle = async (initial?: boolean) => {
     if (initial) {
       for (const dir of staticDirs) {
-        logger.log(
-          `📁 Serving static files from ${resolver.formatRelative(dir)}`,
-        );
+        logger.log(`📁 Serving static files from ${resolver.formatRelative(dir)}`);
       }
     }
     const start = Date.now();
@@ -167,9 +162,7 @@ export async function createDevServer(
         return;
       }
       if (initial) {
-        logger.log(
-          `🚀 Loading server entry ${resolver.formatRelative(_entry)}`,
-        );
+        logger.log(`🚀 Loading server entry ${resolver.formatRelative(_entry)}`);
       }
 
       const _loadedEntry = (await resolver.import(_entry)) as any;
@@ -209,9 +202,7 @@ export async function createDevServer(
     if (error) {
       logger.error(error);
     } else {
-      logger.log(
-        `✅ Server ${initial ? "initialized" : "reloaded"} in ${loadTime}ms`,
-      );
+      logger.log(`✅ Server ${initial ? "initialized" : "reloaded"} in ${loadTime}ms`);
     }
   };
 

@@ -2,8 +2,20 @@
   "name": "listhen",
   "version": "1.10.0",
   "description": "👂 Elegant HTTP Listener",
-  "repository": "unjs/listhen",
   "license": "MIT",
+  "repository": "unjs/listhen",
+  "bin": {
+    "listen": "./bin/listhen.mjs",
+    "listhen": "./bin/listhen.mjs"
+  },
+  "files": [
+    "dist",
+    "lib",
+    "bin",
+    "cli.d.ts"
+  ],
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -16,35 +28,15 @@
       "require": "./dist/cli.cjs"
     }
   },
-  "main": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "bin": {
-    "listen": "./bin/listhen.mjs",
-    "listhen": "./bin/listhen.mjs"
-  },
-  "files": [
-    "dist",
-    "lib",
-    "bin",
-    "cli.d.ts"
-  ],
   "scripts": {
     "build": "unbuild",
     "dev": "vitest",
-    "lint": "eslint . && prettier -c src test",
-    "lint:fix": "eslint --fix . && prettier -w src test",
+    "lint": "oxlint . && oxfmt --check src test",
+    "fmt": "oxlint --fix . && oxfmt src test",
     "listhen": "node ./scripts/listhen.mjs",
     "play": "node ./scripts/listhen.mjs -w ./playground --ws",
     "release": "pnpm test && pnpm build && changelogen --release && pnpm publish && git push --follow-tags",
     "test": "pnpm lint && vitest run --coverage"
-  },
-  "peerDependencies": {
-    "@parcel/watcher": "^2.5.6"
-  },
-  "peerDependenciesMeta": {
-    "@parcel/watcher": {
-      "optional": true
-    }
   },
   "dependencies": {
     "@parcel/watcher-wasm": "^2.5.6",
@@ -71,13 +63,21 @@
     "@vitest/coverage-v8": "^4.1.10",
     "automd": "^0.4.3",
     "changelogen": "^0.6.2",
-    "eslint": "^10.7.0",
     "eslint-config-unjs": "^0.6.2",
     "ip-regex": "^5.0.0",
-    "prettier": "^3.9.5",
+    "oxfmt": "^0.59.0",
+    "oxlint": "^1.74.0",
     "typescript": "^6.0.3",
     "unbuild": "^3.6.1",
     "vitest": "^4.1.10"
+  },
+  "peerDependencies": {
+    "@parcel/watcher": "^2.5.6"
+  },
+  "peerDependenciesMeta": {
+    "@parcel/watcher": {
+      "optional": true
+    }
   },
   "packageManager": "pnpm@11.15.1"
 }

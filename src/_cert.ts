@@ -32,16 +32,13 @@ export interface SigningOptions {
   signingKeyPassphrase?: string;
 }
 
-export interface TLSCertOptions
-  extends CommonCertificateOptions, SigningOptions {
+export interface TLSCertOptions extends CommonCertificateOptions, SigningOptions {
   bits?: number;
   validityDays?: number;
   passphrase?: string;
 }
 
-export async function resolveCertificate(
-  options: HTTPSOptions,
-): Promise<Certificate> {
+export async function resolveCertificate(options: HTTPSOptions): Promise<Certificate> {
   let https: Certificate;
   if (typeof options === "object" && options.key && options.cert) {
     // Resolve actual certificate and cert
@@ -122,9 +119,7 @@ async function resolveCert(options: HTTPSOptions): Promise<Certificate> {
   throw new Error("Certificate or Private Key not present");
 }
 
-async function resolvePfx(
-  options: HTTPSOptions,
-): Promise<forge.pkcs12.Pkcs12Pfx> {
+async function resolvePfx(options: HTTPSOptions): Promise<forge.pkcs12.Pkcs12Pfx> {
   if (options && options.pfx) {
     const pfx = await fs.readFile(options.pfx, "binary");
 
@@ -222,9 +217,7 @@ async function generateTLSCert(options: TLSCertOptions): Promise<Certificate> {
   });
 }
 
-async function generateCACert(
-  options: TLSCertOptions = {},
-): Promise<Certificate> {
+async function generateCACert(options: TLSCertOptions = {}): Promise<Certificate> {
   const { attributes, extensions } = createCaInfo(options);
 
   return await generateCert({
@@ -241,23 +234,15 @@ function signCertificate(options: SigningOptions, cert: forge.pki.Certificate) {
   if (options.signingKey) {
     if (isValidPassphrase(options.signingKeyPassphrase)) {
       // Sign with provided encrypted ca private key
-      const encryptedPrivateKey = forge.pki.encryptedPrivateKeyFromPem(
-        options.signingKey,
-      );
+      const encryptedPrivateKey = forge.pki.encryptedPrivateKeyFromPem(options.signingKey);
       const decryptedPrivateKey = forge.pki.decryptPrivateKeyInfo(
         encryptedPrivateKey,
         options.signingKeyPassphrase!,
       );
-      cert.sign(
-        forge.pki.privateKeyFromAsn1(decryptedPrivateKey),
-        forge.md.sha256.create(),
-      );
+      cert.sign(forge.pki.privateKeyFromAsn1(decryptedPrivateKey), forge.md.sha256.create());
     } else {
       // Sign with provided unencrypted ca private key
-      cert.sign(
-        forge.pki.privateKeyFromPem(options.signingKey),
-        forge.md.sha256.create(),
-      );
+      cert.sign(forge.pki.privateKeyFromPem(options.signingKey), forge.md.sha256.create());
     }
   } else {
     // Self-sign the certificate with it's own private key if no separate signing key is provided
@@ -265,10 +250,7 @@ function signCertificate(options: SigningOptions, cert: forge.pki.Certificate) {
   }
 }
 
-function createCertificateFromKeyPair(
-  keyPair: forge.pki.KeyPair,
-  options: CertificateOptions,
-) {
+function createCertificateFromKeyPair(keyPair: forge.pki.KeyPair, options: CertificateOptions) {
   // Create serial from and integer between 50000 and 99999
   const serial = Math.floor(Math.random() * 95_000 + 50_000).toString();
   const cert = forge.pki.createCertificate();
@@ -278,9 +260,7 @@ function createCertificateFromKeyPair(
   cert.serialNumber = Buffer.from(serial).toString("hex"); // serial number must be hex encoded
   cert.validity.notBefore = new Date();
   cert.validity.notAfter = new Date();
-  cert.validity.notAfter.setDate(
-    cert.validity.notAfter.getDate() + options.validityDays,
-  );
+  cert.validity.notAfter.setDate(cert.validity.notAfter.getDate() + options.validityDays);
   cert.setSubject(options.subject);
   cert.setIssuer(options.issuer);
   cert.setExtensions(options.extensions);
@@ -288,14 +268,10 @@ function createCertificateFromKeyPair(
 }
 
 async function generateKeyPair(bits = 2048): Promise<forge.pki.KeyPair> {
-  const _generateKeyPair = promisify(
-    forge.pki.rsa.generateKeyPair.bind(forge.pki.rsa),
-  );
+  const _generateKeyPair = promisify(forge.pki.rsa.generateKeyPair.bind(forge.pki.rsa));
   return await _generateKeyPair({
     bits,
-    workers: nodeOS.availableParallelism
-      ? nodeOS.availableParallelism()
-      : nodeOS.cpus().length,
+    workers: nodeOS.availableParallelism ? nodeOS.availableParallelism() : nodeOS.cpus().length,
   });
 }
 
@@ -303,9 +279,7 @@ function isValidPassphrase(passphrase: string | undefined) {
   return typeof passphrase === "string" && passphrase.length < 2000;
 }
 
-async function generateCert(
-  options: TLSCertOptions & CertificateOptions,
-): Promise<Certificate> {
+async function generateCert(options: TLSCertOptions & CertificateOptions): Promise<Certificate> {
   const keyPair = await generateKeyPair(options.bits);
   const cert = createCertificateFromKeyPair(keyPair, options);
 

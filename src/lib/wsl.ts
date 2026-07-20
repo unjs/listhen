@@ -22,9 +22,7 @@ function _isWsl() {
     return true;
   }
   try {
-    return readFileSync("/proc/version", "utf8")
-      .toLowerCase()
-      .includes("microsoft")
+    return readFileSync("/proc/version", "utf8").toLowerCase().includes("microsoft")
       ? !isDocker()
       : false;
   } catch {
@@ -57,18 +55,14 @@ export function getWslDrivesMountPoint() {
   }
 
   const configContent = readFileSync(configFilePath, { encoding: "utf8" });
-  const configMountPoint = /(?<!#.*)root\s*=\s*(?<mountPoint>.*)/g.exec(
-    configContent,
-  );
+  const configMountPoint = /(?<!#.*)root\s*=\s*(?<mountPoint>.*)/g.exec(configContent);
 
   if (!configMountPoint || !configMountPoint.groups) {
     return defaultMountPoint;
   }
 
   _wslMountpoint = configMountPoint.groups.mountPoint.trim();
-  _wslMountpoint = _wslMountpoint.endsWith("/")
-    ? _wslMountpoint
-    : `${_wslMountpoint}/`;
+  _wslMountpoint = _wslMountpoint.endsWith("/") ? _wslMountpoint : `${_wslMountpoint}/`;
 
   return _wslMountpoint;
 }

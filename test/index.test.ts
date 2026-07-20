@@ -131,9 +131,7 @@ describe("listhen", () => {
           },
           hostname: "localhost",
         }),
-      ).rejects.toThrowError(
-        "PKCS#12 MAC could not be verified. Invalid password?",
-      );
+      ).rejects.toThrowError("PKCS#12 MAC could not be verified. Invalid password?");
     });
 
     test("listen (https - PCKS#12/pfx/p12 - with wrong store passphrase)", () => {
@@ -145,9 +143,7 @@ describe("listhen", () => {
           },
           hostname: "localhost",
         }),
-      ).rejects.toThrowError(
-        "PKCS#12 MAC could not be verified. Invalid password?",
-      );
+      ).rejects.toThrowError("PKCS#12 MAC could not be verified. Invalid password?");
     });
   });
 

@@ -1,5 +1,5 @@
 packages:
   - "playground"
 allowBuilds:
-  '@parcel/watcher': false
+  "@parcel/watcher": false
   esbuild: false

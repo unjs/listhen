@@ -90,9 +90,7 @@ export async function listenAndWatch(
     watcher = await subscribe(
       devServer.cwd,
       (_error, events) => {
-        const filteredEvents = events.filter((e) =>
-          jsExts.has(extname(e.path)),
-        );
+        const filteredEvents = events.filter((e) => jsExts.has(extname(e.path)));
         if (filteredEvents.length === 0) {
           return;
         }
@@ -103,19 +101,11 @@ export async function listenAndWatch(
         devServer.reload();
       },
       {
-        ignore: options.ignore || [
-          "**/.git/**",
-          "**/node_modules/**",
-          "**/dist/**",
-        ],
+        ignore: options.ignore || ["**/.git/**", "**/node_modules/**", "**/dist/**"],
       },
     );
 
-    logger.log(
-      `👀 Watching ${devServer.resolver.formatRelative(
-        devServer.cwd,
-      )} for changes`,
-    );
+    logger.log(`👀 Watching ${devServer.resolver.formatRelative(devServer.cwd)} for changes`);
   } catch (error) {
     logger.warn(
       "Cannot start the watcher!\n",

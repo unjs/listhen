@@ -63,14 +63,11 @@ export async function open(target: string, options: OpenOptions = {}) {
     encodedArguments.push(target);
 
     // Using Base64-encoded command, accepted by PowerShell, to allow special characters.
-    target = Buffer.from(encodedArguments.join(" "), "utf16le").toString(
-      "base64",
-    );
+    target = Buffer.from(encodedArguments.join(" "), "utf16le").toString("base64");
   } else {
     // --- Linux ---
     command = "xdg-open";
-    const useSystemXdgOpen =
-      process.versions.electron || process.platform === "android";
+    const useSystemXdgOpen = process.versions.electron || process.platform === "android";
     if (!useSystemXdgOpen) {
       command = join(os.tmpdir(), "xdg-open");
       if (!fs.existsSync(command)) {
@@ -96,11 +93,7 @@ export async function open(target: string, options: OpenOptions = {}) {
 
   cliArguments.push(target);
 
-  const subprocess = childProcess.spawn(
-    command,
-    cliArguments,
-    childProcessOptions,
-  );
+  const subprocess = childProcess.spawn(command, cliArguments, childProcessOptions);
 
   if (options.wait) {
     return new Promise((resolve, reject) => {

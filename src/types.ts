@@ -169,16 +169,10 @@ export interface ListenOptions {
    * @experimental CrossWS usage is subject to change
    * @see https://github.com/unjs/crossws
    */
-  ws?:
-    | boolean
-    | CrossWSOptions
-    | ((req: IncomingMessage, head: Buffer) => void);
+  ws?: boolean | CrossWSOptions | ((req: IncomingMessage, head: Buffer) => void);
 }
 
-export type GetURLOptions = Pick<
-  Partial<ListenOptions>,
-  "baseURL" | "publicURL" | "extraURLs"
->;
+export type GetURLOptions = Pick<Partial<ListenOptions>, "baseURL" | "publicURL" | "extraURLs">;
 
 export type ShowURLOptions = Pick<
   Partial<ListenOptions>,

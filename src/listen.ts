@@ -76,10 +76,7 @@ export async function listen(
   });
 
   // --- Validate Options ---
-  listhenOptions.hostname = validateHostname(
-    listhenOptions.hostname,
-    listhenOptions.public,
-  );
+  listhenOptions.hostname = validateHostname(listhenOptions.hostname, listhenOptions.public);
   const _localhost = isLocalhost(listhenOptions.hostname);
   const _anyhost = isAnyhost(listhenOptions.hostname);
   if (listhenOptions.public && _localhost) {
@@ -113,9 +110,7 @@ export async function listen(
     port: Number(listhenOptions.port),
     verbose: !listhenOptions.isTest,
     host: listhenOptions.hostname,
-    ...(listhenOptions.isProd
-      ? { random: false }
-      : { alternativePortRange: [3000, 3100] }),
+    ...(listhenOptions.isProd ? { random: false } : { alternativePortRange: [3000, 3100] }),
     public: listhenOptions.public,
     ...(typeof listhenOptions.port === "object" && listhenOptions.port),
   }));
@@ -150,9 +145,7 @@ export async function listen(
       consola.warn(
         "[listhen] Using experimental websocket API. Learn more: `https://crossws.unjs.io`",
       );
-      const nodeWSAdapter = await import("crossws/adapters/node").then(
-        (r) => r.default || r,
-      );
+      const nodeWSAdapter = await import("crossws/adapters/node").then((r) => r.default || r);
       const { handleUpgrade } = nodeWSAdapter({
         ...(listhenOptions.ws as CrossWSOptions),
       });
@@ -206,8 +199,7 @@ export async function listen(
 
     // Add public URL
     const publicURL =
-      getURLOptions.publicURL ||
-      getPublicURL(listhenOptions, getURLOptions.baseURL);
+      getURLOptions.publicURL || getPublicURL(listhenOptions, getURLOptions.baseURL);
     if (publicURL) {
       _addURL("network", publicURL);
     }
@@ -226,8 +218,7 @@ export async function listen(
     const extraURLs = getURLOptions.extraURLs ??
       listhenOptions.extraURLs ?? [{ title: "Portless", env: "PORTLESS_URL" }];
     for (const extraURL of extraURLs) {
-      const url =
-        extraURL.url || (extraURL.env ? process.env[extraURL.env] : undefined);
+      const url = extraURL.url || (extraURL.env ? process.env[extraURL.env] : undefined);
       if (url) {
         _addURL("extra", url, extraURL.title);
       }
@@ -273,19 +264,14 @@ export async function listen(
       );
     }
 
-    const typeMap: Record<
-      Exclude<ListenURL["type"], "extra">,
-      [string, ColorName]
-    > = {
+    const typeMap: Record<Exclude<ListenURL["type"], "extra">, [string, ColorName]> = {
       local: ["Local", "green"],
       tunnel: ["Tunnel", "yellow"],
       network: ["Network", "magenta"],
     };
 
     const labels = urls.map((url) =>
-      url.type === "extra"
-        ? ([url.title || "URL", "blue"] as const)
-        : typeMap[url.type],
+      url.type === "extra" ? ([url.title || "URL", "blue"] as const) : typeMap[url.type],
     );
     const labelWidth = Math.max(7, ...labels.map(([name]) => name.length)) + 1;
 
@@ -305,9 +291,7 @@ export async function listen(
     }
 
     if (!firstPublicUrl) {
-      lines.push(
-        colors.gray(`  ➜ Network:  use ${colors.white("--host")} to expose`),
-      );
+      lines.push(colors.gray(`  ➜ Network:  use ${colors.white("--host")} to expose`));
     }
 
     // Print lines

@@ -27,20 +27,13 @@ export function getNetworkInterfaces(includeIPV6?: boolean): string[] {
   return [...addrs].sort();
 }
 
-export function formatAddress(addr: {
-  family: string | number;
-  address: string;
-}) {
-  return addr.family === "IPv6" || addr.family === 6
-    ? `[${addr.address}]`
-    : addr.address;
+export function formatAddress(addr: { family: string | number; address: string }) {
+  return addr.family === "IPv6" || addr.family === 6 ? `[${addr.address}]` : addr.address;
 }
 
 export function formatURL(url: string) {
   return colors.cyan(
-    colors.underline(
-      decodeURI(url).replace(/:(\d+)\//g, `:${colors.bold("$1")}/`),
-    ),
+    colors.underline(decodeURI(url).replace(/:(\d+)\//g, `:${colors.bold("$1")}/`)),
   );
 }
 
@@ -54,29 +47,16 @@ export function isAnyhost(hostname: string | undefined) {
   return hostname === undefined ? false : _anyHosts.has(hostname);
 }
 
-export function generateURL(
-  hostname: string,
-  listhenOptions: ListenOptions,
-  baseURL?: string,
-) {
+export function generateURL(hostname: string, listhenOptions: ListenOptions, baseURL?: string) {
   const proto = listhenOptions.https ? "https://" : "http://";
   let port = listhenOptions.port || "";
-  if (
-    (port === 80 && proto === "http://") ||
-    (port === 443 && proto === "https://")
-  ) {
+  if ((port === 80 && proto === "http://") || (port === 443 && proto === "https://")) {
     port = "";
   }
   if (hostname[0] !== "[" && hostname.includes(":")) {
     hostname = `[${hostname}]`;
   }
-  return (
-    proto +
-    (hostname || "localhost") +
-    ":" +
-    port +
-    (baseURL || listhenOptions.baseURL || "")
-  );
+  return proto + (hostname || "localhost") + ":" + port + (baseURL || listhenOptions.baseURL || "");
 }
 
 export function getDefaultHost(preferPublic?: boolean) {
@@ -89,10 +69,7 @@ export function getDefaultHost(preferPublic?: boolean) {
   return preferPublic ? "" : "localhost";
 }
 
-export function getPublicURL(
-  listhenOptions: ListenOptions,
-  baseURL?: string,
-): string | undefined {
+export function getPublicURL(listhenOptions: ListenOptions, baseURL?: string): string | undefined {
   if (listhenOptions.publicURL) {
     return listhenOptions.publicURL;
   }
@@ -120,8 +97,7 @@ function detectStackblitzURL(entry?: string) {
     // Editor
     if (cwd.startsWith("/home/projects")) {
       const projectId = cwd.split("/")[3];
-      const relativeEntry =
-        entry && relative(process.cwd(), entry).replace(/^\.\//, "");
+      const relativeEntry = entry && relative(process.cwd(), entry).replace(/^\.\//, "");
       const query = relativeEntry ? `?file=${relativeEntry}` : "";
       return `https://stackblitz.com/edit/${projectId}${query}`;
     }

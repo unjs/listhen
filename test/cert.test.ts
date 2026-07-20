@@ -9,13 +9,9 @@ import { TLSCertOptions, _private } from "../src/_cert";
 function assertDefaultAttributes(attrs: forge.pki.CertificateField[]) {
   const commonName = attrs.find((attr) => attr.name === "commonName");
   const countryCode = attrs.find((attr) => attr.name === "countryName");
-  const stateOrProvinceName = attrs.find(
-    (attr) => attr.name === "stateOrProvinceName",
-  );
+  const stateOrProvinceName = attrs.find((attr) => attr.name === "stateOrProvinceName");
   const localityName = attrs.find((attr) => attr.name === "localityName");
-  const organizationName = attrs.find(
-    (attr) => attr.name === "organizationName",
-  );
+  const organizationName = attrs.find((attr) => attr.name === "organizationName");
 
   expect(commonName!.value).toEqual("localhost");
   expect(countryCode!.value).toEqual("US");
@@ -24,10 +20,7 @@ function assertDefaultAttributes(attrs: forge.pki.CertificateField[]) {
   expect(organizationName!.value).toEqual("Testing Corp");
 }
 
-function assertNewlyGeneratedKeyPair(
-  keyPair: forge.pki.KeyPair,
-  cert: forge.pki.Certificate,
-) {
+function assertNewlyGeneratedKeyPair(keyPair: forge.pki.KeyPair, cert: forge.pki.Certificate) {
   expect(keyPair).toBeTruthy();
   expect(cert).toBeTruthy();
   const publicKeyPem = forge.pki.publicKeyToPem(cert.publicKey);
@@ -82,8 +75,7 @@ describe("Certification Tests", () => {
 
   describe("CA", () => {
     test("Generate certificate and private key (with attributes)", async () => {
-      const { cert, key, passphrase } =
-        await _private.generateCACert(certOptions);
+      const { cert, key, passphrase } = await _private.generateCACert(certOptions);
       const certificate = forge.pki.certificateFromPem(cert);
       const attrs = certificate.subject.attributes;
       assertDefaultAttributes(attrs);
@@ -103,11 +95,7 @@ describe("Certification Tests", () => {
       expect(key).toContain("-----BEGIN RSA PRIVATE KEY-----");
       expect(key).toContain("-----END RSA PRIVATE KEY-----");
 
-      const {
-        cert: cert4,
-        key: key4,
-        passphrase: passphrase4,
-      } = await _private.generateCACert({});
+      const { cert: cert4, key: key4, passphrase: passphrase4 } = await _private.generateCACert({});
       expect(passphrase4).toBeFalsy();
       expect(cert4).toContain("-----BEGIN CERTIFICATE-----");
       expect(cert4).toContain("-----END CERTIFICATE-----");
@@ -139,13 +127,8 @@ describe("Certification Tests", () => {
       expect(key).toContain("-----END ENCRYPTED PRIVATE KEY-----");
 
       const encryptedPrivateKeyInfo = forge.pki.encryptedPrivateKeyFromPem(key);
-      const decryptedPrivateKeyInfo = forge.pki.decryptPrivateKeyInfo(
-        encryptedPrivateKeyInfo,
-        pw,
-      );
-      const decryptedPrivateKeyPem = forge.pki.privateKeyInfoToPem(
-        decryptedPrivateKeyInfo,
-      );
+      const decryptedPrivateKeyInfo = forge.pki.decryptPrivateKeyInfo(encryptedPrivateKeyInfo, pw);
+      const decryptedPrivateKeyPem = forge.pki.privateKeyInfoToPem(decryptedPrivateKeyInfo);
       expect(decryptedPrivateKeyPem).toContain("-----BEGIN PRIVATE KEY-----");
       expect(decryptedPrivateKeyPem).toContain("-----END PRIVATE KEY-----");
 
@@ -243,17 +226,11 @@ describe("Certification Tests", () => {
             signingKeyPassphrase: "ca-pw",
           });
           expect(certs).toBeTruthy();
-          expect(certs.cert.key).toContain(
-            "-----BEGIN ENCRYPTED PRIVATE KEY-----",
-          );
-          expect(certs.cert.key).toContain(
-            "-----END ENCRYPTED PRIVATE KEY-----",
-          );
+          expect(certs.cert.key).toContain("-----BEGIN ENCRYPTED PRIVATE KEY-----");
+          expect(certs.cert.key).toContain("-----END ENCRYPTED PRIVATE KEY-----");
           expect(certs.cert.cert).toContain("-----BEGIN CERTIFICATE-----");
           expect(certs.cert.cert).toContain("-----END CERTIFICATE-----");
-          expect(certs.ca.key).toContain(
-            "-----BEGIN ENCRYPTED PRIVATE KEY-----",
-          );
+          expect(certs.ca.key).toContain("-----BEGIN ENCRYPTED PRIVATE KEY-----");
           expect(certs.ca.key).toContain("-----END ENCRYPTED PRIVATE KEY-----");
           expect(certs.ca.cert).toContain("-----BEGIN CERTIFICATE-----");
           expect(certs.ca.cert).toContain("-----END CERTIFICATE-----");
@@ -265,12 +242,8 @@ describe("Certification Tests", () => {
             passphrase: "cert-pw",
           });
           expect(certs).toBeTruthy();
-          expect(certs.cert.key).toContain(
-            "-----BEGIN ENCRYPTED PRIVATE KEY-----",
-          );
-          expect(certs.cert.key).toContain(
-            "-----END ENCRYPTED PRIVATE KEY-----",
-          );
+          expect(certs.cert.key).toContain("-----BEGIN ENCRYPTED PRIVATE KEY-----");
+          expect(certs.cert.key).toContain("-----END ENCRYPTED PRIVATE KEY-----");
           expect(certs.cert.cert).toContain("-----BEGIN CERTIFICATE-----");
           expect(certs.cert.cert).toContain("-----END CERTIFICATE-----");
           expect(certs.ca.key).toContain("-----BEGIN RSA PRIVATE KEY-----");
@@ -289,9 +262,7 @@ describe("Certification Tests", () => {
           expect(certs.cert.key).toContain("-----END RSA PRIVATE KEY-----");
           expect(certs.cert.cert).toContain("-----BEGIN CERTIFICATE-----");
           expect(certs.cert.cert).toContain("-----END CERTIFICATE-----");
-          expect(certs.ca.key).toContain(
-            "-----BEGIN ENCRYPTED PRIVATE KEY-----",
-          );
+          expect(certs.ca.key).toContain("-----BEGIN ENCRYPTED PRIVATE KEY-----");
           expect(certs.ca.key).toContain("-----END ENCRYPTED PRIVATE KEY-----");
           expect(certs.ca.cert).toContain("-----BEGIN CERTIFICATE-----");
           expect(certs.ca.cert).toContain("-----END CERTIFICATE-----");
@@ -310,8 +281,7 @@ describe("Certification Tests", () => {
           assertNewlyGeneratedKeyPair(keyPair, cert);
         });
         test("for Certificate", async () => {
-          const { attributes, extensions } =
-            _private.createCertificateInfo(certOptions);
+          const { attributes, extensions } = _private.createCertificateInfo(certOptions);
           const keyPair = await _private.generateKeyPair(1024);
           const cert = _private.createCertificateFromKeyPair(keyPair, {
             validityDays: 20,
@@ -414,12 +384,10 @@ describe("Certification Tests", () => {
         expect(pfx.safeContents.length).toEqual(2);
         expect(pfx.safeContents[0].safeBags[0].cert).toBeTruthy();
         expect(pfx.safeContents[1].safeBags[0].key).toBeTruthy();
-        expect(
-          forge.pki.certificateToPem(pfx.safeContents[0].safeBags[0].cert!),
-        ).toEqual(certs.cert);
-        expect(
-          forge.pki.privateKeyToPem(pfx.safeContents[1].safeBags[0].key!),
-        ).toEqual(certs.key);
+        expect(forge.pki.certificateToPem(pfx.safeContents[0].safeBags[0].cert!)).toEqual(
+          certs.cert,
+        );
+        expect(forge.pki.privateKeyToPem(pfx.safeContents[1].safeBags[0].key!)).toEqual(certs.key);
       });
       test("Resolves certificate and key from store (with store passphrase)", async () => {
         const certs = await _private.resolveCert({
@@ -434,12 +402,10 @@ describe("Certification Tests", () => {
         expect(pfx.safeContents.length).toEqual(2);
         expect(pfx.safeContents[0].safeBags[0].cert).toBeTruthy();
         expect(pfx.safeContents[1].safeBags[0].key).toBeTruthy();
-        expect(
-          forge.pki.certificateToPem(pfx.safeContents[0].safeBags[0].cert!),
-        ).toEqual(certs.cert);
-        expect(
-          forge.pki.privateKeyToPem(pfx.safeContents[1].safeBags[0].key!),
-        ).toEqual(certs.key);
+        expect(forge.pki.certificateToPem(pfx.safeContents[0].safeBags[0].cert!)).toEqual(
+          certs.cert,
+        );
+        expect(forge.pki.privateKeyToPem(pfx.safeContents[1].safeBags[0].key!)).toEqual(certs.key);
       });
 
       test("Throws error on wrong store password", () => {
@@ -448,18 +414,14 @@ describe("Certification Tests", () => {
             pfx: resolve("test/.tmp/certs/keystore.p12"),
             passphrase: "wrong-pw",
           }),
-        ).rejects.toThrowError(
-          "PKCS#12 MAC could not be verified. Invalid password?",
-        );
+        ).rejects.toThrowError("PKCS#12 MAC could not be verified. Invalid password?");
 
         expect(
           _private.resolvePfx({
             pfx: resolve("test/.tmp/certs/keystore.p12"),
             passphrase: "",
           }),
-        ).rejects.toThrowError(
-          "PKCS#12 MAC could not be verified. Invalid password?",
-        );
+        ).rejects.toThrowError("PKCS#12 MAC could not be verified. Invalid password?");
       });
 
       test("Throws error on non existing store", () => {
@@ -479,12 +441,8 @@ describe("Certification Tests", () => {
 
       test("Throws error on empty args object", () => {
         // @ts-ignore
-        expect(_private.resolvePfx()).rejects.toThrowError(
-          "Error resolving the pfx store",
-        );
-        expect(_private.resolvePfx({})).rejects.toThrowError(
-          "Error resolving the pfx store",
-        );
+        expect(_private.resolvePfx()).rejects.toThrowError("Error resolving the pfx store");
+        expect(_private.resolvePfx({})).rejects.toThrowError("Error resolving the pfx store");
       });
     });
   });
@@ -501,8 +459,7 @@ describe("Certification Tests", () => {
 
     test("Sign certificate with CA (no passphrases)", async () => {
       const ca = await _private.generateCACert(certOptions);
-      const { attributes, extensions } =
-        _private.createCertificateInfo(certOptions);
+      const { attributes, extensions } = _private.createCertificateInfo(certOptions);
       const keyPair = await _private.generateKeyPair(1024);
       const cert = _private.createCertificateFromKeyPair(keyPair, {
         validityDays: 20,
@@ -532,8 +489,7 @@ describe("Certification Tests", () => {
         passphrase: "ca-pw",
       });
       expect(ca.passphrase).toEqual("ca-pw");
-      const { attributes, extensions } =
-        _private.createCertificateInfo(certOptions);
+      const { attributes, extensions } = _private.createCertificateInfo(certOptions);
       const keyPair = await _private.generateKeyPair(1024);
       const cert = _private.createCertificateFromKeyPair(keyPair, {
         validityDays: 20,

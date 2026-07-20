@@ -29,21 +29,14 @@ export default async function generateCert() {
     [certs.cert.cert, certs.ca.cert].join("\n"),
   );
   await writeFile(resolve("test/.tmp/certs/encrypted-key.pem"), certs.cert.key);
-  await writeFile(
-    resolve("test/.tmp/certs/key.pem"),
-    forge.pki.privateKeyToPem(decryptedKey),
-  );
+  await writeFile(resolve("test/.tmp/certs/key.pem"), forge.pki.privateKeyToPem(decryptedKey));
   const pfx = convertToPFX(certs.cert.cert, certs.cert.key, "store-pw");
   const pfx2 = convertToPFX(certs.cert.cert, certs.cert.key, "");
   await writeFile(resolve("test/.tmp/certs/keystore.p12"), pfx, "binary");
   await writeFile(resolve("test/.tmp/certs/keystore2.p12"), pfx2, "binary");
 }
 
-function convertToPFX(
-  certPem: string,
-  privateKeyPem: string,
-  password: string,
-) {
+function convertToPFX(certPem: string, privateKeyPem: string, password: string) {
   const cert = forge.pki.certificateFromPem(certPem);
   const privateKey = forge.pki.encryptedPrivateKeyFromPem(privateKeyPem);
   const pk = forge.pki.decryptPrivateKeyInfo(privateKey, "cert-pw");

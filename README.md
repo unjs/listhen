@@ -100,11 +100,11 @@ import { listen, listenAndWatch } from "listhen";
 
 ```ts
 const handler = (req, res) => {
-  res.end("Hi!")
-}
+  res.end("Hi!");
+};
 
 // listener: { url, getURL, server, close, ... }
-const listener = await listen(handler, options)
+const listener = await listen(handler, options);
 ```
 
 ## Options

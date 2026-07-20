@@ -1,1 +1,1 @@
-export * from './dist/cli'
+export * from "./dist/cli";
