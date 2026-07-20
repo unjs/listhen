@@ -54,7 +54,7 @@
     "std-env": "^4.2.0",
     "tinyclip": "^0.1.15",
     "ufo": "^1.6.4",
-    "untun": "^0.1.3",
+    "untun": "^0.2.2",
     "uqr": "^0.1.3"
   },
   "devDependencies": {
