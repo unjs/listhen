@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v1.10.1
+
+[compare changes](https://github.com/unjs/listhen/compare/v1.10.0...v1.10.1)
+
+### 💅 Refactors
+
+- **dev:** Resolve h3 via jiti instead of mlly ([7f2e7e4](https://github.com/unjs/listhen/commit/7f2e7e4))
+
+### 📦 Build
+
+- Make @parcel/watcher an optional peer dependency ([#239](https://github.com/unjs/listhen/pull/239))
+
+### 🏡 Chore
+
+- **release:** V1.10.0 ([70b3c18](https://github.com/unjs/listhen/commit/70b3c18))
+- Update dependencies ([5a25413](https://github.com/unjs/listhen/commit/5a25413))
+- Use oxlint and oxfmt ([9eecbeb](https://github.com/unjs/listhen/commit/9eecbeb))
+- Update untun to 0.2 ([04a6982](https://github.com/unjs/listhen/commit/04a6982))
+- Remove npmrc ([62ec785](https://github.com/unjs/listhen/commit/62ec785))
+
+### 🤖 CI
+
+- Use node lts ([73f82b3](https://github.com/unjs/listhen/commit/73f82b3))
+
+### ❤️ Contributors
+
+- Pooya Parsa ([@pi0](https://github.com/pi0))
+- Norbiros ([@Norbiros](https://github.com/Norbiros))
+
 ## v1.10.0
 
 [compare changes](https://github.com/unjs/listhen/compare/v1.9.1...v1.10.0)
