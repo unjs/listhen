@@ -3,7 +3,7 @@ import { readFile, stat } from "node:fs/promises";
 import { consola } from "consola";
 import { dirname, join, resolve } from "pathe";
 import type { ConsolaInstance } from "consola";
-import { resolve as _resolve, fileURLToPath } from "mlly";
+import { fileURLToPath } from "node:url";
 import type { CrossWSOptions, ListenOptions } from "../types";
 import { createResolver } from "./_resolver";
 
@@ -49,9 +49,10 @@ export interface DevServerOptions {
 export async function createDevServer(entry: string, options: DevServerOptions) {
   const logger = options.logger || consola.withTag("listhen");
 
-  const h3Entry = await _resolve("h3", {
-    url: [options.cwd!, process.cwd(), import.meta.url].filter(Boolean),
-  });
+  // Initialize resolver
+  const resolver = await createResolver();
+
+  const h3Entry = resolver.resolveFrom("h3", [options.cwd!, process.cwd()].filter(Boolean));
 
   const {
     createApp,
@@ -62,8 +63,6 @@ export async function createDevServer(entry: string, options: DevServerOptions) 
     toNodeListener,
   } = (await import(h3Entry)) as typeof import("h3");
 
-  // Initialize resolver
-  const resolver = await createResolver();
   const resolveEntry = () => {
     for (const suffix of ["", "/server/src", "/server", "/src"]) {
       const resolved = resolver.tryResolve(entry + suffix);
