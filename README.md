@@ -121,6 +121,14 @@ Port to listen.
 
 Default hostname to listen.
 
+### `serverOptions`
+
+- Type: [HTTP ServerOptions](https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener)
+
+Options passed to Node.js when creating the HTTP or HTTPS server. When omitted, Node.js defaults apply.
+
+Configure HTTPS certificates using the `https` option.
+
 ### `https`
 
 - Type: Boolean | Object

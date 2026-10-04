@@ -122,14 +122,14 @@ export async function listen(
   let _addr: AddressInfo;
   if (httpsOptions) {
     https = await resolveCertificate(httpsOptions);
-    server = createHTTPSServer(https, handle);
+    server = createHTTPSServer({ ...listhenOptions.serverOptions, ...https }, handle);
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
     _addr = server.address() as AddressInfo;
     listhenOptions.port = _addr.port;
   } else {
-    server = createServer(handle);
+    server = createServer(listhenOptions.serverOptions || {}, handle);
     addShutdown(server);
     // @ts-ignore
     await promisify(server.listen.bind(server))(port, listhenOptions.hostname);
