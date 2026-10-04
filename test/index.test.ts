@@ -1,5 +1,8 @@
 import { resolve } from "node:path";
-import type { IncomingMessage, ServerResponse } from "node:http";
+import { get as httpGet, ServerResponse } from "node:http";
+import type { IncomingMessage } from "node:http";
+import { get as httpsGet } from "node:https";
+import { text } from "node:stream/consumers";
 import { describe, afterEach, test, expect } from "vitest";
 import { listen, Listener } from "../src";
 
@@ -7,6 +10,15 @@ import { listen, Listener } from "../src";
 
 function handle(request: IncomingMessage, response: ServerResponse) {
   response.end(request.url);
+}
+
+function getResponse(listener: Listener): Promise<string> {
+  const get = listener.https ? httpsGet : httpGet;
+  return new Promise((resolve, reject) => {
+    get(listener.url, { rejectUnauthorized: false, agent: false }, (response) => {
+      text(response).then(resolve, reject);
+    }).on("error", reject);
+  });
 }
 
 describe("listhen", () => {
@@ -61,6 +73,75 @@ describe("listhen", () => {
     expect(listener.url.endsWith("/foo/bar")).toBe(true);
 
     // expect(console.log).toHaveBeenCalledWith(expect.stringMatching('\n  > Local:    http://localhost:3000/foo/bar'))
+  });
+
+  describe.each([false, true])("server options (https: %s)", (https) => {
+    test("passes highWaterMark to the server", async () => {
+      listener = await listen(handle, {
+        https,
+        hostname: "127.0.0.1",
+        port: 0,
+        autoClose: false,
+        serverOptions: { highWaterMark: 1024 },
+      });
+
+      expect(listener.server).toHaveProperty("highWaterMark", 1024);
+    });
+
+    test("uses a custom ServerResponse class", async () => {
+      class CustomServerResponse extends ServerResponse {}
+
+      listener = await listen(
+        (_request, response) => {
+          response.end(String(response instanceof CustomServerResponse));
+        },
+        {
+          https,
+          hostname: "127.0.0.1",
+          port: 0,
+          autoClose: false,
+          serverOptions: { ServerResponse: CustomServerResponse },
+        },
+      );
+
+      expect(await getResponse(listener)).toBe("true");
+    });
+
+    test("preserves zero-valued server options", async () => {
+      listener = await listen(handle, {
+        https,
+        hostname: "127.0.0.1",
+        port: 0,
+        autoClose: false,
+        serverOptions: { keepAliveTimeout: 0 },
+      });
+
+      expect(listener.server.keepAliveTimeout).toBe(0);
+    });
+  });
+
+  test("configures HTTP request and response highWaterMark", async () => {
+    listener = await listen(
+      (request, response) => {
+        response.end(
+          JSON.stringify({
+            readableHighWaterMark: request.readableHighWaterMark,
+            writableHighWaterMark: response.writableHighWaterMark,
+          }),
+        );
+      },
+      {
+        hostname: "127.0.0.1",
+        port: 0,
+        autoClose: false,
+        serverOptions: { highWaterMark: 1024 },
+      },
+    );
+
+    expect(JSON.parse(await getResponse(listener))).toEqual({
+      readableHighWaterMark: 1024,
+      writableHighWaterMark: 1024,
+    });
   });
 
   describe("https", () => {

@@ -1,4 +1,4 @@
-import type { IncomingMessage, Server } from "node:http";
+import type { IncomingMessage, Server, ServerOptions, ServerResponse } from "node:http";
 import type { Server as HTTPServer } from "node:https";
 import { AddressInfo } from "node:net";
 import type { GetPortInput } from "get-port-please";
@@ -105,6 +105,12 @@ export interface ListenOptions {
    * @default false
    */
   https: boolean | HTTPSOptions;
+
+  /**
+   * Options passed to Node.js when creating the HTTP or HTTPS server.
+   * @optional
+   */
+  serverOptions?: ServerOptions<typeof IncomingMessage, typeof ServerResponse<IncomingMessage>>;
 
   /**
    * Whether to copy the base URL to the clipboard when the server starts.
