@@ -85,7 +85,7 @@ export async function listenAndWatch(
       .then((r) => r.subscribe)
       .catch(() => import("@parcel/watcher-wasm").then((r) => r.subscribe));
 
-    const jsExts = new Set([".js", ".mjs", ".cjs", ".ts", ".mts", ".cts"]);
+    const jsExts = new Set([".js", ".mjs", ".cjs", ".ts", ".mts", ".cts", ".jsx", ".tsx"]);
 
     watcher = await subscribe(
       devServer.cwd,
