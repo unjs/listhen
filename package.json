@@ -48,7 +48,6 @@
     "h3": "^1.15.11",
     "http-shutdown": "^1.2.2",
     "jiti": "^2.7.0",
-    "node-forge": "^1.4.0",
     "pathe": "^2.0.3",
     "std-env": "^4.2.0",
     "tinyclip": "^0.1.15",
@@ -64,6 +63,7 @@
     "changelogen": "^0.6.2",
     "eslint-config-unjs": "^0.6.2",
     "ip-regex": "^5.0.0",
+    "node-forge": "^1.4.0",
     "oxfmt": "^0.59.0",
     "oxlint": "^1.74.0",
     "typescript": "^6.0.3",
@@ -71,10 +71,14 @@
     "vitest": "^4.1.10"
   },
   "peerDependencies": {
-    "@parcel/watcher": "^2.5.6"
+    "@parcel/watcher": "^2.5.6",
+    "node-forge": "^1.4.0"
   },
   "peerDependenciesMeta": {
     "@parcel/watcher": {
+      "optional": true
+    },
+    "node-forge": {
       "optional": true
     }
   },

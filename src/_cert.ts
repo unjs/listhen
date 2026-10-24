@@ -3,10 +3,24 @@ import { promisify } from "node:util";
 import nodeOS from "node:os";
 import { promises as fs } from "node:fs";
 import type nodeForge from "node-forge";
-import forge from "node-forge";
 import ipRegex from "ip-regex";
 import { defu } from "defu";
 import type { Certificate, HTTPSOptions } from "./types";
+
+let forge: typeof nodeForge;
+
+async function loadForge(): Promise<typeof nodeForge> {
+  if (!forge) {
+    forge = await import("node-forge")
+      .then((r) => r.default || r)
+      .catch(() => {
+        throw new Error(
+          "Could not load `node-forge`. It is an optional peer dependency of `listhen` required to resolve or generate HTTPS certificates. Make sure it is installed in your project.",
+        );
+      });
+  }
+  return forge;
+}
 
 export interface CertificateOptions {
   validityDays: number;
@@ -119,7 +133,8 @@ async function resolveCert(options: HTTPSOptions): Promise<Certificate> {
   throw new Error("Certificate or Private Key not present");
 }
 
-async function resolvePfx(options: HTTPSOptions): Promise<forge.pkcs12.Pkcs12Pfx> {
+async function resolvePfx(options: HTTPSOptions): Promise<nodeForge.pkcs12.Pkcs12Pfx> {
+  await loadForge();
   if (options && options.pfx) {
     const pfx = await fs.readFile(options.pfx, "binary");
 
@@ -200,6 +215,7 @@ function createCaInfo(options: TLSCertOptions) {
 }
 
 async function generateTLSCert(options: TLSCertOptions): Promise<Certificate> {
+  await loadForge();
   // Certificate Attributes (https://git.io/fptna)
   const { attributes, extensions } = createCertificateInfo(options);
 
@@ -230,7 +246,7 @@ async function generateCACert(options: TLSCertOptions = {}): Promise<Certificate
   });
 }
 
-function signCertificate(options: SigningOptions, cert: forge.pki.Certificate) {
+function signCertificate(options: SigningOptions, cert: nodeForge.pki.Certificate) {
   if (options.signingKey) {
     if (isValidPassphrase(options.signingKeyPassphrase)) {
       // Sign with provided encrypted ca private key
@@ -250,7 +266,7 @@ function signCertificate(options: SigningOptions, cert: forge.pki.Certificate) {
   }
 }
 
-function createCertificateFromKeyPair(keyPair: forge.pki.KeyPair, options: CertificateOptions) {
+function createCertificateFromKeyPair(keyPair: nodeForge.pki.KeyPair, options: CertificateOptions) {
   // Create serial from and integer between 50000 and 99999
   const serial = Math.floor(Math.random() * 95_000 + 50_000).toString();
   const cert = forge.pki.createCertificate();
@@ -267,7 +283,8 @@ function createCertificateFromKeyPair(keyPair: forge.pki.KeyPair, options: Certi
   return cert;
 }
 
-async function generateKeyPair(bits = 2048): Promise<forge.pki.KeyPair> {
+async function generateKeyPair(bits = 2048): Promise<nodeForge.pki.KeyPair> {
+  await loadForge();
   const _generateKeyPair = promisify(forge.pki.rsa.generateKeyPair.bind(forge.pki.rsa));
   return await _generateKeyPair({
     bits,
@@ -280,6 +297,7 @@ function isValidPassphrase(passphrase: string | undefined) {
 }
 
 async function generateCert(options: TLSCertOptions & CertificateOptions): Promise<Certificate> {
+  await loadForge();
   const keyPair = await generateKeyPair(options.bits);
   const cert = createCertificateFromKeyPair(keyPair, options);
 

@@ -38,9 +38,6 @@ importers:
       jiti:
         specifier: ^2.7.0
         version: 2.7.0
-      node-forge:
-        specifier: ^1.4.0
-        version: 1.4.0
       pathe:
         specifier: ^2.0.3
         version: 2.0.3
@@ -81,6 +78,9 @@ importers:
       ip-regex:
         specifier: ^5.0.0
         version: 5.0.0
+      node-forge:
+        specifier: ^1.4.0
+        version: 1.4.0
       oxfmt:
         specifier: ^0.59.0
         version: 0.59.0
